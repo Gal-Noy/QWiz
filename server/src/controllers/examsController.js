@@ -14,10 +14,10 @@ const examsController = {
 
   createExam: async (req, res) => {
     try {
-      const file = req.file;
-      if (!file) {
-        return res.status(400).send("No file uploaded.");
-      }
+      // const file = req.file;
+      // if (!file) {
+      //   return res.status(400).send("No file uploaded.");
+      // }
 
       const { faculty, department, course, year, semester, term, type, grade, lecturers, difficultyRating } = req.body;
 
@@ -44,7 +44,6 @@ const examsController = {
       const { name: courseName, code: courseCode } = course;
       let existingCourse = await Course.findOne({
         $or: [{ name: courseName }, { code: courseCode }],
-        department: existingDepartment._id,
       });
       if (!existingCourse) {
         const newCourse = new Course({ name: courseName, code: courseCode, department: existingDepartment._id });
@@ -57,15 +56,15 @@ const examsController = {
         return res.status(400).json({ message: "Exam already exists" });
       }
 
-      const fileName = `${existingFaculty.name}/${existingDepartment.name}/${existingCourse.name}/${existingCourse.name}-${year}-${semester}-${term}.${fileType}`;
-      const filePath = file.path;
-      const fileType = file.mimetype;
-      const s3Path = await uploadFile(fileName, filePath, fileType);
+      // const fileName = `${existingFaculty.name}/${existingDepartment.name}/${existingCourse.name}/${existingCourse.name}-${year}-${semester}-${term}.${fileType}`;
+      // const filePath = file.path;
+      // const fileType = file.mimetype;
+      // const s3Path = await uploadFile(fileName, filePath, fileType);
 
       const totalRatings = difficultyRating ? 1 : 0;
       const averageRating = difficultyRating ?? 0;
       const exam = new Exam({
-        s3Path,
+        // s3Path,
         faculty: existingFaculty._id,
         department: existingDepartment._id,
         course: existingCourse._id,
