@@ -1,16 +1,23 @@
 import mongoose from "mongoose";
 
 const examSchema = mongoose.Schema({
-  courseCode: {
-    type: String,
+  faculty: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Faculty",
     required: true,
   },
-  courseName: {
-    type: String,
+  department: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Department",
     required: true,
   },
-  examDate: {
-    type: Date,
+  course: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Course",
+    required: true,
+  },
+  year: {
+    type: Number,
     required: true,
   },
   semester: {
@@ -34,27 +41,17 @@ const examSchema = mongoose.Schema({
     type: Number,
     min: 0,
     max: 100,
-    required: true,
   },
   lecturers: {
     type: [String],
   },
-  faculty: {
-    type: String,
-    required: true,
+  difficultyRating: {
+    totalRatings: { type: Number, default: 0 },
+    averageRating: { type: Number, default: 0, min: 0, max: 5 },
   },
-  department: {
-    type: String,
-    required: true,
-  },
-  ranking: {
-    type: Number,
-    min: 1,
-    max: 5,
-  },
-  comments: {
-    type: String,
-  },
+  // comments: {
+  //   type: String,
+  // },
   // TODO: Add questions to the exam schema
   //   questions: [
   //     {

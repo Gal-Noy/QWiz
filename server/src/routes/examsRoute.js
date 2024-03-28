@@ -18,4 +18,7 @@ examsRouter.put("/:id", examsController.updateExam);
 // DELETE: delete exam by id
 examsRouter.delete("/:id", examsController.deleteExam);
 
+// GET: get last 10 exams
+examsRouter.get("/last/:page", examsController.getLastExams);
+
 export default examsRouter;
