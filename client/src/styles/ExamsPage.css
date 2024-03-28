@@ -1,0 +1,9 @@
+.exams-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  border: 1px solid red;
+  margin: 0 auto;
+}

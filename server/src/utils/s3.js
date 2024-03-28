@@ -28,3 +28,5 @@ const uploadFile = async (fileName, filePath, fileType) => {
     });
   });
 };
+
+export { uploadFile };
