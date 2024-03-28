@@ -1,5 +1,6 @@
 import { Exam } from "../models/examModel.js";
 import { Faculty, Department, Course } from "../models/catalogModels.js";
+import { uploadFile } from "../utils/s3.js";
 
 const examsController = {
   getAllExams: async (req, res) => {
@@ -13,6 +14,11 @@ const examsController = {
 
   createExam: async (req, res) => {
     try {
+      const file = req.file;
+      if (!file) {
+        return res.status(400).send("No file uploaded.");
+      }
+
       const { faculty, department, course, year, semester, term, type, grade, lecturers, difficultyRating } = req.body;
 
       if (!faculty || !department || !course || !year || !semester || !term || !type) {
@@ -51,9 +57,15 @@ const examsController = {
         return res.status(400).json({ message: "Exam already exists" });
       }
 
+      const fileName = `${existingFaculty.name}/${existingDepartment.name}/${existingCourse.name}/${existingCourse.name}-${year}-${semester}-${term}.${fileType}`;
+      const filePath = file.path;
+      const fileType = file.mimetype;
+      const s3Path = await uploadFile(fileName, filePath, fileType);
+
       const totalRatings = difficultyRating ? 1 : 0;
       const averageRating = difficultyRating ?? 0;
       const exam = new Exam({
+        s3Path,
         faculty: existingFaculty._id,
         department: existingDepartment._id,
         course: existingCourse._id,

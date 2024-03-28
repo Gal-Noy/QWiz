@@ -1,13 +1,15 @@
 import express from "express";
 import examsController from "../controllers/examsController.js";
+import multer from "multer";
 
 const examsRouter = express.Router();
+const upload = multer({ dest: "uploads/" });
 
 // GET: get all exams
 examsRouter.get("/", examsController.getAllExams);
 
 // POST: create a new exam
-examsRouter.post("/", examsController.createExam);
+examsRouter.post("/", upload.single("file"), examsController.createExam);
 
 // GET: filter exams
 examsRouter.get("/filter", examsController.filterExams);
