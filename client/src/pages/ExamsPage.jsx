@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import ExamsList from "../components/ExamsList";
+import ExamsList from "../components/ExamsList/ExamsList";
 import FilterBar from "../components/FilterBar/FilterBar";
 import "../styles/ExamsPage.css";
 

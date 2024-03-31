@@ -246,63 +246,61 @@ function FilterBar(props) {
           isAvailable={courses.length > 0}
         />
       </div>
-      {showAdvancedFilters && (
-        <div id="advanced-filters-rows">
-          <div className="filter-bar-row">
-            <FilterDropdown
-              label="מרצים"
-              options={advancedSearchLists.lecturers}
-              value={advancedSearchChoices.lecturers}
-              setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, lecturers: val })}
-              isAvailable={advancedSearchLists.lecturers.length > 0}
-            />
-            <FilterDropdown
-              label="שנה"
-              options={advancedSearchLists.years}
-              value={advancedSearchChoices.year}
-              setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, year: val })}
-              isAvailable={advancedSearchLists.years.length > 0}
-            />
-            <FilterDropdown
-              label="סמסטר"
-              options={advancedSearchLists.semesters}
-              value={advancedSearchChoices.semester}
-              setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, semester: val })}
-              isAvailable={advancedSearchLists.semesters.length > 0}
-            />
-          </div>
-          <div className="filter-bar-row">
-            <FilterDropdown
-              label="מועד"
-              options={advancedSearchLists.terms}
-              value={advancedSearchChoices.term}
-              setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, term: val })}
-              isAvailable={advancedSearchLists.terms.length > 0}
-            />
-            <FilterDropdown
-              label="סוג"
-              options={advancedSearchLists.types}
-              value={advancedSearchChoices.type}
-              setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, type: val })}
-              isAvailable={advancedSearchLists.types.length > 0}
-            />
-            <FilterDropdown
-              label="ציון מינימלי"
-              options={advancedSearchLists.minGrades}
-              value={advancedSearchChoices.minGrade}
-              setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, minGrade: val })}
-              isAvailable={advancedSearchLists.minGrades.length > 0}
-            />
-            <FilterDropdown
-              label="דרגת קושי"
-              options={advancedSearchLists.difficultyRatings}
-              value={advancedSearchChoices.difficultyRating}
-              setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, difficultyRating: val })}
-              isAvailable={advancedSearchLists.difficultyRatings.length > 0}
-            />
-          </div>
+      <div className={"advanced-filters-rows" + (showAdvancedFilters ? " show" : "")}>
+        <div className="filter-bar-row">
+          <FilterDropdown
+            label="מרצים"
+            options={advancedSearchLists.lecturers}
+            value={advancedSearchChoices.lecturers}
+            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, lecturers: val })}
+            isAvailable={advancedSearchLists.lecturers.length > 0}
+          />
+          <FilterDropdown
+            label="שנה"
+            options={advancedSearchLists.years}
+            value={advancedSearchChoices.year}
+            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, year: val })}
+            isAvailable={advancedSearchLists.years.length > 0}
+          />
+          <FilterDropdown
+            label="סמסטר"
+            options={advancedSearchLists.semesters}
+            value={advancedSearchChoices.semester}
+            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, semester: val })}
+            isAvailable={advancedSearchLists.semesters.length > 0}
+          />
         </div>
-      )}
+        <div className="filter-bar-row">
+          <FilterDropdown
+            label="מועד"
+            options={advancedSearchLists.terms}
+            value={advancedSearchChoices.term}
+            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, term: val })}
+            isAvailable={advancedSearchLists.terms.length > 0}
+          />
+          <FilterDropdown
+            label="סוג"
+            options={advancedSearchLists.types}
+            value={advancedSearchChoices.type}
+            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, type: val })}
+            isAvailable={advancedSearchLists.types.length > 0}
+          />
+          <FilterDropdown
+            label="ציון מינימלי"
+            options={advancedSearchLists.minGrades}
+            value={advancedSearchChoices.minGrade}
+            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, minGrade: val })}
+            isAvailable={advancedSearchLists.minGrades.length > 0}
+          />
+          <FilterDropdown
+            label="דרגת קושי"
+            options={advancedSearchLists.difficultyRatings}
+            value={advancedSearchChoices.difficultyRating}
+            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, difficultyRating: val })}
+            isAvailable={advancedSearchLists.difficultyRatings.length > 0}
+          />
+        </div>
+      </div>
       <div id="filter-bar-buttons">
         <button className="filter-bar-btn" onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}>
           סינון מתקדם

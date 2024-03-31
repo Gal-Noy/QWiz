@@ -14,6 +14,18 @@
   height: 10vh;
 }
 
+.advanced-filters-rows {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.5s ease;
+  z-index: 1;
+
+  &.show {
+    overflow: visible;
+    height: 20vh;
+  }
+}
+
 #mandatory-filters-row > :first-child {
   border-top-right-radius: 2rem;
 }
@@ -154,7 +166,8 @@
 
 .free-text-input {
   width: 100%;
-  padding: 1% 2%;
+  height: 100%;
+  padding: 0 2%;
   font-size: 1.5rem;
   font-weight: 500;
   border: none;
