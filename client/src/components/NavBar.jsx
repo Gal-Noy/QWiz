@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import defaultAvatar from "../../assets/default-avatar.jpg";
-import "../../styles/NavBar.css";
+import defaultAvatar from "../assets/default-avatar.jpg";
+import "../styles/NavBar.css";
 
 function NavBar({ onLogout }) {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -42,10 +42,20 @@ function NavBar({ onLogout }) {
       </div>
       {showUserMenu && (
         <div className="user-menu">
-          <button className="user-menu-item" onClick={onLogout}>
+          <button
+            className="user-menu-item"
+            onClick={() => {
+              console.log("TODO");
+            }}
+          >
             הפרופיל שלי
           </button>
-          <button className="user-menu-item" onClick={onLogout}>
+          <button
+            className="user-menu-item"
+            onClick={() => {
+              console.log("TODO");
+            }}
+          >
             המבחנים שלי
           </button>
           <button className="user-menu-item" onClick={handleLogout}>
