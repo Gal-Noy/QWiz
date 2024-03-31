@@ -47,7 +47,7 @@ const examSchema = mongoose.Schema({
     max: 100,
   },
   lecturers: {
-    type: [String],
+    type: String,
   },
   difficultyRating: {
     totalRatings: { type: Number, default: 0 },

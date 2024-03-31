@@ -73,25 +73,6 @@ const infoController = {
       res.status(500).json({ message: error.message });
     }
   },
-
-  getCourseLecturers: async (req, res) => {
-    try {
-      const lecturers = [];
-      const courseExams = await Exam.find({ course: req.params.id });
-
-      courseExams.forEach((exam) => {
-        exam.lecturers.forEach((lecturer) => {
-          if (!lecturers.includes(lecturer)) {
-            lecturers.push(lecturer);
-          }
-        });
-      });
-
-      res.json(lecturers);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
 };
 
 export default infoController;

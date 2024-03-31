@@ -82,7 +82,7 @@
 .filter-dropdown-item {
   font-size: 1rem;
   cursor: pointer;
-  padding: 1% 3%;
+  padding: 1% 2vw;
 }
 
 .filter-dropdown-item:hover {

@@ -5,23 +5,13 @@ import "../styles/ExamsPage.css";
 
 function ExamsPage() {
   const [exams, setExams] = useState([]);
-  const [filters, setFilters] = useState({
-    faculty: "",
-    department: "",
-    course: "",
-    year: "",
-    semester: "",
-    term: "",
-    type: "",
-    grade: "",
-    lecturers: "",
-    difficultyRating: "",
-  });
+  const [filteredExams, setFilteredExams] = useState([]);
+  const [showExams, setShowExams] = useState(false);
 
   return (
     <div className="exams-page">
-      <FilterBar filters={filters} setFilters={setFilters} />
-      <ExamsList />
+      <FilterBar exams={exams} setExams={setExams} setFilteredExams={setFilteredExams} setShowExams={setShowExams} />
+      <ExamsList filteredExams={filteredExams} showExams={showExams} />
     </div>
   );
 }

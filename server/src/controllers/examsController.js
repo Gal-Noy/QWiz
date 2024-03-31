@@ -97,6 +97,19 @@ const examsController = {
     }
   },
 
+  getCourseExams: async (req, res) => {
+    try {
+      const course = await Course.findById(req.params.id);
+      if (!course) {
+        return res.status(404).json({ message: "Course not found" });
+      }
+      const exams = await Exam.find({ course: course._id });
+      res.json(exams);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
   filterExams: async (req, res) => {
     try {
       const { faculty, department, course, year, semester, term, type, grade, lecturers, difficultyRating } = req.body;
@@ -133,7 +146,7 @@ const examsController = {
       if (term) filter.term = term;
       if (type) filter.type = type;
       if (grade) filter.grade = { $gte: grade }; // greater than or equal
-      if (lecturers) filter.lecturers = { $in: lecturers }; // contains
+      if (lecturers) filter.lecturers = lecturers;
       if (difficultyRating) filter.difficultyRating.averageRating = { $gte: difficultyRating }; // greater than or equal
 
       const exams = await Exam.find(filter);

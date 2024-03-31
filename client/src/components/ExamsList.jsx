@@ -1,14 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-function ExamsList() {
+function ExamsList(props) {
+  const { filteredExams, showExams } = props;
+
   return (
     <div className="exams-list">
-      <h2>Exams List</h2>
-      <ul>
-        <li>Exam 1</li>
-        <li>Exam 2</li>
-        <li>Exam 3</li>
-      </ul>
+      {/* {filteredExams.map((exam) => (
+        <div key={exam._id} className="exam-card">
+          <div className="exam-card-title">{exam.title}</div>
+          <div className="exam-card-details">
+            <div>{exam.year}</div>
+            <div>{exam.semester}</div>
+            <div>{exam.term}</div>
+            <div>{exam.type}</div>
+            <div>{exam.grade}</div>
+            <div>{exam.lecturers.join(", ")}</div>
+            <div>{exam.difficultyRating.averageRating}</div>
+          </div>
+        </div>
+      ))} */}
     </div>
   );
 }

@@ -27,7 +27,4 @@ infoRouter.get("/faculty/:id/departments", infoController.getFacultyDepartments)
 // GET: get department's courses
 infoRouter.get("/department/:id/courses", infoController.getDepartmentCourses);
 
-// GET: get course's lecturers
-infoRouter.get("/course/:id/lecturers", infoController.getCourseLecturers);
-
 export default infoRouter;

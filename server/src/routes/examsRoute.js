@@ -14,6 +14,9 @@ examsRouter.post("/", upload.single("file"), examsController.createExam);
 // GET: filter exams
 examsRouter.get("/filter", examsController.filterExams);
 
+// GET: get exams by course id
+examsRouter.get("/course/:id", examsController.getCourseExams);
+
 // GET: get last 10 exams
 examsRouter.get("/last/:page?", examsController.getLastExams);
 
