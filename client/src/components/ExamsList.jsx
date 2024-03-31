@@ -3,6 +3,9 @@ import React, { useEffect } from "react";
 function ExamsList(props) {
   const { filteredExams, showExams } = props;
 
+  if (showExams) {
+    console.log(filteredExams);
+  }
   return (
     <div className="exams-list">
       {/* {filteredExams.map((exam) => (

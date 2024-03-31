@@ -1,14 +1,26 @@
-p,
-div,
-span,
-button,
-input {
-  font-family: "Noto Sans Hebrew", sans-serif;
-  text-align: right !important;
+:root {
+  --yellow1: #f8f6e3;
+  --yellow2: #eee9da;
+  --yellow3: #fff8ea;
+  --cyan1: #97e7e1;
+  --cyan2: #6ad4dd;
+  --cyan3: #93bfcf;
+  --blue1: #7aa2e3;
+  --blue2: #3e7ae0;
+  --blue3: #6096b4;
+  --red1: rgb(190, 3, 0);
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  background-color: #fffbe8;
+  background-color: var(--yellow1);
+  font-family: "Noto Sans Hebrew", "Noto Sans", sans-serif;
+  text-align: right !important;
+}
+
+input,
+p,
+a,
+label {
+  font-family: "Noto Sans Hebrew", "Noto Sans", sans-serif;
+  text-align: right !important;
 }

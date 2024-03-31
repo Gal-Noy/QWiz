@@ -2,8 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import mongoose from "mongoose";
-import examsRouter from "./routes/examsRoute.js";
-import infoRouter from "./routes/infoRoute.js";
+import router from "./routes/index.js";
 
 const app = express();
 
@@ -13,8 +12,7 @@ app.use(express.json());
 
 app.use(cors());
 
-app.use("/exams", examsRouter);
-app.use("/info", infoRouter);
+app.use("/", router);
 
 mongoose
   .connect(process.env.DB_URI)

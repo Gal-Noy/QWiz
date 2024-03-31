@@ -15,6 +15,7 @@ function FilterBar(props) {
   const [chosenCourse, setChosenCourse] = useState(null);
 
   // Optional filters (Advanced search)
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [advancedSearchLists, setAdvancedSearchLists] = useState({
     lecturers: [],
     years: [],
@@ -33,6 +34,7 @@ function FilterBar(props) {
     minGrade: null,
     difficultyRating: null,
   });
+  const [freeText, setFreeText] = useState("");
 
   const fetchFaculties = async () =>
     await axios
@@ -102,6 +104,79 @@ function FilterBar(props) {
     });
   };
 
+  const clearFilters = () => {
+    setChosenFaculty(null);
+    setDepartments([]);
+    setChosenDepartment(null);
+    setCourses([]);
+    setChosenCourse(null);
+    setAdvancedSearchChoices({
+      lecturers: null,
+      year: null,
+      semester: null,
+      term: null,
+      type: null,
+      minGrade: null,
+      difficultyRating: null,
+    });
+    setAdvancedSearchLists({
+      lecturers: [],
+      years: [],
+      semesters: [],
+      terms: [],
+      types: [],
+      minGrades: [],
+      difficultyRatings: [],
+    });
+    setFreeText("");
+    setShowExams(false);
+  };
+
+  const filterExams = () => {
+    // Exams are already filtered by faculty, department, and course
+    if (!chosenCourse || !chosenDepartment || !chosenFaculty) {
+      alert("יש לבחור פקולטה, מחלקה וקורס לפני החיפוש");
+      return;
+    }
+
+    let filteredExams = exams;
+
+    if (freeText) {
+      filteredExams = filteredExams.filter(
+        (exam) =>
+          exam.lecturers.includes(freeText) ||
+          exam.year === freeText ||
+          exam.semester === freeText ||
+          exam.term === freeText ||
+          exam.type === freeText ||
+          exam.grade === freeText ||
+          exam.difficultyRating.averageRating === freeText
+      );
+    }
+
+    advancedSearchChoices.lecturers &&
+      (filteredExams = filteredExams.filter((exam) => exam.lecturers === advancedSearchChoices.lecturers));
+    advancedSearchChoices.year &&
+      (filteredExams = filteredExams.filter((exam) => exam.year === advancedSearchChoices.year));
+    advancedSearchChoices.semester &&
+      (filteredExams = filteredExams.filter((exam) => exam.semester === advancedSearchChoices.semester));
+    advancedSearchChoices.term &&
+      (filteredExams = filteredExams.filter((exam) => exam.term === advancedSearchChoices.term));
+    advancedSearchChoices.type &&
+      (filteredExams = filteredExams.filter((exam) => exam.type === advancedSearchChoices.type));
+    advancedSearchChoices.minGrade &&
+      (filteredExams = filteredExams.filter(
+        (exam) => Math.floor(exam.grade / 10) * 10 >= advancedSearchChoices.minGrade
+      ));
+    advancedSearchChoices.difficultyRating &&
+      (filteredExams = filteredExams.filter(
+        (exam) => Math.floor(exam.difficultyRating.averageRating) >= advancedSearchChoices.difficultyRating
+      ));
+
+    setFilteredExams(filteredExams);
+    setShowExams(true);
+  };
+
   useEffect(() => {
     fetchFaculties();
   }, []);
@@ -137,7 +212,7 @@ function FilterBar(props) {
 
   return (
     <div className="filter-bar">
-      <div className="filter-bar-row">
+      <div id="mandatory-filters-row" className="filter-bar-row">
         <FilterDropdown
           label="פקולטה"
           options={faculties}
@@ -160,56 +235,80 @@ function FilterBar(props) {
           isAvailable={courses.length > 0}
         />
       </div>
-      <div className="filter-bar-row">
-        <FilterDropdown
-          label="מרצים"
-          options={advancedSearchLists.lecturers}
-          value={advancedSearchChoices.lecturers}
-          setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, lecturers: val })}
-          isAvailable={advancedSearchLists.lecturers.length > 0}
+      {showAdvancedFilters && (
+        <div id="advanced-filters-rows">
+          <div className="filter-bar-row">
+            <FilterDropdown
+              label="מרצים"
+              options={advancedSearchLists.lecturers}
+              value={advancedSearchChoices.lecturers}
+              setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, lecturers: val })}
+              isAvailable={advancedSearchLists.lecturers.length > 0}
+            />
+            <FilterDropdown
+              label="שנה"
+              options={advancedSearchLists.years}
+              value={advancedSearchChoices.year}
+              setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, year: val })}
+              isAvailable={advancedSearchLists.years.length > 0}
+            />
+            <FilterDropdown
+              label="סמסטר"
+              options={advancedSearchLists.semesters}
+              value={advancedSearchChoices.semester}
+              setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, semester: val })}
+              isAvailable={advancedSearchLists.semesters.length > 0}
+            />
+          </div>
+          <div className="filter-bar-row">
+            <FilterDropdown
+              label="מועד"
+              options={advancedSearchLists.terms}
+              value={advancedSearchChoices.term}
+              setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, term: val })}
+              isAvailable={advancedSearchLists.terms.length > 0}
+            />
+            <FilterDropdown
+              label="סוג"
+              options={advancedSearchLists.types}
+              value={advancedSearchChoices.type}
+              setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, type: val })}
+              isAvailable={advancedSearchLists.types.length > 0}
+            />
+            <FilterDropdown
+              label="ציון מינימלי"
+              options={advancedSearchLists.minGrades}
+              value={advancedSearchChoices.minGrade}
+              setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, minGrade: val })}
+              isAvailable={advancedSearchLists.minGrades.length > 0}
+            />
+            <FilterDropdown
+              label="דרגת קושי"
+              options={advancedSearchLists.difficultyRatings}
+              value={advancedSearchChoices.difficultyRating}
+              setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, difficultyRating: val })}
+              isAvailable={advancedSearchLists.difficultyRatings.length > 0}
+            />
+          </div>
+        </div>
+      )}
+      <div id="filter-bar-buttons">
+        <button className="filter-bar-btn" onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}>
+          סינון מתקדם
+        </button>
+        <button className="filter-bar-btn" onClick={clearFilters}>
+          נקה סינון
+        </button>
+        <input
+          className="free-text-input"
+          type="text"
+          placeholder="טקסט חופשי"
+          value={freeText}
+          onChange={(e) => setFreeText(e.target.value)}
         />
-        <FilterDropdown
-          label="שנה"
-          options={advancedSearchLists.years}
-          value={advancedSearchChoices.year}
-          setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, year: val })}
-          isAvailable={advancedSearchLists.years.length > 0}
-        />
-        <FilterDropdown
-          label="סמסטר"
-          options={advancedSearchLists.semesters}
-          value={advancedSearchChoices.semester}
-          setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, semester: val })}
-          isAvailable={advancedSearchLists.semesters.length > 0}
-        />
-        <FilterDropdown
-          label="מועד"
-          options={advancedSearchLists.terms}
-          value={advancedSearchChoices.term}
-          setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, term: val })}
-          isAvailable={advancedSearchLists.terms.length > 0}
-        />
-        <FilterDropdown
-          label="סוג"
-          options={advancedSearchLists.types}
-          value={advancedSearchChoices.type}
-          setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, type: val })}
-          isAvailable={advancedSearchLists.types.length > 0}
-        />
-        <FilterDropdown
-          label="ציון מינימלי"
-          options={advancedSearchLists.minGrades}
-          value={advancedSearchChoices.minGrade}
-          setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, minGrade: val })}
-          isAvailable={advancedSearchLists.minGrades.length > 0}
-        />
-        <FilterDropdown
-          label="דרגת קושי"
-          options={advancedSearchLists.difficultyRatings}
-          value={advancedSearchChoices.difficultyRating}
-          setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, difficultyRating: val })}
-          isAvailable={advancedSearchLists.difficultyRatings.length > 0}
-        />
+        <button className="filter-bar-btn" onClick={filterExams}>
+          חפש מבחנים
+        </button>
       </div>
     </div>
   );
