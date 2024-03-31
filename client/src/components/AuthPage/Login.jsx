@@ -42,7 +42,7 @@ function Login({ onLogin }) {
   };
 
   return (
-    <div className="login-container">
+    <div className="auth-container">
       <h1>התחברות</h1>
       <form className="auth-form" onSubmit={handleSubmit}>
         <input

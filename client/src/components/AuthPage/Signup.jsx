@@ -48,7 +48,7 @@ function Signup() {
   };
 
   return (
-    <div className="signup-container">
+    <div className="auth-container">
       <h1>הרשמה</h1>
       <form className="auth-form" onSubmit={handleSubmit}>
         <input
@@ -77,7 +77,7 @@ function Signup() {
           onChange={(e) => setSignupData({ ...signupData, confirmPassword: e.target.value })}
         />
         <button type="submit" className="auth-submit-button">
-          {isPending ? <div className="lds-dual-ring"></div> : "צור משתמש"}
+          {isPending ? <div className="lds-dual-ring"></div> : "הירשם/י"}
         </button>
       </form>
       <span className="auth-form-footer">
