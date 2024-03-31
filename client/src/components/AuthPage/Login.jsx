@@ -62,7 +62,7 @@ function Login({ onLogin }) {
         </button>
       </form>
       <span className="auth-form-footer">
-        &nbsp;עוד לא נרשמת? הירשם/י
+        עוד לא נרשמת? הירשם/י&nbsp;
         <Link to="/register">כאן</Link>
       </span>
     </div>

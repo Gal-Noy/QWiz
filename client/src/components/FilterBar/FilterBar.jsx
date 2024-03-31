@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import FilterDropdown from "./FilterDropdown";
-import "./FilterBar.css";
+import "../../styles/FilterBar.css";
 import axios from "axios";
 
 function FilterBar(props) {
@@ -104,12 +104,7 @@ function FilterBar(props) {
     });
   };
 
-  const clearFilters = () => {
-    setChosenFaculty(null);
-    setDepartments([]);
-    setChosenDepartment(null);
-    setCourses([]);
-    setChosenCourse(null);
+  const clearAdvancedFilters = () => {
     setAdvancedSearchChoices({
       lecturers: null,
       year: null,
@@ -129,10 +124,19 @@ function FilterBar(props) {
       difficultyRatings: [],
     });
     setFreeText("");
+  };
+
+  const clearFilters = () => {
+    setChosenFaculty(null);
+    setDepartments([]);
+    setChosenDepartment(null);
+    setCourses([]);
+    setChosenCourse(null);
+    clearAdvancedFilters();
     setShowExams(false);
   };
 
-  const filterExams = () => {
+  const filterAndSearchExams = () => {
     // Exams are already filtered by faculty, department, and course
     if (!chosenCourse || !chosenDepartment || !chosenFaculty) {
       alert("יש לבחור פקולטה, מחלקה וקורס לפני החיפוש");
@@ -186,6 +190,7 @@ function FilterBar(props) {
     setChosenDepartment(null);
     setCourses([]);
     setChosenCourse(null);
+    clearAdvancedFilters();
     if (chosenFaculty) {
       fetchDepartmentsByFaculty(chosenFaculty._id);
     }
@@ -194,12 +199,18 @@ function FilterBar(props) {
   useEffect(() => {
     setCourses([]);
     setChosenCourse(null);
+    if (!chosenDepartment) {
+      clearAdvancedFilters();
+    }
     if (chosenDepartment) {
       fetchCoursesByDepartment(chosenDepartment._id);
     }
   }, [chosenDepartment]);
 
   useEffect(() => {
+    if (!chosenCourse) {
+      clearAdvancedFilters();
+    }
     if (chosenCourse) {
       fetchCourseExams(chosenCourse._id);
     }
@@ -306,7 +317,7 @@ function FilterBar(props) {
           value={freeText}
           onChange={(e) => setFreeText(e.target.value)}
         />
-        <button className="filter-bar-btn" onClick={filterExams}>
+        <button className="filter-bar-btn" onClick={filterAndSearchExams}>
           חפש מבחנים
         </button>
       </div>

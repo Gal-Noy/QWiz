@@ -2,6 +2,10 @@
   --yellow1: #f8f6e3;
   --yellow2: #eee9da;
   --yellow3: #fff8ea;
+  --yellow4: #fff4e9;
+  --orange1: #e0c5a8d2;
+  --orange2: #ffdab2;
+  --orange3: #e4a975;
   --cyan1: #97e7e1;
   --cyan2: #6ad4dd;
   --cyan3: #93bfcf;
@@ -10,12 +14,14 @@
   --blue3: #6096b4;
   --blue4: #5ba2ff;
   --red1: rgb(190, 3, 0);
+  --grey1: #ccc;
 }
 
 body {
   background-color: var(--yellow1);
   font-family: "Noto Sans Hebrew", "Noto Sans", sans-serif;
   text-align: right !important;
+  direction: rtl;
 }
 
 input,

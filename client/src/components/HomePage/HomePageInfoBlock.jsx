@@ -5,8 +5,8 @@ function HomePageInfoBlock({ title, explanation, id }) {
 
   return (
     <div
-      className={"qwiz-main-block" + (isHovered ? " hovered" : "")}
-      id={"qwiz-main-block-" + id}
+      className={"homepage-main-block" + (isHovered ? " hovered" : "")}
+      id={"homepage-main-block-" + id}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

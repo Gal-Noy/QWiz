@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import defaultAvatar from "../assets/default-avatar.jpg";
 import "../styles/NavBar.css";
 
@@ -30,7 +30,9 @@ function NavBar({ onLogout }) {
 
   return (
     <div className="navbar-container">
-      <div className="navbar-logo">QWiz</div>
+      <Link to="/" className="navbar-logo">
+        QWiz
+      </Link>
       <div className="navbar-profile">
         <img
           className={"avatar-pic" + (showUserMenu ? " active" : "")}

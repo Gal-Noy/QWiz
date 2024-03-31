@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import AuthPage from "./pages/AuthPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
+import ExamsPage from "./pages/ExamsPage.jsx";
+import NavBar from "./components/NavBar.jsx";
 import "./styles/App.css";
 
 function App() {
@@ -9,6 +11,13 @@ function App() {
 
   return (
     <Router>
+      {isLoggedIn && (
+        <NavBar
+          onLogout={() => {
+            setIsLoggedIn(false);
+          }}
+        />
+      )}
       <Routes>
         <Route
           path="/"
@@ -25,6 +34,7 @@ function App() {
           }
         />
         <Route path="/register" element={isLoggedIn ? <Navigate to="/" replace /> : <AuthPage formType={"signup"} />} />
+        <Route path="/exams" element={isLoggedIn ? <ExamsPage /> : <Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

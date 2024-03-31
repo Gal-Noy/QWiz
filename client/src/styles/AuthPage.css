@@ -8,7 +8,7 @@
   height: 70vh;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   display: flex;
-  flex-direction: row;
+  flex-direction: row-reverse;
   border-radius: 25px;
 }
 
@@ -88,12 +88,20 @@
     outline: none;
   }
 
-  &[type="password"].passwords-mismatch {
-    border: 1px solid var(--red1);
+  &[type="password"] {
+    direction: ltr;
 
-    &::placeholder {
-      color: var(--red1);
+    &.passwords-mismatch {
+      border: 1px solid var(--red1);
+
+      &::placeholder {
+        color: var(--red1);
+      }
     }
+  }
+
+  &[type="email"] {
+    direction: ltr;
   }
 }
 
@@ -123,7 +131,7 @@
 .auth-form-footer {
   margin-top: 1rem;
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   width: 80%;

@@ -3,10 +3,11 @@ import React, { useState } from "react";
 function FilterDropdown(props) {
   const { label, options, value, setValue, isAvailable } = props;
   const [isOpen, setIsOpen] = useState(false);
+  const valueChosen = value ? true : false;
 
   return (
     <div
-      className={"filter-dropdown" + (!isAvailable ? " disabled" : "")}
+      className={"filter-dropdown" + (!isAvailable ? " disabled" : "") + (valueChosen ? " chosen" : "")}
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
     >
@@ -26,6 +27,11 @@ function FilterDropdown(props) {
             </a>
           ))}
         </div>
+      )}
+      {valueChosen && (
+        <span class="material-symbols-outlined filter-dropdown-clear" onClick={() => setValue(null)}>
+          close
+        </span>
       )}
     </div>
   );
