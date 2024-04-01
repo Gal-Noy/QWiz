@@ -39,7 +39,9 @@ function HomePage({ onLogout }) {
             העלאת בחינה
           </Link>
           <button className="homepage-button">פורומים</button>
-          <button className="homepage-button">הפרופיל שלי</button>
+          <Link to="/profile" className="homepage-button">
+            הפרופיל שלי
+          </Link>
         </div>
       </div>
     </div>

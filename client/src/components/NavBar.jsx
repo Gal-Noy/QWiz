@@ -49,14 +49,6 @@ function NavBar({ onLogout }) {
           >
             הפרופיל שלי
           </button>
-          <button
-            className="user-menu-item"
-            onClick={() => {
-              console.log("TODO");
-            }}
-          >
-            המבחנים שלי
-          </button>
           <button className="user-menu-item" onClick={handleLogout}>
             התנתק
           </button>
