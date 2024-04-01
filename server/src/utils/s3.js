@@ -9,9 +9,7 @@ const s3 = new AWS.S3({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 });
 
-const uploadFile = async (fileName, filePath, fileType) => {
-  const fileContent = fs.readFileSync(filePath);
-
+const uploadFile = async (fileContent, fileName, fileType) => {
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
     Key: fileName,

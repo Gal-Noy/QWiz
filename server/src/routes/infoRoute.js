@@ -1,7 +1,9 @@
 import express from "express";
 import infoController from "../controllers/infoController.js";
+import { authenticateToken } from "../middleware/authMiddleware.js";
 
 const infoRouter = express.Router();
+infoRouter.use(authenticateToken);
 
 // GET: get all faculties
 infoRouter.get("/faculties", infoController.getFaculties);

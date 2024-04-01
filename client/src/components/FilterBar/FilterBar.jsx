@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import FilterDropdown from "./FilterDropdown";
 import "../../styles/FilterBar.css";
-import axios from "axios";
+import axiosInstance from "../../utils/axiosInstance";
 
 function FilterBar(props) {
   const { exams, setExams, setFilteredExams, setShowExams } = props;
@@ -37,26 +37,26 @@ function FilterBar(props) {
   const [freeText, setFreeText] = useState("");
 
   const fetchFaculties = async () =>
-    await axios
-      .get(`${import.meta.env.VITE_SERVER_URL}/info/faculties`)
+    await axiosInstance
+      .get("/info/faculties")
       .then((res) => setFaculties(res.data))
       .catch((err) => console.error(err));
 
   const fetchDepartmentsByFaculty = async (facultyId) =>
-    axios
-      .get(`${import.meta.env.VITE_SERVER_URL}/info/faculty/${facultyId}/departments`)
+    await axiosInstance
+      .get(`/info/faculty/${facultyId}/departments`)
       .then((res) => setDepartments(res.data))
       .catch((err) => console.error(err));
 
   const fetchCoursesByDepartment = async (departmentId) =>
-    await axios
-      .get(`${import.meta.env.VITE_SERVER_URL}/info/department/${departmentId}/courses`)
+    await axiosInstance
+      .get(`/info/department/${departmentId}/courses`)
       .then((res) => setCourses(res.data))
       .catch((err) => console.error(err));
 
   const fetchCourseExams = async (courseId) =>
-    await axios
-      .get(`${import.meta.env.VITE_SERVER_URL}/exams/course/${courseId}`)
+    await axiosInstance
+      .get(`/exams/course/${courseId}`)
       .then((res) => setExams(res.data))
       .catch((err) => console.error(err));
 

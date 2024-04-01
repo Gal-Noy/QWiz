@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import "../styles/UploadForm.css";
 import { Document, Page, pdfjs } from "react-pdf";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 function UploadForm() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -21,14 +22,13 @@ function UploadForm() {
     type: "",
     grade: "",
     lecturers: "",
-    difficultyRating: "",
   });
-
   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
   const [file, setFile] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [numPages, setNumPages] = useState(null);
-  const [fileS3Url, setFileS3Url] = useState("");
+  const [isPending, setIsPending] = useState(false);
+  const navigate = useNavigate();
 
   const handleFileChange = async (e) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -39,25 +39,7 @@ function UploadForm() {
         return;
       }
 
-      setFile(URL.createObjectURL(selectedFile));
-
-      //   const formData = new FormData();
-      //   formData.append("file", file);
-
-      //   axios
-      //     .post(`${import.meta.env.VITE_SERVER_URL}/exams`, formData)
-      //     .then((res) => {
-      //       if (res.status === 200) {
-      //         setFileS3Url(res.data.Location);
-      //         alert("הקובץ הועלה בהצלחה!");
-      //       } else {
-      //         alert("אירעה שגיאה בעת העלאת הקובץ. אנא נסה שנית.");
-      //       }
-      //     })
-      //     .catch((err) => {
-      //       console.error(err);
-      //       alert("אירעה שגיאה בעת העלאת הקובץ. אנא נסה שנית.");
-      //     });
+      setFile(selectedFile);
     }
   };
 
@@ -65,6 +47,66 @@ function UploadForm() {
     setFile(null);
     setNumPages(null);
     setPageNumber(1);
+  };
+
+  const createExam = async () => {
+    console.log(studentDetails, examDetails, file);
+    setIsPending(true);
+    if (
+      !studentDetails.name ||
+      !studentDetails.email ||
+      !studentDetails.phone_number ||
+      !studentDetails.id_number ||
+      !examDetails.faculty ||
+      !examDetails.department ||
+      !examDetails.course.name ||
+      !examDetails.course.code ||
+      !examDetails.year ||
+      !examDetails.semester ||
+      !examDetails.term ||
+      !examDetails.type
+    ) {
+      alert("יש למלא את כל השדות המסומנים בכוכבית.");
+      setIsPending(false);
+      return;
+    }
+
+    if (!file) {
+      alert("יש להעלות קובץ.");
+      setIsPending(false);
+      return;
+    }
+
+    const examData = {
+      ...examDetails,
+      phone_number: studentDetails.phone_number,
+      id_number: studentDetails.id_number,
+    };
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("examData", JSON.stringify(examData));
+
+    await axiosInstance
+      .post("/exams", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          alert("המבחן נוסף בהצלחה!");
+          navigate("/exams");
+        } else {
+          alert("אירעה שגיאה בעת הוספת המבחן. אנא נסה שנית.");
+        }
+      })
+      .then(() => setIsPending(false))
+      .catch((err) => {
+        console.error(err);
+        alert("אירעה שגיאה בעת הוספת המבחן. אנא נסה שנית.");
+        setIsPending(false);
+      });
   };
 
   return (
@@ -124,7 +166,7 @@ function UploadForm() {
               <label>פקולטה *</label>
               <input
                 type="text"
-                name="text"
+                name="faculty"
                 onChange={(e) => setExamDetails({ ...examDetails, faculty: e.target.value })}
                 value={examDetails.faculty}
               />
@@ -133,7 +175,7 @@ function UploadForm() {
               <label>מחלקה *</label>
               <input
                 type="text"
-                name="text"
+                name="department"
                 onChange={(e) => setExamDetails({ ...examDetails, department: e.target.value })}
                 value={examDetails.department}
               />
@@ -142,8 +184,13 @@ function UploadForm() {
               <label>קורס *</label>
               <input
                 type="text"
-                name="text"
-                onChange={(e) => setExamDetails({ ...examDetails, course: { name: e.target.value } })}
+                name="courseName"
+                onChange={(e) =>
+                  setExamDetails({
+                    ...examDetails,
+                    course: { ...examDetails.course, name: e.target.value },
+                  })
+                }
                 value={examDetails.course.name}
               />
             </div>
@@ -151,34 +198,69 @@ function UploadForm() {
               <label>מספר קורס *</label>
               <input
                 type="text"
-                name="text"
-                onChange={(e) => setExamDetails({ ...examDetails, course: { code: e.target.value } })}
+                name="courseCode"
+                onChange={(e) =>
+                  setExamDetails({
+                    ...examDetails,
+                    course: { ...examDetails.course, code: e.target.value },
+                  })
+                }
                 value={examDetails.course.code}
               />
             </div>
             <div className="upload-form-attr">
               <label>שנה *</label>
-              <input type="text" />
+              <input
+                type="text"
+                name="year"
+                onChange={(e) => setExamDetails({ ...examDetails, year: e.target.value })}
+                value={examDetails.year}
+              />
             </div>
             <div className="upload-form-attr">
               <label>סמסטר *</label>
-              <input type="text" />
+              <input
+                type="text"
+                name="semester"
+                onChange={(e) => setExamDetails({ ...examDetails, semester: e.target.value })}
+                value={examDetails.semester}
+              />
             </div>
             <div className="upload-form-attr">
               <label>מועד *</label>
-              <input type="text" />
+              <input
+                type="text"
+                name="term"
+                onChange={(e) => setExamDetails({ ...examDetails, term: e.target.value })}
+                value={examDetails.term}
+              />
             </div>
             <div className="upload-form-attr">
               <label>סוג בחינה *</label>
-              <input type="text" />
+              <input
+                type="text"
+                name="type"
+                onChange={(e) => setExamDetails({ ...examDetails, type: e.target.value })}
+                value={examDetails.type}
+              />
             </div>
             <div className="upload-form-attr">
               <label>ציון</label>
-              <input type="text" />
+              <input
+                type="text"
+                name="grade"
+                onChange={(e) => setExamDetails({ ...examDetails, grade: e.target.value })}
+                value={examDetails.grade}
+              />
             </div>
             <div className="upload-form-attr">
               <label>מרצה/ים</label>
-              <input type="text" />
+              <input
+                type="text"
+                name="lecturers"
+                onChange={(e) => setExamDetails({ ...examDetails, lecturers: e.target.value })}
+                value={examDetails.lecturers}
+              />
             </div>
           </div>
         </div>
@@ -204,21 +286,31 @@ function UploadForm() {
                 <div className="pdf-preview-arrows">
                   <span
                     className={"material-symbols-outlined navigation-arrow" + (pageNumber < numPages ? " enabled" : "")}
-                    onClick={() => setPageNumber(pageNumber + 1)}
+                    onClick={() => {
+                      if (pageNumber < numPages) setPageNumber(pageNumber + 1);
+                    }}
                   >
                     arrow_forward_ios
                   </span>
+                  {numPages} / {numPages}
                   <span
                     className={"material-symbols-outlined navigation-arrow" + (pageNumber > 1 ? " enabled" : "")}
-                    onClick={() => setPageNumber(pageNumber - 1)}
+                    onClick={() => {
+                      if (pageNumber > 1) setPageNumber(pageNumber - 1);
+                    }}
                   >
                     arrow_back_ios
                   </span>
                 </div>
               )}
-              <Document file={file} onLoadSuccess={(file) => setNumPages(file?.numPages)}>
+              <Document file={URL.createObjectURL(file)} onLoadSuccess={(file) => setNumPages(file?.numPages)}>
                 <Page pageNumber={pageNumber} renderAnnotationLayer={false} renderTextLayer={false} />
               </Document>
+            </div>
+          )}
+          {file && (
+            <div className="upload-exam-btn" onClick={createExam}>
+              {isPending ? <div className="lds-dual-ring"></div> : "יצירת מבחן"}
             </div>
           )}
         </div>

@@ -36,7 +36,7 @@ function HomePage({ onLogout }) {
             מאגר המבחנים
           </Link>
           <Link to="/upload" className="homepage-button">
-            העלאת מבחן
+            העלאת בחינה
           </Link>
           <button className="homepage-button">פורומים</button>
           <button className="homepage-button">הפרופיל שלי</button>

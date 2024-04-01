@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
 const examSchema = mongoose.Schema({
-  // s3Path: {
-  //   type: String,
-  //   required: true,
-  // },
+  s3Path: {
+    type: String,
+    required: true,
+  },
   faculty: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Faculty",

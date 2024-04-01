@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance, { setAuthToken } from "../../utils/axiosInstance";
 
 function Login({ onLogin }) {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
@@ -22,10 +22,11 @@ function Login({ onLogin }) {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
-    axios
-      .post(`${import.meta.env.VITE_SERVER_URL}/auth/login`, loginData)
+    await axiosInstance
+      .post("/auth/login", loginData)
       .then((res) => {
         if (res.status === 200) {
+          setAuthToken(res.data.token);
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("user", JSON.stringify(res.data.user));
           onLogin();

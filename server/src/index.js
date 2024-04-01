@@ -2,13 +2,18 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import mongoose from "mongoose";
+import bodyParser from "body-parser";
 import router from "./routes/index.js";
+import multer from "multer";
 
 const app = express();
 
 dotenv.config();
 
 app.use(express.json());
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use(cors());
 
