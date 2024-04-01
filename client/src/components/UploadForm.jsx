@@ -16,12 +16,12 @@ function UploadForm() {
     faculty: "",
     department: "",
     course: { name: "", code: "" },
-    year: "",
-    semester: "",
-    term: "",
-    type: "",
-    grade: "",
-    lecturers: "",
+    year: 2024, // 2000-2100
+    semester: 1, // 1, 2, 3
+    term: 1, // 1, 2, 3
+    type: "test", // quiz or test
+    grade: 85, // optional, 0-100
+    lecturers: "", // optional
   });
   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
   const [file, setFile] = useState(null);
@@ -50,7 +50,6 @@ function UploadForm() {
   };
 
   const createExam = async () => {
-    console.log(studentDetails, examDetails, file);
     setIsPending(true);
     if (
       !studentDetails.name ||
@@ -97,16 +96,36 @@ function UploadForm() {
         if (res.status === 200) {
           alert("המבחן נוסף בהצלחה!");
           navigate("/exams");
-        } else {
-          alert("אירעה שגיאה בעת הוספת המבחן. אנא נסה שנית.");
         }
       })
       .then(() => setIsPending(false))
       .catch((err) => {
-        console.error(err);
-        alert("אירעה שגיאה בעת הוספת המבחן. אנא נסה שנית.");
+        alert(err.response.data.message);
         setIsPending(false);
       });
+  };
+
+  const clearForm = () => {
+    setStudentDetails({
+      name: user.name,
+      email: user.email,
+      phone_number: user?.phone_number || "",
+      id_number: user?.id_number || "",
+    });
+    setExamDetails({
+      faculty: "",
+      department: "",
+      course: { name: "", code: "" },
+      year: 2024,
+      semester: 1,
+      term: 1,
+      type: "test",
+      grade: 85,
+      lecturers: "",
+    });
+    setFile(null);
+    setNumPages(null);
+    setPageNumber(1);
   };
 
   return (
@@ -117,6 +136,9 @@ function UploadForm() {
       </div>
       <div className="upload-form-container">
         <div className="upload-form-content" id="upload-form-content-1">
+          <span className="material-symbols-outlined upload-form-clear-btn" onClick={clearForm}>
+            delete
+          </span>
           <label className="upload-form-content-header">פרטי הסטודנט</label>
           <form className="upload-form-details">
             <div className="upload-form-attr">
@@ -146,6 +168,7 @@ function UploadForm() {
                 name="phone_number"
                 onChange={(e) => setStudentDetails({ ...studentDetails, phone_number: e.target.value })}
                 value={studentDetails.phone_number}
+                {...(user.phone_number ? { disabled: true } : {})}
               />
             </div>
             <div className="upload-form-attr">
@@ -155,6 +178,7 @@ function UploadForm() {
                 name="id_number"
                 onChange={(e) => setStudentDetails({ ...studentDetails, id_number: e.target.value })}
                 value={studentDetails.id_number}
+                {...(user.id_number ? { disabled: true } : {})}
               />
             </div>
           </form>
@@ -178,6 +202,7 @@ function UploadForm() {
                 name="department"
                 onChange={(e) => setExamDetails({ ...examDetails, department: e.target.value })}
                 value={examDetails.department}
+                {...(!examDetails.faculty ? { disabled: true } : {})}
               />
             </div>
             <div className="upload-form-attr">
@@ -192,6 +217,7 @@ function UploadForm() {
                   })
                 }
                 value={examDetails.course.name}
+                {...(!examDetails.department ? { disabled: true } : {})}
               />
             </div>
             <div className="upload-form-attr">
@@ -206,51 +232,61 @@ function UploadForm() {
                   })
                 }
                 value={examDetails.course.code}
+                {...(!examDetails.department ? { disabled: true } : {})}
               />
             </div>
             <div className="upload-form-attr">
               <label>שנה *</label>
               <input
-                type="text"
+                type="number"
                 name="year"
                 onChange={(e) => setExamDetails({ ...examDetails, year: e.target.value })}
                 value={examDetails.year}
+                {...(!examDetails.course.name ? { disabled: true } : {})}
               />
             </div>
             <div className="upload-form-attr">
               <label>סמסטר *</label>
-              <input
-                type="text"
-                name="semester"
+              <select
                 onChange={(e) => setExamDetails({ ...examDetails, semester: e.target.value })}
-                value={examDetails.semester}
-              />
+                disabled={!examDetails.course.name}
+              >
+                <option value="1">א'</option>
+                <option value="2">ב'</option>
+                <option value="3">קיץ</option>
+              </select>
             </div>
             <div className="upload-form-attr">
               <label>מועד *</label>
-              <input
-                type="text"
-                name="term"
+              <select
                 onChange={(e) => setExamDetails({ ...examDetails, term: e.target.value })}
-                value={examDetails.term}
-              />
+                disabled={!examDetails.course.name}
+              >
+                <option value="1">א'</option>
+                <option value="2">ב'</option>
+                <option value="3">מיוחד</option>
+              </select>
             </div>
             <div className="upload-form-attr">
               <label>סוג בחינה *</label>
-              <input
-                type="text"
-                name="type"
+              <select
                 onChange={(e) => setExamDetails({ ...examDetails, type: e.target.value })}
-                value={examDetails.type}
-              />
+                disabled={!examDetails.course.name}
+              >
+                <option value="test">מבחן</option>
+                <option value="quiz">בוחן</option>
+              </select>
             </div>
             <div className="upload-form-attr">
               <label>ציון</label>
               <input
-                type="text"
+                type="number"
                 name="grade"
+                min={0}
+                max={100}
                 onChange={(e) => setExamDetails({ ...examDetails, grade: e.target.value })}
                 value={examDetails.grade}
+                {...(!examDetails.course.name ? { disabled: true } : {})}
               />
             </div>
             <div className="upload-form-attr">
@@ -260,6 +296,7 @@ function UploadForm() {
                 name="lecturers"
                 onChange={(e) => setExamDetails({ ...examDetails, lecturers: e.target.value })}
                 value={examDetails.lecturers}
+                {...(!examDetails.course.name ? { disabled: true } : {})}
               />
             </div>
           </div>
@@ -292,7 +329,7 @@ function UploadForm() {
                   >
                     arrow_forward_ios
                   </span>
-                  {numPages} / {numPages}
+                  {numPages} / {pageNumber}
                   <span
                     className={"material-symbols-outlined navigation-arrow" + (pageNumber > 1 ? " enabled" : "")}
                     onClick={() => {

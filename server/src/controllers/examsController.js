@@ -91,20 +91,25 @@ const examsController = {
         faculty: existingFaculty._id,
         department: existingDepartment._id,
         course: existingCourse._id,
-        year: parseInt(year),
-        semester: parseInt(semester),
-        term: parseInt(term),
-        type: parseInt(type),
-        grade: parseInt(grade),
+        year,
+        semester,
+        term,
+        type,
+        grade,
         lecturers,
         difficultyRating: { totalRatings, averageRating },
       });
 
       // Handle user
       if (req.user) {
-        const dbUser = await User.findById(req.user._id);
+        const dbUser = await User.findById(req.user.user_id);
 
-        if (dbUser.phone_number !== phone_number || dbUser.id_number !== id_number) {
+        if (
+          !dbUser.phone_number ||
+          !dbUser.id_number ||
+          dbUser.phone_number !== phone_number ||
+          dbUser.id_number !== id_number
+        ) {
           dbUser.phone_number = phone_number;
           dbUser.id_number = id_number;
         }

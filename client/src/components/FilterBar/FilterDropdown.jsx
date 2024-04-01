@@ -29,7 +29,7 @@ function FilterDropdown(props) {
         </div>
       )}
       {valueChosen && (
-        <span class="material-symbols-outlined filter-dropdown-clear" onClick={() => setValue(null)}>
+        <span className="material-symbols-outlined filter-dropdown-clear" onClick={() => setValue(null)}>
           close
         </span>
       )}

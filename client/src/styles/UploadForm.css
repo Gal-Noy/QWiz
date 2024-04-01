@@ -37,6 +37,21 @@
   justify-content: space-evenly;
   width: 100%;
   padding: 1rem 0;
+  position: relative;
+}
+
+.upload-form-clear-btn {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  color: var(--red1);
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 2rem;
+
+  &:hover {
+    color: var(--cyan2);
+  }
 }
 
 #upload-form-content-1 {
@@ -98,6 +113,26 @@
       background: #f0f0f0;
     }
   }
+
+  select {
+    width: 17.2vw;
+    height: 3rem;
+    padding: 0.5rem 1rem;
+    border: 0.5px solid var(--cyan3);
+    font-size: 1.2rem;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:disabled {
+      background: #f0f0f0;
+    }
+
+    option {
+      font-size: 1.2rem;
+    }
+  }
 }
 
 .exam-details-form {
@@ -107,7 +142,7 @@
   grid-template-rows: repeat(3, auto);
   padding: 1rem 0;
 
-  border: 1px solid red;
+  border: 1px solid var(--red1);
 
   justify-items: center;
   align-items: center;
@@ -151,6 +186,10 @@
       transform: scale(1);
     }
   }
+}
+
+.pdf-preview {
+  height: auto;
 }
 
 .react-pdf__Page__canvas {

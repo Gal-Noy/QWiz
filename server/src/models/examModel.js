@@ -23,6 +23,8 @@ const examSchema = mongoose.Schema({
   year: {
     type: Number,
     required: true,
+    min: 2000,
+    max: 2100,
   },
   semester: {
     type: Number,
