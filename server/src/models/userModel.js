@@ -14,6 +14,24 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  phone_number: {
+    type: String,
+  },
+  id_number: {
+    type: String,
+  },
+  uploaded_exams: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Exam",
+    },
+  ],
+  favorite_exams: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Exam",
+    },
+  ],
   isActive: {
     type: Boolean,
     default: false,

@@ -50,12 +50,14 @@ function Login({ onLogin }) {
           name="email"
           placeholder="אימייל"
           onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+          required
         />
         <input
           type="password"
           name="password"
           placeholder="סיסמה"
           onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+          required
         />
         <button type="submit" className="auth-submit-button">
           {isPending ? <div className="lds-dual-ring"></div> : "התחבר/י"}

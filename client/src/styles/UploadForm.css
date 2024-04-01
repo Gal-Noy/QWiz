@@ -8,30 +8,49 @@
 }
 
 .upload-form-header {
-  font-size: 2.5rem;
-  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  label {
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  a {
+    font-size: 1.25rem;
+  }
 }
 
 .upload-form-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 80vh; /* TODO: Change to auto */
   border-radius: 1rem;
   width: 100%;
   box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.25);
 }
 
 .upload-form-content {
-  height: 30vh;
-  border-top-left-radius: 1rem;
-  border-top-right-radius: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
   width: 100%;
+  padding: 1rem 0;
+}
+
+#upload-form-content-1 {
   background-color: var(--cyan4);
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+#upload-form-content-2 {
+  background-color: var(--cyan5);
+}
+#upload-form-content-3 {
+  background-color: var(--cyan4);
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
 }
 
 .upload-form-content-header {
@@ -42,15 +61,17 @@
   margin: 1rem 3rem 0;
 }
 
-.student-details-form {
-  width: 100%;
+.upload-form-details {
+  width: 90%;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
-  padding: 1rem 0;
+  justify-content: start;
+  gap: 3rem;
+  padding: 2rem;
+  flex-wrap: wrap;
 }
 
-.student-detail-attr {
+.upload-form-attr {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
@@ -64,7 +85,7 @@
   input {
     width: 15vw;
     height: 2rem;
-    padding: 0.5rem;
+    padding: 0.5rem 1rem;
     border: 0.5px solid var(--cyan3);
     background: rgb(255, 255, 255);
     font-size: 1.2rem;
@@ -72,5 +93,107 @@
     &:focus {
       outline: none;
     }
+
+    &:disabled {
+      background: #f0f0f0;
+    }
+  }
+}
+
+.exam-details-form {
+  width: 100%;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(3, auto);
+  padding: 1rem 0;
+
+  border: 1px solid red;
+
+  justify-items: center;
+  align-items: center;
+}
+
+#upload-exam-file-input {
+  display: none;
+}
+
+.upload-exam-btn {
+  height: 3rem;
+  background-color: var(--cyan2);
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+
+  &:hover {
+    background-color: var(--cyan1);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    background-color: var(--cyan3);
+    transform: scale(0.9);
+  }
+
+  &.attached {
+    background-color: var(--cyan3);
+    cursor: default;
+
+    &:hover {
+      background-color: var(--cyan3);
+      transform: scale(1);
+    }
+  }
+}
+
+.react-pdf__Page__canvas {
+  margin: 2rem auto;
+  width: 80% !important;
+  height: 100% !important;
+}
+
+.pdf-preview-arrows {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.navigation-arrow {
+  font-size: 2rem;
+  color: grey;
+
+  &.enabled {
+    color: navy;
+
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      color: var(--cyan2);
+    }
+  }
+}
+
+.cancel-file {
+  font-size: 1.5rem;
+  color: red;
+  background-color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: absolute;
+  left: -0.5rem;
+  top: -0.5rem;
+
+  &:hover {
+    color: var(--cyan2);
   }
 }

@@ -56,18 +56,21 @@ function Signup() {
           name="name"
           placeholder="שם מלא"
           onChange={(e) => setSignupData({ ...signupData, name: e.target.value })}
+          required
         />
         <input
           type="email"
           name="email"
           placeholder="אימייל"
           onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
+          required
         />
         <input
           type="password"
           name="password"
           placeholder="סיסמה"
           onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
+          required
         />
         <input
           type="password"
@@ -75,13 +78,14 @@ function Signup() {
           placeholder="אימות סיסמה"
           className={`${passwordsMatch ? "" : "passwords-mismatch"}`}
           onChange={(e) => setSignupData({ ...signupData, confirmPassword: e.target.value })}
+          required
         />
         <button type="submit" className="auth-submit-button">
           {isPending ? <div className="lds-dual-ring"></div> : "הירשם/י"}
         </button>
       </form>
       <span className="auth-form-footer">
-      כבר נרשמת? התחבר/י&nbsp;
+        כבר נרשמת? התחבר/י&nbsp;
         <Link to="/login">כאן</Link>
       </span>
     </div>
