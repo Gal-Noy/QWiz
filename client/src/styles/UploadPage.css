@@ -1,0 +1,57 @@
+.upload-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 95%;
+  margin: 0 auto;
+  gap: 3rem;
+}
+
+.useful-links-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.useful-links-header {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.useful-links-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.useful-link-btn {
+  background-color: var(--cyan1);
+  color: black;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+
+  &:hover {
+    background-color: var(--cyan2);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    background-color: var(--cyan3);
+    transform: scale(0.9);
+  }
+
+  &:visited {
+    color: black;
+  }
+}

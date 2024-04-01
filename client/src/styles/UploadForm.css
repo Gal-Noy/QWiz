@@ -1,0 +1,76 @@
+.upload-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.upload-form-header {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.upload-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 80vh; /* TODO: Change to auto */
+  border-radius: 1rem;
+  width: 100%;
+  box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.25);
+}
+
+.upload-form-content {
+  height: 30vh;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+  background-color: var(--cyan4);
+}
+
+.upload-form-content-header {
+  font-size: 2rem;
+  font-weight: bold;
+  color: navy;
+  align-self: start;
+  margin: 1rem 3rem 0;
+}
+
+.student-details-form {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 1rem 0;
+}
+
+.student-detail-attr {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+
+  & label {
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: navy;
+  }
+
+  input {
+    width: 15vw;
+    height: 2rem;
+    padding: 0.5rem;
+    border: 0.5px solid var(--cyan3);
+    background: rgb(255, 255, 255);
+    font-size: 1.2rem;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
