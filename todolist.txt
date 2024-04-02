@@ -5,3 +5,4 @@ faculties, department and courses for מדמח
 rank
 forums for each exam
 last 10 exams
+change local to session storage

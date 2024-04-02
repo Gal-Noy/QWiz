@@ -1,5 +1,5 @@
 import { Exam } from "../models/examModel.js";
-import { Faculty, Department, Course } from "../models/catalogModels.js";
+import { Faculty, Department, Course } from "../models/infoModels.js";
 
 const infoController = {
   // Faculties
