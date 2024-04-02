@@ -13,7 +13,7 @@ function UploadPage() {
 
   return (
     <div className="upload-page">
-      <PageHeader title={"העלאת מבחן למאגר המבחנים"} paragraphs={paragraphs} />
+      <PageHeader title={"העלאת בחינה למאגר המבחנים"} paragraphs={paragraphs} />
       <div className="useful-links-div">
         <label className="useful-links-header">כלים שימושיים</label>
         <div className="useful-links-buttons">

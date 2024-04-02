@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axiosInstance from "../utils/axiosInstance";
+import { handleError } from "../utils/axiosUtils";
+import axios from "axios";
 import "../styles/ProfilePage.css";
 import PageHeader from "../components/PageHeader";
 import PersonalDetails from "../components/ProfilePage/PersonalDetails";

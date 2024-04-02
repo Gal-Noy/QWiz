@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import axiosInstance, { handleError } from "../../utils/axiosInstance";
+import { handleError } from "../../utils/axiosUtils";
+import axios from "axios";
 import defaultAvatar from "../../assets/default-avatar.jpg";
 import "../../styles/ProfilePage.css";
 
@@ -18,8 +19,8 @@ function PersonalDetails() {
       alert("אנא מלא/י את השדות שם מלא ודואר אלקטרוני");
       return;
     }
-    axiosInstance
-      .put(`/users/${user._id}`, editedUser, {
+    axios
+      .put(`${import.meta.env.VITE_SERVER_URL}/users/${user._id}`, editedUser, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
       .then((res) => {

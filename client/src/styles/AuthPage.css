@@ -115,6 +115,7 @@
   font-size: 1.1rem;
   border-radius: 5px;
   cursor: pointer;
+  text-align: center;
 
   &:hover {
     background-color: var(--blue1);

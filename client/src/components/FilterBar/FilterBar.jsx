@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import FilterDropdown from "./FilterDropdown";
 import "../../styles/FilterBar.css";
-import axiosInstance, { handleError } from "../../utils/axiosInstance";
+import { handleError } from "../../utils/axiosUtils";
+import axios from "axios";
 
 function FilterBar(props) {
   const { exams, setExams, setFilteredExams, setShowExams } = props;
@@ -37,26 +38,34 @@ function FilterBar(props) {
   const [freeText, setFreeText] = useState("");
 
   const fetchFaculties = async () =>
-    await axiosInstance
-      .get("/info/faculties")
+    await axios
+      .get(`${import.meta.env.VITE_SERVER_URL}/info/faculties`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
       .then((res) => setFaculties(res.data))
       .catch((err) => handleError(err, () => console.loge(err.response.data.message)));
 
   const fetchDepartmentsByFaculty = async (facultyId) =>
-    await axiosInstance
-      .get(`/info/faculty/${facultyId}/departments`)
+    await axios
+      .get(`${import.meta.env.VITE_SERVER_URL}/info/faculty/${facultyId}/departments`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
       .then((res) => setDepartments(res.data))
       .catch((err) => handleError(err, () => console.loge(err.response.data.message)));
 
   const fetchCoursesByDepartment = async (departmentId) =>
-    await axiosInstance
-      .get(`/info/department/${departmentId}/courses`)
+    await axios
+      .get(`${import.meta.env.VITE_SERVER_URL}/info/department/${departmentId}/courses`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
       .then((res) => setCourses(res.data))
       .catch((err) => handleError(err, () => console.loge(err.response.data.message)));
 
   const fetchCourseExams = async (courseId) =>
-    await axiosInstance
-      .get(`/exams/course/${courseId}`)
+    await axios
+      .get(`${import.meta.env.VITE_SERVER_URL}/exams/course/${courseId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
       .then((res) => setExams(res.data))
       .catch((err) => handleError(err, () => console.loge(err.response.data.message)));
 

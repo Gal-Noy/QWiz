@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import axiosInstance, { setAuthToken, handleError } from "../utils/axiosInstance";
+import axios from "axios";
+import { handleError } from "../utils/axiosUtils";
 import { useNavigate, Link } from "react-router-dom";
 import defaultAvatar from "../assets/default-avatar.jpg";
 import "../styles/NavBar.css";
@@ -10,11 +11,12 @@ function NavBar({ onLogout }) {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    await axiosInstance
-      .post("auth/logout")
+    await axios
+      .post(`${import.meta.env.VITE_SERVER_URL}/auth/logout`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
       .then((res) => {
         if (res.status === 200) {
-          setAuthToken(null);
           localStorage.removeItem("token");
           localStorage.removeItem("user");
           onLogout();

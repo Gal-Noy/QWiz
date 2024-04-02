@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import "../styles/UploadForm.css";
 import { Document, Page, pdfjs } from "react-pdf";
-import axiosInstance, { handleError } from "../utils/axiosInstance";
+import axios from "axios";
+import { handleError } from "../utils/axiosUtils";
 import { useNavigate } from "react-router-dom";
 
 function UploadForm() {
@@ -86,10 +87,11 @@ function UploadForm() {
     formData.append("file", file);
     formData.append("examData", JSON.stringify(examData));
 
-    await axiosInstance
-      .post("/exams", formData, {
+    await axios
+      .post(`${import.meta.env.VITE_SERVER_URL}/exams`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
       .then((res) => {

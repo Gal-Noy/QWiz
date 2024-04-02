@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axiosInstance, { handleError } from "../../utils/axiosInstance";
+import { handleError } from "../../utils/axiosUtils";
+import axios from "axios";
 
 function Signup() {
   const [signupData, setSignupData] = useState({ name: "", email: "", password: "", confirmPassword: "" });
@@ -30,8 +31,8 @@ function Signup() {
       return;
     }
 
-    await axiosInstance
-      .post("/auth/register", signupData)
+    await axios
+      .post(`${import.meta.env.VITE_SERVER_URL}/auth/register`, signupData)
       .then((res) => {
         if (res.status === 201) {
           alert("ההרשמה בוצעה בהצלחה, אנא התחבר/י עם המשתמש החדש שלך.");
