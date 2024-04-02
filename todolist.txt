@@ -1,3 +1,7 @@
 change password
-implement avatars
-implement profile sections - uploaded and favorites
+exams list
+profile sections - uploaded and favorites
+faculties, department and courses for מדמח
+rank
+forums for each exam
+last 10 exams

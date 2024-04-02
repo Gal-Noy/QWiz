@@ -47,31 +47,31 @@ const examsController = {
         });
       }
 
-      let existingFaculty = await Faculty.findOne({ name: faculty });
-      if (!existingFaculty) {
-        const newFaculty = new Faculty({ name: faculty });
-        await newFaculty.save();
-        existingFaculty = newFaculty;
-      }
+      // let existingFaculty = await Faculty.findOne({ name: faculty });
+      // if (!existingFaculty) {
+      //   const newFaculty = new Faculty({ name: faculty });
+      //   await newFaculty.save();
+      //   existingFaculty = newFaculty;
+      // }
 
-      let existingDepartment = await Department.findOne({ name: department, faculty: existingFaculty._id });
-      if (!existingDepartment) {
-        const newDepartment = new Department({ name: department, faculty: existingFaculty._id });
-        await newDepartment.save();
-        existingDepartment = newDepartment;
-      }
+      // let existingDepartment = await Department.findOne({ name: department, faculty: existingFaculty._id });
+      // if (!existingDepartment) {
+      //   const newDepartment = new Department({ name: department, faculty: existingFaculty._id });
+      //   await newDepartment.save();
+      //   existingDepartment = newDepartment;
+      // }
 
-      const { name: courseName, code: courseCode } = course;
-      let existingCourse = await Course.findOne({
-        $or: [{ name: courseName }, { code: courseCode }],
-      });
-      if (!existingCourse) {
-        const newCourse = new Course({ name: courseName, code: courseCode, department: existingDepartment._id });
-        await newCourse.save();
-        existingCourse = newCourse;
-      }
+      // const { name: courseName, code: courseCode } = course;
+      // let existingCourse = await Course.findOne({
+      //   $or: [{ name: courseName }, { code: courseCode }],
+      // });
+      // if (!existingCourse) {
+      //   const newCourse = new Course({ name: courseName, code: courseCode, department: existingDepartment._id });
+      //   await newCourse.save();
+      //   existingCourse = newCourse;
+      // }
 
-      const existingExam = await Exam.findOne({ course: existingCourse._id, year, semester, term });
+      const existingExam = await Exam.findOne({ course, year, semester, term });
       if (existingExam) {
         return res.status(400).json({ message: "Exam already exists" });
       }
@@ -88,9 +88,9 @@ const examsController = {
       const averageRating = difficultyRating ?? 0;
       const exam = new Exam({
         s3Path,
-        faculty: existingFaculty._id,
-        department: existingDepartment._id,
-        course: existingCourse._id,
+        faculty,
+        department,
+        course,
         year,
         semester,
         term,
@@ -159,28 +159,28 @@ const examsController = {
         return res.status(400).json({ message: "Please provide faculty, department, and course" });
       }
 
-      const filter = {};
+      const filter = { faculty, department, course };
 
-      const existingFaculty = await Faculty.findOne({ name: faculty });
-      if (!existingFaculty) {
-        return res.status(404).json({ message: "Faculty not found" });
-      }
-      filter.faculty = existingFaculty._id;
+      // const existingFaculty = await Faculty.findOne({ name: faculty });
+      // if (!existingFaculty) {
+      //   return res.status(404).json({ message: "Faculty not found" });
+      // }
+      // filter.faculty = existingFaculty._id;
 
-      const existingDepartment = await Department.findOne({ name: department, faculty: existingFaculty._id });
-      if (!existingDepartment) {
-        return res.status(404).json({ message: "Department not found" });
-      }
-      filter.department = existingDepartment._id;
+      // const existingDepartment = await Department.findOne({ name: department, faculty: existingFaculty._id });
+      // if (!existingDepartment) {
+      //   return res.status(404).json({ message: "Department not found" });
+      // }
+      // filter.department = existingDepartment._id;
 
-      const existingCourse = await Course.findOne({
-        name: course,
-        department: existingDepartment._id,
-      });
-      if (!existingCourse) {
-        return res.status(404).json({ message: "Course not found" });
-      }
-      filter.course = existingCourse._id;
+      // const existingCourse = await Course.findOne({
+      //   name: course,
+      //   department: existingDepartment._id,
+      // });
+      // if (!existingCourse) {
+      //   return res.status(404).json({ message: "Course not found" });
+      // }
+      // filter.course = existingCourse._id;
 
       if (year) filter.year = year;
       if (semester) filter.semester = semester;

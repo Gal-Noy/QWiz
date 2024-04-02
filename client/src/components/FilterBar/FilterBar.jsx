@@ -43,7 +43,7 @@ function FilterBar(props) {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
       .then((res) => setFaculties(res.data))
-      .catch((err) => handleError(err, () => console.loge(err.response.data.message)));
+      .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
   const fetchDepartmentsByFaculty = async (facultyId) =>
     await axios
@@ -51,7 +51,7 @@ function FilterBar(props) {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
       .then((res) => setDepartments(res.data))
-      .catch((err) => handleError(err, () => console.loge(err.response.data.message)));
+      .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
   const fetchCoursesByDepartment = async (departmentId) =>
     await axios
@@ -59,7 +59,7 @@ function FilterBar(props) {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
       .then((res) => setCourses(res.data))
-      .catch((err) => handleError(err, () => console.loge(err.response.data.message)));
+      .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
   const fetchCourseExams = async (courseId) =>
     await axios
@@ -67,7 +67,7 @@ function FilterBar(props) {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
       .then((res) => setExams(res.data))
-      .catch((err) => handleError(err, () => console.loge(err.response.data.message)));
+      .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
   const updateAdvancedSearchLists = () => {
     const updatedAdvancedSearchLists = { ...advancedSearchLists };
