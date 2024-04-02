@@ -42,7 +42,7 @@ function Signup() {
       .then(() => setIsPending(false))
       .catch((err) =>
         handleError(err, () => {
-          alert(err.response.data.msg);
+          alert(err.response.data.message);
           setIsPending(false);
         })
       );

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../styles/UploadForm.css";
 import { Document, Page, pdfjs } from "react-pdf";
 import axios from "axios";
-import { handleError } from "../utils/axiosUtils";
+import { handleError } from "../../utils/axiosUtils";
 import { useNavigate } from "react-router-dom";
 
 function UploadForm() {
