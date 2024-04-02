@@ -93,7 +93,7 @@
   align-items: start;
   width: 100%;
   height: 70%;
-  padding: 0 1rem;
+  padding: 1rem;
   box-sizing: border-box;
 }
 
@@ -153,6 +153,7 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   margin-bottom: 2rem;
   padding: 0.5rem;
+  outline: none;
 
   &:hover {
     background-color: #dddddd;
@@ -164,7 +165,7 @@
 }
 
 .page-details-detail-input {
-  width: 35%;
+  width: 40%;
   height: 2rem;
   font-size: 1.4rem;
   padding: 1rem 0.5rem;

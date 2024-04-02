@@ -1,7 +1,4 @@
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-
-const navigate = useNavigate();
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
@@ -21,7 +18,7 @@ export const handleError = (error, callback) => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     alert("תוקף ההתחברות פג, אנא התחבר מחדש");
-    navigate("/login");
+    window.location.href = "/login";
   } else {
     if (callback) {
       callback();

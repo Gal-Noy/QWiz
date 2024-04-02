@@ -38,7 +38,6 @@ function HomePage({ onLogout }) {
           <Link to="/upload" className="homepage-button">
             העלאת בחינה
           </Link>
-          <button className="homepage-button">פורומים</button>
           <Link to="/profile" className="homepage-button">
             הפרופיל שלי
           </Link>

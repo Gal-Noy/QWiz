@@ -27,13 +27,22 @@ const usersController = {
   updateUserById: async (req, res) => {
     try {
       const newDetails = req.body;
+
       if (newDetails.password) {
-        newDetails.password = await bcrypt.hash(newDetails.password, 10);
+        if (newDetails.password.length < 6) {
+          return res.status(400).send("Password must be at least 6 characters long");
+        }
+        const hashedPassword = await bcrypt.hash(newDetails.password, 10);
+        newDetails.password = hashedPassword;
+      } else {
+        delete newDetails.password;
       }
 
-      const updatedUser = await User.findByIdAndUpdate(req.params.id, newDetails);
+      const dbUser = await User.findById(req.params.id);
+      dbUser.set(newDetails);
+      await dbUser.save();
 
-      return res.status(200).json(updatedUser);
+      return res.status(200).json(dbUser);
     } catch (err) {
       console.log(err);
       return res.status(500).send(err.message);

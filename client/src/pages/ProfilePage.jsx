@@ -9,11 +9,10 @@ function ProfilePage() {
   const [selectedTab, setSelectedTab] = useState("details"); // ["details", "uploaded", "favorites"
   const user = JSON.parse(localStorage.getItem("user"));
 
-  console.log(user);
   return (
     <div className="profile-page">
       <ProfileSidebar selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
-      <div className="profile-page-content">{selectedTab === "details" && <PersonalDetails user={user} />}</div>
+      <div className="profile-page-content">{selectedTab === "details" && <PersonalDetails />}</div>
     </div>
   );
 }

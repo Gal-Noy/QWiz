@@ -55,9 +55,10 @@ const authController = {
       if (user && (await bcrypt.compare(password, user.password))) {
         if (user.isActive) return res.status(400).json({ msg: "User is already logged in." });
 
-        const token = jwt.sign({ user_id: user._id, email }, process.env.TOKEN_KEY, { expiresIn: "24h" });
+        const token = jwt.sign({ user_id: user._id, email }, process.env.TOKEN_KEY, { expiresIn: "1d" });
 
-        await User.findByIdAndUpdate(user._id, { isActive: true });
+        user.isActive = true;
+        await user.save();
 
         return res.status(200).json({
           token,

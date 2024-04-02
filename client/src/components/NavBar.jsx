@@ -44,7 +44,8 @@ function NavBar({ onLogout }) {
           <button
             className="user-menu-item"
             onClick={() => {
-              console.log("TODO");
+              navigate("/profile");
+              setShowUserMenu(false);
             }}
           >
             הפרופיל שלי
