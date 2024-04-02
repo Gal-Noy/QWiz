@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import axiosInstance, { setAuthToken } from "../utils/axiosInstance";
+import axiosInstance, { setAuthToken, handleError } from "../utils/axiosInstance";
 import { useNavigate, Link } from "react-router-dom";
 import defaultAvatar from "../assets/default-avatar.jpg";
 import "../styles/NavBar.css";
@@ -22,7 +22,7 @@ function NavBar({ onLogout }) {
           navigate("/login");
         }
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) => handleError(err, () => console.error(err.response.data.message)));
   };
 
   return (

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axiosInstance, { setAuthToken } from "../../utils/axiosInstance";
+import axiosInstance, { setAuthToken, handleError } from "../../utils/axiosInstance";
 
 function Login({ onLogin }) {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
@@ -31,15 +31,15 @@ function Login({ onLogin }) {
           localStorage.setItem("user", JSON.stringify(res.data.user));
           onLogin();
           navigate("/");
-        } else {
-          alert("אימייל או סיסמה שגויים");
         }
       })
       .then(() => setIsPending(false))
-      .catch((err) => {
-        alert(err.response.data.msg);
-        setIsPending(false);
-      });
+      .catch((err) =>
+        handleError(err, () => {
+          alert(err.response.data.msg);
+          setIsPending(false);
+        })
+      );
   };
 
   return (

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axiosInstance from "../../utils/axiosInstance";
+import axiosInstance, { handleError } from "../../utils/axiosInstance";
 import defaultAvatar from "../../assets/default-avatar.jpg";
 import "../../styles/ProfilePage.css";
 
@@ -7,7 +7,21 @@ function PersonalDetails({ user }) {
   const [editMode, setEditMode] = useState(false);
   const [editedUser, setEditedUser] = useState({ ...user, password: "••••••••" });
 
-  const saveChanges = () => {};
+  const saveChanges = () => {
+    axiosInstance
+      .put(`/users/${user._id}`, editedUser)
+      .then((res) => {
+        if (res.status === 200) {
+          alert("הפרטים עודכנו בהצלחה");
+          setEditMode(false);
+        }
+      })
+      .catch((err) =>
+        handleError(err, () => {
+          alert("שגיאה בעדכון הפרטים, אנא נסה שנית");
+        })
+      );
+  };
 
   return (
     <div className="profile-page-details">

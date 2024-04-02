@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../styles/UploadForm.css";
 import { Document, Page, pdfjs } from "react-pdf";
-import axiosInstance from "../utils/axiosInstance";
+import axiosInstance, { handleError } from "../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 
 function UploadForm() {
@@ -99,10 +99,12 @@ function UploadForm() {
         }
       })
       .then(() => setIsPending(false))
-      .catch((err) => {
-        alert(err.response.data.message);
-        setIsPending(false);
-      });
+      .catch((err) =>
+        handleError(err, () => {
+          alert(err.response.data.message);
+          setIsPending(false);
+        })
+      );
   };
 
   const clearForm = () => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import FilterDropdown from "./FilterDropdown";
 import "../../styles/FilterBar.css";
-import axiosInstance from "../../utils/axiosInstance";
+import axiosInstance, { handleError } from "../../utils/axiosInstance";
 
 function FilterBar(props) {
   const { exams, setExams, setFilteredExams, setShowExams } = props;
@@ -40,25 +40,25 @@ function FilterBar(props) {
     await axiosInstance
       .get("/info/faculties")
       .then((res) => setFaculties(res.data))
-      .catch((err) => console.error(err));
+      .catch((err) => handleError(err, () => console.loge(err.response.data.message)));
 
   const fetchDepartmentsByFaculty = async (facultyId) =>
     await axiosInstance
       .get(`/info/faculty/${facultyId}/departments`)
       .then((res) => setDepartments(res.data))
-      .catch((err) => console.error(err));
+      .catch((err) => handleError(err, () => console.loge(err.response.data.message)));
 
   const fetchCoursesByDepartment = async (departmentId) =>
     await axiosInstance
       .get(`/info/department/${departmentId}/courses`)
       .then((res) => setCourses(res.data))
-      .catch((err) => console.error(err));
+      .catch((err) => handleError(err, () => console.loge(err.response.data.message)));
 
   const fetchCourseExams = async (courseId) =>
     await axiosInstance
       .get(`/exams/course/${courseId}`)
       .then((res) => setExams(res.data))
-      .catch((err) => console.error(err));
+      .catch((err) => handleError(err, () => console.loge(err.response.data.message)));
 
   const updateAdvancedSearchLists = () => {
     const updatedAdvancedSearchLists = { ...advancedSearchLists };

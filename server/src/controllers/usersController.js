@@ -1,4 +1,5 @@
 import { User } from "../models/userModel.js";
+import bcrypt from "bcrypt";
 
 const usersController = {
   getAllUsers: async (req, res) => {
@@ -25,7 +26,12 @@ const usersController = {
 
   updateUserById: async (req, res) => {
     try {
-      const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body);
+      const newDetails = req.body;
+      if (newDetails.password) {
+        newDetails.password = await bcrypt.hash(newDetails.password, 10);
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(req.params.id, newDetails);
 
       return res.status(200).json(updatedUser);
     } catch (err) {
