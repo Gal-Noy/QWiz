@@ -4,7 +4,7 @@ const init = async () => {
   const args = process.argv.slice(2);
 
   if (args.length !== 3) {
-    console.log("Usage: node txtToJson.js <fileName> <faculty> <department>");
+    console.log("Usage: node processTxt.js <fileName> <faculty> <department>");
     return;
   }
   const fileName = args[0];

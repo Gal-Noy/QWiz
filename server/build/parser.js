@@ -9,7 +9,21 @@ const init = async () => {
     return { code, name, department, faculty };
   });
 
-  fs.writeFileSync("./courses.json", JSON.stringify(coursesJsons));
+  const sortedCourses = coursesJsons.reduce((acc, course) => {
+    const { department, faculty, ...courseWithoutDeptAndFaculty } = course;
+    if (faculty && department) {
+      if (!acc[faculty]) {
+        acc[faculty] = {};
+      }
+      if (!acc[faculty][department]) {
+        acc[faculty][department] = [];
+      }
+      acc[faculty][department].push(courseWithoutDeptAndFaculty);
+    }
+    return acc;
+  }, {});
+
+  fs.writeFileSync("./courses.json", JSON.stringify(sortedCourses, null, 2));
 };
 
 init();

@@ -7,6 +7,7 @@ dotenv.config({ path: "../.env" });
 
 const init = async () => {
   try {
+    console.log("Building database");
     await mongoose.connect(process.env.DB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -18,28 +19,49 @@ const init = async () => {
     await Department.deleteMany();
     await Course.deleteMany();
 
-    // Insert faculty
-    const faculty = await Faculty.create({ name: "מדעי הטבע" });
-
-    // Insert department
-    const department = await Department.create({
-      name: "מדעי המחשב",
-      faculty: faculty._id,
-    });
-
-    // Insert courses
     const coursesData = fs.readFileSync("./courses.json");
-    const courses = JSON.parse(coursesData);
-    courses.forEach((course) => {
-      course.department = department._id;
-    });
-    await Course.insertMany(courses);
+    console.log("Reading data from courses.json");
+    const coursesJson = JSON.parse(coursesData);
 
+    console.log("Inserting data");
+    for (const facultyName in coursesJson) {
+      // Insert faculty if not exists
+      let existingFaculty = await Faculty.findOne({ name: facultyName });
+      if (!existingFaculty) {
+        const newFaculty = new Faculty({ name: facultyName });
+        await newFaculty.save();
+        existingFaculty = newFaculty;
+      }
+
+      for (const departmentName in coursesJson[facultyName]) {
+        // Insert department if not exists
+        let existingDepartment = await Department.findOne({ name: departmentName });
+        if (!existingDepartment) {
+          const newDepartment = new Department({ name: departmentName, faculty: existingFaculty._id });
+          await newDepartment.save();
+          existingDepartment = newDepartment;
+        }
+
+        // Insert courses
+        const departmentCourses = coursesJson[facultyName][departmentName].map((courseJson) => {
+          return {
+            code: courseJson.code,
+            name: courseJson.name,
+            department: existingDepartment._id,
+          };
+        });
+
+        await Course.insertMany(departmentCourses);
+        console.log(`Inserted ${departmentCourses.length} courses for ${departmentName}`);
+      }
+    }
+    
     console.log("Data inserted");
   } catch (error) {
-    console.log(error);
+    console.error(error);
   } finally {
     mongoose.disconnect();
+    console.log("Disconnected from MongoDB");
   }
 };
 
