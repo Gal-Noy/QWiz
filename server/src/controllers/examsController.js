@@ -189,6 +189,51 @@ const examsController = {
       res.status(500).json({ message: error.message });
     }
   },
+
+  getUploadedExams: async (req, res) => {
+    try {
+      const user = await User.findById(req.user.user_id).populate("uploaded_exams");
+      res.json(user.uploaded_exams);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  getFavoriteExams: async (req, res) => {
+    try {
+      const user = await User.findById(req.user.user_id).populate("favorite_exams");
+      res.json(user.favorite_exams);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  addFavoriteExam: async (req, res) => {
+    try {
+      const user = await User.findById(req.user.user_id);
+      const exam = await Exam.findById(req.body.exam);
+      if (!exam) {
+        return res.status(404).json({ message: "Exam not found" });
+      }
+      user.favorite_exams.push(exam);
+      await user.save();
+      res.json(user.favorite_exams);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  removeFavoriteExam: async (req, res) => {
+    try {
+      const user = await User.findById(req.user.user_id);
+      const examId = req.params.id;
+      user.favorite_exams = user.favorite_exams.filter((exam) => exam._id.toString() !== examId);
+      await user.save();
+      res.json(user.favorite_exams);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
 };
 
 export default examsController;

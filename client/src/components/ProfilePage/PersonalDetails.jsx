@@ -13,7 +13,7 @@ function PersonalDetails() {
     phone_number: user.phone_number || "",
     id_number: user.id_number || "",
   });
-  console.log("user", user, "editedUser", editedUser);
+
   const saveChanges = () => {
     if (!editedUser.name || !editedUser.email) {
       alert("אנא מלא/י את השדות שם מלא ודואר אלקטרוני");

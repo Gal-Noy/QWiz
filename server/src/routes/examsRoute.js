@@ -37,4 +37,16 @@ examsRouter.put("/:id", examsController.updateExam);
 // DELETE: delete exam by id
 examsRouter.delete("/:id", examsController.deleteExam);
 
+// GET: get uploaded exams
+examsRouter.get("/uploaded", examsController.getUploadedExams);
+
+// GET: get favorite exams
+examsRouter.get("/favorites", examsController.getFavoriteExams);
+
+// POST: add exam to favorites
+examsRouter.post("/favorites", examsController.addFavoriteExam);
+
+// DELETE: remove exam from favorites
+examsRouter.delete("/favorites/:id", examsController.removeFavoriteExam);
+
 export default examsRouter;

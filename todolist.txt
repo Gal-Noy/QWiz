@@ -5,4 +5,5 @@ forums for each exam
 last 10 exams
 change local to session storage
 pagination
-change to מועד
+exam page
+arrange css folders
