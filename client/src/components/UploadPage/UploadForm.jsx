@@ -69,7 +69,9 @@ function UploadForm() {
         },
       })
       .then((res) => {
-        if (res.status === 200) {
+        if (res.status === 201) {
+          const updatedUser = res.data.user;
+          localStorage.setItem("user", JSON.stringify(updatedUser));
           alert("המבחן נוסף בהצלחה!");
           navigate("/exams");
         }
@@ -91,9 +93,9 @@ function UploadForm() {
       id_number: user?.id_number || "",
     });
     setExamDetails({
-      faculty: "",
-      department: "",
-      course: "",
+      faculty: null,
+      department: null,
+      course: null,
       year: 2024,
       semester: 1,
       term: 1,
@@ -101,6 +103,9 @@ function UploadForm() {
       grade: 85,
       lecturers: "",
     });
+    setFaculties([]);
+    setDepartments([]);
+    setCourses([]);
     setFile(null);
     setNumPages(null);
     setPageNumber(1);
@@ -139,10 +144,12 @@ function UploadForm() {
   }, []);
 
   useEffect(() => {
+    setExamDetails({ ...examDetails, department: null, course: null });
     if (examDetails.faculty) fetchDepartmentsByFaculty(examDetails.faculty._id);
   }, [examDetails.faculty]);
 
   useEffect(() => {
+    setExamDetails({ ...examDetails, course: null });
     if (examDetails.department) fetchCoursesByDepartment(examDetails.department._id);
   }, [examDetails.department]);
 
@@ -187,23 +194,11 @@ function UploadForm() {
           <form className="upload-form-details">
             <div className="upload-form-attr">
               <label>שם מלא *</label>
-              <input
-                type="text"
-                name="name"
-                onChange={(e) => setStudentDetails({ ...studentDetails, name: e.target.value })}
-                value={studentDetails.name}
-                disabled
-              />
+              <input type="text" name="name" value={studentDetails.name} disabled />
             </div>
             <div className="upload-form-attr">
               <label>אימייל *</label>
-              <input
-                type="email"
-                name="email"
-                onChange={(e) => setStudentDetails({ ...studentDetails, email: e.target.value })}
-                value={studentDetails.email}
-                disabled
-              />
+              <input type="email" name="email" value={studentDetails.email} disabled />
             </div>
             <div className="upload-form-attr">
               <label>טלפון *</label>
@@ -234,45 +229,32 @@ function UploadForm() {
               <label>פקולטה *</label>
               <SelectFilter
                 options={faculties.map((faculty) => ({ name: faculty.name, value: faculty }))}
-                onChange={(faculty) => setExamDetails({ ...examDetails, faculty })}
+                onChange={(faculty) => setExamDetails({ ...examDetails, faculty, department: null, course: null })}
                 placeholder="בחר פקולטה"
-                value={examDetails.faculty?.name}
+                dependency={true} // always enabled
               />
-              {/* <input
-                type="text"
-                name="faculty"
-                onChange={(e) => setExamDetails({ ...examDetails, faculty: e.target.value })}
-                value={examDetails.faculty?.name}
-              /> */}
             </div>
             <div className="upload-form-attr">
               <label>מחלקה *</label>
-              <input
-                type="text"
-                name="department"
-                onChange={(e) => setExamDetails({ ...examDetails, department: e.target.value })}
-                value={examDetails.department?.name}
-                {...(!examDetails.faculty ? { disabled: true } : {})}
+              <SelectFilter
+                options={departments.map((department) => ({ name: department.name, value: department }))}
+                onChange={(department) => setExamDetails({ ...examDetails, department, course: null })}
+                placeholder="בחר מחלקה"
+                dependency={examDetails.faculty}
               />
             </div>
             <div className="upload-form-attr">
-              <label>קורס *</label>
-              <input
-                type="text"
-                name="courseName"
-                onChange={(e) =>
-                  setExamDetails({
-                    ...examDetails,
-                    course: { ...examDetails.course, name: e.target.value },
-                  })
-                }
-                value={examDetails.course?.name}
-                {...(!examDetails.department ? { disabled: true } : {})}
+              <label>שם קורס *</label>
+              <SelectFilter
+                options={courses.map((course) => ({ name: course.name, value: course }))}
+                onChange={(course) => setExamDetails({ ...examDetails, course })}
+                placeholder="בחר קורס"
+                dependency={examDetails.department}
               />
             </div>
             <div className="upload-form-attr">
               <label>מספר קורס *</label>
-              <input type="text" name="courseCode" value={examDetails.course?.code} disabled />
+              <input type="text" name="courseCode" value={examDetails.course ? examDetails.course.code : ""} disabled />
             </div>
             <div className="upload-form-attr">
               <label>שנה *</label>
@@ -340,7 +322,7 @@ function UploadForm() {
             </div>
           </div>
         </div>
-        <div className="upload-form-content" id="upload-form-content-3">
+        <div className={"upload-form-content" + (file ? " show-file" : "")} id="upload-form-content-3">
           <label className="upload-form-content-header">קובץ המבחן</label>
           <input id="upload-exam-file-input" type="file" name="file" onChange={handleFileChange} />
           <div

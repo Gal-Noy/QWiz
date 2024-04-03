@@ -42,34 +42,9 @@ const examsController = {
 
       if (!faculty || !department || !course || !year || !semester || !term || !type || !phone_number || !id_number) {
         return res.status(400).json({
-          message:
-            "Please provide faculty, department, course, year, semester, term, type, phone number and id number.",
+          message: "Please provide faculty, department, course, year, semester, term, type, and full contact details.",
         });
       }
-
-      // let existingFaculty = await Faculty.findOne({ name: faculty });
-      // if (!existingFaculty) {
-      //   const newFaculty = new Faculty({ name: faculty });
-      //   await newFaculty.save();
-      //   existingFaculty = newFaculty;
-      // }
-
-      // let existingDepartment = await Department.findOne({ name: department, faculty: existingFaculty._id });
-      // if (!existingDepartment) {
-      //   const newDepartment = new Department({ name: department, faculty: existingFaculty._id });
-      //   await newDepartment.save();
-      //   existingDepartment = newDepartment;
-      // }
-
-      // const { name: courseName, code: courseCode } = course;
-      // let existingCourse = await Course.findOne({
-      //   $or: [{ name: courseName }, { code: courseCode }],
-      // });
-      // if (!existingCourse) {
-      //   const newCourse = new Course({ name: courseName, code: courseCode, department: existingDepartment._id });
-      //   await newCourse.save();
-      //   existingCourse = newCourse;
-      // }
 
       const existingExam = await Exam.findOne({ course, year, semester, term });
       if (existingExam) {
@@ -101,25 +76,29 @@ const examsController = {
       });
 
       // Handle user
-      if (req.user) {
-        const dbUser = await User.findById(req.user.user_id);
+      const dbUser = await User.findById(req.user.user_id);
 
-        if (
-          !dbUser.phone_number ||
-          !dbUser.id_number ||
-          dbUser.phone_number !== phone_number ||
-          dbUser.id_number !== id_number
-        ) {
-          dbUser.phone_number = phone_number;
-          dbUser.id_number = id_number;
-        }
-        dbUser.uploaded_exams.push(exam._id);
-
-        await dbUser.save();
+      if (
+        !dbUser.phone_number ||
+        !dbUser.id_number ||
+        dbUser.phone_number !== phone_number ||
+        dbUser.id_number !== id_number
+      ) {
+        dbUser.phone_number = phone_number;
+        dbUser.id_number = id_number;
       }
+      dbUser.uploaded_exams.push(exam._id);
+
+      await dbUser.save();
 
       const newExam = await exam.save();
-      res.status(201).json(newExam);
+
+      const response = {
+        exam: newExam,
+        user: dbUser,
+      };
+
+      res.status(201).json(response);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -160,27 +139,6 @@ const examsController = {
       }
 
       const filter = { faculty, department, course };
-
-      // const existingFaculty = await Faculty.findOne({ name: faculty });
-      // if (!existingFaculty) {
-      //   return res.status(404).json({ message: "Faculty not found" });
-      // }
-      // filter.faculty = existingFaculty._id;
-
-      // const existingDepartment = await Department.findOne({ name: department, faculty: existingFaculty._id });
-      // if (!existingDepartment) {
-      //   return res.status(404).json({ message: "Department not found" });
-      // }
-      // filter.department = existingDepartment._id;
-
-      // const existingCourse = await Course.findOne({
-      //   name: course,
-      //   department: existingDepartment._id,
-      // });
-      // if (!existingCourse) {
-      //   return res.status(404).json({ message: "Course not found" });
-      // }
-      // filter.course = existingCourse._id;
 
       if (year) filter.year = year;
       if (semester) filter.semester = semester;

@@ -66,6 +66,10 @@
   background-color: var(--cyan4);
   border-bottom-left-radius: 1rem;
   border-bottom-right-radius: 1rem;
+
+  &.show-file {
+    height: 100%;
+  }
 }
 
 .upload-form-content-header {
@@ -189,7 +193,8 @@
 }
 
 .pdf-preview {
-  height: auto;
+  width: 80vw;
+  height: 170vh;
 }
 
 .react-pdf__Page__canvas {
