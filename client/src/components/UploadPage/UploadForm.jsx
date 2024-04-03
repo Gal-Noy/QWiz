@@ -72,8 +72,11 @@ function UploadForm() {
         if (res.status === 201) {
           const updatedUser = res.data.user;
           localStorage.setItem("user", JSON.stringify(updatedUser));
-          alert("המבחן נוסף בהצלחה!");
-          navigate("/exams");
+          var stayOnPage = window.confirm("המבחן נוסף בהצלחה! האם תרצה להוסיף עוד מבחן?");
+          if (!stayOnPage) {
+            navigate("/");
+          }
+          clearForm();
         }
       })
       .then(() => setIsPending(false))
@@ -322,7 +325,7 @@ function UploadForm() {
             </div>
           </div>
         </div>
-        <div className={"upload-form-content" + (file ? " show-file" : "")} id="upload-form-content-3">
+        <div className="upload-form-content" id="upload-form-content-3">
           <label className="upload-form-content-header">קובץ המבחן</label>
           <input id="upload-exam-file-input" type="file" name="file" onChange={handleFileChange} />
           <div
@@ -339,7 +342,7 @@ function UploadForm() {
             )}
           </div>
           {file && (
-            <div className="pdf-preview">
+            <div id="pdf-preview">
               {numPages > 1 && (
                 <div className="pdf-preview-arrows">
                   <span

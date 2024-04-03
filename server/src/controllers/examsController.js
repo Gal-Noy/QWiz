@@ -53,11 +53,11 @@ const examsController = {
 
       const fileContent = file.buffer;
       const fileType = file.mimetype;
-      const fileKey = `${existingFaculty.name}/${existingDepartment.name}/${existingCourse.name}/${
-        existingCourse.code
-      }-${year}-${semester}-${term}.${fileType.split("/")[1]}`;
-      //const s3Path = await uploadFile(fileContent, fileKey, fileType);
-      const s3Path = "path/to/s3/file";
+      const fileKey = `${faculty.name}/${department.name}/${course.name}/${course.code}-${year}-${semester}-${term}.${
+        fileType.split("/")[1]
+      }`;
+      const s3Path = await uploadFile(fileContent, fileKey, fileType);
+      // const s3Path = "path/to/s3/file";
 
       const totalRatings = difficultyRating ? 1 : 0;
       const averageRating = difficultyRating ?? 0;
