@@ -42,7 +42,11 @@ function FilterBar(props) {
       .get(`${import.meta.env.VITE_SERVER_URL}/info/faculties`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
-      .then((res) => setFaculties(res.data))
+      .then((res) => {
+        const faculties = res.data;
+        const sortedFaculties = faculties.sort((a, b) => (a.name > b.name ? 1 : -1));
+        setFaculties(sortedFaculties);
+      })
       .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
   const fetchDepartmentsByFaculty = async (facultyId) =>
@@ -50,7 +54,11 @@ function FilterBar(props) {
       .get(`${import.meta.env.VITE_SERVER_URL}/info/faculty/${facultyId}/departments`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
-      .then((res) => setDepartments(res.data))
+      .then((res) => {
+        const departments = res.data;
+        const sortedDepartments = departments.sort((a, b) => (a.name > b.name ? 1 : -1));
+        setDepartments(sortedDepartments);
+      })
       .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
   const fetchCoursesByDepartment = async (departmentId) =>
@@ -58,7 +66,11 @@ function FilterBar(props) {
       .get(`${import.meta.env.VITE_SERVER_URL}/info/department/${departmentId}/courses`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
-      .then((res) => setCourses(res.data))
+      .then((res) => {
+        const courses = res.data;
+        const sortedCourses = courses.sort((a, b) => (a.name > b.name ? 1 : -1));
+        setCourses(sortedCourses);
+      })
       .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
   const fetchCourseExams = async (courseId) =>
@@ -232,8 +244,10 @@ function FilterBar(props) {
 
   return (
     <div className="filter-bar">
+      <div className="filter-bar-search-message">* ניתן להקליד על מנת לחפש פריטים ברשימות</div>
       <div id="mandatory-filters-row" className="filter-bar-row">
         <FilterDropdown
+          index={0}
           label="פקולטה"
           options={faculties}
           value={chosenFaculty}
@@ -241,6 +255,7 @@ function FilterBar(props) {
           isAvailable={faculties.length > 0}
         />
         <FilterDropdown
+          index={1}
           label="מחלקה"
           options={departments}
           value={chosenDepartment}
@@ -248,6 +263,7 @@ function FilterBar(props) {
           isAvailable={departments.length > 0}
         />
         <FilterDropdown
+          index={2}
           label="קורס"
           options={courses}
           value={chosenCourse}
@@ -258,6 +274,7 @@ function FilterBar(props) {
       <div className={"advanced-filters-rows" + (showAdvancedFilters ? " show" : "")}>
         <div className="filter-bar-row">
           <FilterDropdown
+            index={3}
             label="מרצים"
             options={advancedSearchLists.lecturers}
             value={advancedSearchChoices.lecturers}
@@ -265,6 +282,7 @@ function FilterBar(props) {
             isAvailable={advancedSearchLists.lecturers.length > 0}
           />
           <FilterDropdown
+            index={4}
             label="שנה"
             options={advancedSearchLists.years}
             value={advancedSearchChoices.year}
@@ -272,6 +290,7 @@ function FilterBar(props) {
             isAvailable={advancedSearchLists.years.length > 0}
           />
           <FilterDropdown
+            index={5}
             label="סמסטר"
             options={advancedSearchLists.semesters}
             value={advancedSearchChoices.semester}
@@ -281,6 +300,7 @@ function FilterBar(props) {
         </div>
         <div className="filter-bar-row">
           <FilterDropdown
+            index={6}
             label="מועד"
             options={advancedSearchLists.terms}
             value={advancedSearchChoices.term}
@@ -288,6 +308,7 @@ function FilterBar(props) {
             isAvailable={advancedSearchLists.terms.length > 0}
           />
           <FilterDropdown
+            index={7}
             label="סוג"
             options={advancedSearchLists.types}
             value={advancedSearchChoices.type}
@@ -295,6 +316,7 @@ function FilterBar(props) {
             isAvailable={advancedSearchLists.types.length > 0}
           />
           <FilterDropdown
+            index={8}
             label="ציון מינימלי"
             options={advancedSearchLists.minGrades}
             value={advancedSearchChoices.minGrade}
@@ -302,6 +324,7 @@ function FilterBar(props) {
             isAvailable={advancedSearchLists.minGrades.length > 0}
           />
           <FilterDropdown
+            index={9}
             label="דרגת קושי"
             options={advancedSearchLists.difficultyRatings}
             value={advancedSearchChoices.difficultyRating}

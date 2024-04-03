@@ -123,7 +123,10 @@ function UploadForm() {
       .get(`${import.meta.env.VITE_SERVER_URL}/info/faculties`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
-      .then((res) => setFaculties(res.data))
+      .then((res) => {
+        const sortedFaculties = res.data.sort((a, b) => (a.name > b.name ? 1 : -1));
+        setFaculties(sortedFaculties);
+      })
       .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
   const fetchDepartmentsByFaculty = async (facultyId) =>
@@ -131,7 +134,10 @@ function UploadForm() {
       .get(`${import.meta.env.VITE_SERVER_URL}/info/faculty/${facultyId}/departments`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
-      .then((res) => setDepartments(res.data))
+      .then((res) => {
+        const sortedDepartments = res.data.sort((a, b) => (a.name > b.name ? 1 : -1));
+        setDepartments(sortedDepartments);
+      })
       .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
   const fetchCoursesByDepartment = async (departmentId) =>
@@ -139,7 +145,10 @@ function UploadForm() {
       .get(`${import.meta.env.VITE_SERVER_URL}/info/department/${departmentId}/courses`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
-      .then((res) => setCourses(res.data))
+      .then((res) => {
+        const sortedCourses = res.data.sort((a, b) => (a.name > b.name ? 1 : -1));
+        setCourses(sortedCourses);
+      })
       .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
   useEffect(() => {
