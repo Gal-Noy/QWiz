@@ -4,30 +4,92 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  width: 100%;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
 }
 
 .exams-list-container {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  border-radius: 2rem;
-  height: 80vh;
-  overflow-y: auto;
+  border-top-left-radius: 2rem;
+  border-top-right-radius: 2rem;
+  width: 90vw;
+  height: 85vh;
+
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--orange1) var(--yellow4);
 
   border: 2px solid var(--orange1);
 }
 
-.exams-list-headers {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 1% 2%;
-    font-size: 1.4rem;
-    font-weight: 600;
-    background: var(--orange2);
-    border-bottom: 1px solid var(--orange1);
+.headers-row {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  width: 110vw;
+  padding: 1% 2%;
+  gap: 4rem;
+  font-weight: 500;
+  background: var(--orange2);
+  border-bottom: 1px solid var(--orange1);
+  box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.1);
+}
+
+.exam-row {
+  height: 5rem;
+  display: flex;
+  align-items: start;
+  width: 110vw;
+  padding: 1% 2%;
+  gap: 4rem;
+  border-bottom: 1px solid var(--orange1);
+  transition: background 0.3s;
+
+  &:nth-child(even) {
+    background: var(--yellow2);
+  }
+
+  &:nth-child(odd) {
+    background: var(white);
+  }
+
+  &:hover {
+    background: var(--orange4);
+    cursor: pointer;
+  }
+
+  &:active {
+    background: var(--orange3);
+  }
+}
+
+.table-element {
+  overflow: hidden;
+  max-height: 100%;
+}
+
+.grade,
+.term {
+  width: 5rem;
+}
+
+.year,
+.semester {
+  width: 7rem;
+}
+
+.type {
+  width: 10rem;
+}
+.rank,
+.course-num,
+.lecturers {
+  width: 15rem;
+}
+.course-name {
+  width: 20rem;
+}
+.favorite {
+  width: 8rem;
 }

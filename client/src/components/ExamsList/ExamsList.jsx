@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import ExamRow from "./ExamRow";
 import "../../styles/ExamsList.css";
 
 function ExamsList(props) {
@@ -17,17 +18,37 @@ function ExamsList(props) {
     <div className="exams-list">
       <label className="exams-list-count">סה"כ בחינות נמצאו: {filteredExams.length}</label>
       <div className="exams-list-container">
-        <div className="exams-list-headers">
-          <label className="exams-list-header">מועדפים</label>
-          <label className="exams-list-header">מספר קורס</label>
-          <label className="exams-list-header">שם הקורס</label>
-          <label className="exams-list-header">מרצה/ים</label>
-          <label className="exams-list-header">סוג בחינה</label>
-          <label className="exams-list-header">שנה</label>
-          <label className="exams-list-header">סמסטר</label>
-          <label className="exams-list-header">מועד</label>
-          <label className="exams-list-header">ציון בחינה</label>
-          <label className="exams-list-header">דירוג</label>
+        <div className="headers-row">
+          <div className="table-element favorite">מועדפים</div>
+          <div className="table-element course-num">מספר קורס</div>
+          <div className="table-element course-name">שם הקורס</div>
+          <div className="table-element lecturers">מרצה/ים</div>
+          <div className="table-element type">סוג בחינה</div>
+          <div className="table-element year">שנה</div>
+          <div className="table-element semester">סמסטר</div>
+          <div className="table-element term">מועד</div>
+          <div className="table-element grade">ציון</div>
+          <div className="table-element rank">דירוג</div>
+        </div>
+        <div className="exams-list-rows">
+          {filteredExams.map((exam) => (
+            <ExamRow key={exam._id} exam={exam} />
+          ))}
+          {filteredExams.map((exam) => (
+            <ExamRow key={exam._id} exam={exam} />
+          ))}
+          {filteredExams.map((exam) => (
+            <ExamRow key={exam._id} exam={exam} />
+          ))}
+          {filteredExams.map((exam) => (
+            <ExamRow key={exam._id} exam={exam} />
+          ))}
+          {filteredExams.map((exam) => (
+            <ExamRow key={exam._id} exam={exam} />
+          ))}
+          {filteredExams.map((exam) => (
+            <ExamRow key={exam._id} exam={exam} />
+          ))}
         </div>
       </div>
     </div>
