@@ -6,6 +6,7 @@ import "../../styles/ExamsList.css";
 
 function ExamsList(props) {
   const { filteredExams, showExams, isProfilePage } = props;
+  const [favoriteExams, setFavoriteExams] = useState([]);
   const [idsToCourses, setIdsToCourses] = useState({});
 
   if (isProfilePage) {
@@ -18,6 +19,24 @@ function ExamsList(props) {
         top: document.body.scrollHeight,
         behavior: "smooth",
       });
+      axios
+        .get(`${import.meta.env.VITE_SERVER_URL}/exams/favorites`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            const favoriteExamsIds = res.data.map((exam) => exam._id);
+            setFavoriteExams(favoriteExamsIds);
+          }
+        })
+        .catch((err) => {
+          handleError(err, () => {
+            console.error(err.response.data.message);
+            alert("שגיאה בטעינת הבחינות המועדפות, אנא נסה שנית.");
+          });
+        });
     }
   }, [showExams]);
 
@@ -66,13 +85,12 @@ function ExamsList(props) {
         </div>
         <div className="exams-list-rows">
           {filteredExams.map((exam) => (
-            <ExamRow key={exam._id} exam={exam} course={idsToCourses[exam.course]} />
-          ))}
-          {filteredExams.map((exam) => (
-            <ExamRow key={exam._id} exam={exam} course={idsToCourses[exam.course]} />
-          ))}
-          {filteredExams.map((exam) => (
-            <ExamRow key={exam._id} exam={exam} course={idsToCourses[exam.course]} />
+            <ExamRow
+              key={exam._id}
+              exam={exam}
+              course={idsToCourses[exam.course]}
+              favorite={favoriteExams.includes(exam._id)}
+            />
           ))}
         </div>
       </div>

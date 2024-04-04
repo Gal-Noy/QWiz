@@ -14,13 +14,25 @@ const examsRouter = express.Router();
 examsRouter.use(authenticateToken);
 
 // GET: get all exams
-examsRouter.get("/", authenticateToken, examsController.getAllExams);
+examsRouter.get("/", examsController.getAllExams);
 
 // POST: create a new exam
 examsRouter.post("/", upload.single("file"), examsController.createExam);
 
 // GET: filter exams
 examsRouter.get("/filter", examsController.filterExams);
+
+// GET: get uploaded exams
+examsRouter.get("/uploaded", examsController.getUploadedExams);
+
+// GET: get favorite exams
+examsRouter.get("/favorites", examsController.getFavoriteExams);
+
+// POST: add exam to favorites
+examsRouter.post("/favorites", examsController.addFavoriteExam);
+
+// DELETE: remove exam from favorites
+examsRouter.delete("/favorites/:id", examsController.removeFavoriteExam);
 
 // GET: get exams by course id
 examsRouter.get("/course/:id", examsController.getCourseExams);
@@ -36,17 +48,5 @@ examsRouter.put("/:id", examsController.updateExam);
 
 // DELETE: delete exam by id
 examsRouter.delete("/:id", examsController.deleteExam);
-
-// GET: get uploaded exams
-examsRouter.get("/uploaded", examsController.getUploadedExams);
-
-// GET: get favorite exams
-examsRouter.get("/favorites", examsController.getFavoriteExams);
-
-// POST: add exam to favorites
-examsRouter.post("/favorites", examsController.addFavoriteExam);
-
-// DELETE: remove exam from favorites
-examsRouter.delete("/favorites/:id", examsController.removeFavoriteExam);
 
 export default examsRouter;

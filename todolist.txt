@@ -1,9 +1,12 @@
-exams list
+exams list - favorites and profile (isFavorite in examRow)
 profile sections - uploaded and favorites
-rank
-forums for each exam
-last 10 exams
-change local to session storage
+
 pagination
-exam page
-arrange css folders
+
+rank
+
+page and forum for each exam
+
+last 10 exams
+
+change local to session storage

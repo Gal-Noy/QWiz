@@ -215,7 +215,7 @@ const examsController = {
       if (!exam) {
         return res.status(404).json({ message: "Exam not found" });
       }
-      user.favorite_exams.push(exam);
+      user.favorite_exams.push(exam._id);
       await user.save();
       res.json(user.favorite_exams);
     } catch (error) {
