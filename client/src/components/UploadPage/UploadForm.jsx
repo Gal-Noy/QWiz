@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/UploadForm.css";
 import { Document, Page, pdfjs } from "react-pdf";
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 import axios from "axios";
 import { handleError } from "../../utils/axiosUtils";
 import { useNavigate } from "react-router-dom";
@@ -165,7 +166,6 @@ function UploadForm() {
     if (examDetails.department) fetchCoursesByDepartment(examDetails.department._id);
   }, [examDetails.department]);
 
-  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
   const [file, setFile] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [numPages, setNumPages] = useState(null);

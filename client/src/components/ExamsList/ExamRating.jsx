@@ -30,18 +30,14 @@ function ExamRating({ difficultyRating, examId, editMode }) {
           title={`${fixedAverageRating} out of 5 stars`}
         >
           {fixedAverageRating} out of 5
-          <style jsx>{`
+          <style jsx="true">{`
             .average-rating::before {
               --percent: calc(${fixedAverageRating} / 5 * 100%);
             }
           `}</style>
         </meter>
       )}
-      {!editMode && (
-        <span className="total-ratings-text">
-          {`(${totalRatings})`}
-        </span>
-      )}
+      {!editMode && <span className="total-ratings-text">{`(${totalRatings})`}</span>}
     </div>
   );
 }

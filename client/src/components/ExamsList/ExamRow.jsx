@@ -54,7 +54,13 @@ function ExamRow({ exam, favorite }) {
   }, [favorite]);
 
   return (
-    <div className="exam-row">
+    <div
+      className="exam-row"
+      onClick={() => {
+        console.log(exam._id)
+        window.location.href = `/exam/${exam._id}`;
+      }}
+    >
       <div className="table-element favorite">
         <div className="checkbox-wrapper-22">
           <label className="switch" htmlFor={`checkbox-${exam._id}`}>

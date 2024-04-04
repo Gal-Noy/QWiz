@@ -144,7 +144,16 @@ const examsController = {
 
   getExamById: async (req, res) => {
     try {
-      const exam = await Exam.findById(req.params.id).populate("course");
+      const exam = await Exam.findById(req.params.id)
+        .populate("course")
+        .populate({
+          path: "department",
+          populate: {
+            path: "faculty",
+            select: "name",
+          },
+        });
+
       if (!exam) {
         return res.status(404).json({ message: "Exam not found" });
       }
