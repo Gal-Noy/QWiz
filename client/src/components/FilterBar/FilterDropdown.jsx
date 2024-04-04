@@ -38,11 +38,11 @@ function FilterDropdown(props) {
         value={searchInput}
         onChange={(e) => setSearchInput(e.target.value)}
       />
-      {value?.name || value || label}
+      {value?.name || label}
       {isOpen && (
         <div className="filter-dropdown-options">
           {searchInput &&
-            filteredOptions?.map((option, index) => (
+            filteredOptions.map((option, index) => (
               <a
                 className="filter-dropdown-item"
                 key={option._id || index}
@@ -51,11 +51,11 @@ function FilterDropdown(props) {
                   setIsOpen(false);
                 }}
               >
-                {option?.name || option}
+                {option.name || option}
               </a>
             ))}
           {!searchInput &&
-            options?.map((option, index) => (
+            options.map((option, index) => (
               <a
                 className="filter-dropdown-item"
                 key={option._id || index}
@@ -64,7 +64,7 @@ function FilterDropdown(props) {
                   setIsOpen(false);
                 }}
               >
-                {option?.name || option}
+                {option.name || option}
               </a>
             ))}
         </div>

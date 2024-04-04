@@ -5,7 +5,7 @@ import { handleError } from "../../utils/axiosUtils";
 import axios from "axios";
 
 function FilterBar(props) {
-  const { exams, setExams, setFilteredExams, setShowExams } = props;
+  const { exams, setExams, setFilteredExams, setShowExams, setError } = props;
 
   // Mandatory filters
   const [faculties, setFaculties] = useState([]);
@@ -83,7 +83,12 @@ function FilterBar(props) {
         const sortedExams = exams.sort((a, b) => (a.year > b.year ? 1 : -1));
         setExams(exams);
       })
-      .catch((err) => handleError(err, () => console.log(err.response.data.message)));
+      .catch((err) =>
+        handleError(err, () => {
+          console.log(err.response.data.message);
+          setError(err.response.data.message);
+        })
+      );
 
   const updateAdvancedSearchLists = () => {
     const updatedAdvancedSearchLists = { ...advancedSearchLists };

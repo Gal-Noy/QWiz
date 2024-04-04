@@ -5,13 +5,11 @@ import ExamRow from "./ExamRow";
 import "../../styles/ExamsList.css";
 
 function ExamsList(props) {
-  const { filteredExams, showExams, isProfilePage } = props;
+  const { filteredExams, showExams, isProfilePage, isPending, error } = props;
   const [favoriteExams, setFavoriteExams] = useState([]);
   const [idsToCourses, setIdsToCourses] = useState({});
 
-  if (isProfilePage) {
-    import("../../styles/ProfileExamsList.css");
-  }
+  console.log(idsToCourses);
 
   useEffect(() => {
     if (showExams) {
@@ -43,9 +41,10 @@ function ExamsList(props) {
   useEffect(() => {
     if (filteredExams.length > 0) {
       filteredExams.forEach((exam) => {
-        if (!idsToCourses[exam.course]) {
+        const courseId = exam.course;
+        if (!idsToCourses[courseId]) {
           axios
-            .get(`${import.meta.env.VITE_SERVER_URL}/info/course/${exam.course}`, {
+            .get(`${import.meta.env.VITE_SERVER_URL}/info/course/${courseId}`, {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
               },
@@ -53,7 +52,7 @@ function ExamsList(props) {
             .then((res) => {
               if (res.status === 200) {
                 const course = res.data;
-                setIdsToCourses({ ...idsToCourses, [exam.course]: course });
+                setIdsToCourses({ ...idsToCourses, [courseId]: course });
               }
             })
             .catch((err) => {
@@ -70,7 +69,7 @@ function ExamsList(props) {
   return !showExams ? null : (
     <div className="exams-list">
       <label className="exams-list-count">סה"כ בחינות נמצאו: {filteredExams.length}</label>
-      <div className="exams-list-container">
+      <div className={"exams-list-container" + (isProfilePage ? " is-profile-page" : "")}>
         <div className="headers-row">
           <div className="table-element favorite">מועדפים</div>
           <div className="table-element course-num">מספר קורס</div>
@@ -83,16 +82,20 @@ function ExamsList(props) {
           <div className="table-element grade">ציון</div>
           <div className="table-element rank">דירוג</div>
         </div>
-        <div className="exams-list-rows">
-          {filteredExams.map((exam) => (
-            <ExamRow
-              key={exam._id}
-              exam={exam}
-              course={idsToCourses[exam.course]}
-              favorite={favoriteExams.includes(exam._id)}
-            />
-          ))}
-        </div>
+        {isPending && !error && <div className="exams-list-loading">טוען...</div>}
+        {error && <div className="exams-list-error">{error}</div>}
+        {!isPending && !error && (
+          <div className="exams-list-rows">
+            {filteredExams.map((exam) => (
+              <ExamRow
+                key={exam._id}
+                exam={exam}
+                course={idsToCourses[exam.course]}
+                favorite={favoriteExams.includes(exam._id)}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

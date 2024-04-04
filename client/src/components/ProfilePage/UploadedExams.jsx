@@ -3,8 +3,10 @@ import axios from "axios";
 import { handleError } from "../../utils/axiosUtils";
 import ExamsList from "../ExamsList/ExamsList";
 
-function UploadedExams({ user }) {
+function UploadedExams() {
   const [uploadedExams, setUploadedExams] = useState([]);
+  const [isPending, setIsPending] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     axios
@@ -20,10 +22,25 @@ function UploadedExams({ user }) {
           setUploadedExams(sortedExams);
         }
       })
-      .catch((err) => handleError(err, () => console.error(err.response.data.message)));
+      .then(() => setIsPending(false))
+      .catch((err) =>
+        handleError(err, () => {
+          console.error(err.response.data.message);
+          setError(err.response.data.message);
+          setIsPending(false);
+        })
+      );
   }, []);
 
-  return <ExamsList filteredExams={uploadedExams} showExams={true} isProfilePage={true} />;
+  return (
+    <ExamsList
+      filteredExams={uploadedExams}
+      showExams={true}
+      isProfilePage={true}
+      isPending={isPending}
+      error={error}
+    />
+  );
 }
 
 export default UploadedExams;

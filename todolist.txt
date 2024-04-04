@@ -1,4 +1,6 @@
-examslist ispending
+fix favorites and switch exams
+
+add course num to name in search
 
 exams list - sorters
 
