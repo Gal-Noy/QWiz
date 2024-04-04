@@ -11,7 +11,7 @@ function ExamPage() {
   const { examId } = useParams();
   const [exam, setExam] = useState(null);
   const [isPending, setIsPending] = useState(true);
-  const [file, setFile] = useState(null);
+  const [filePath, setFilePath] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,28 +40,25 @@ function ExamPage() {
 
   useEffect(() => {
     if (exam) {
-      const examURL = exam.s3Path;
-      //   axios
-      //     .get(`${import.meta.env.VITE_SERVER_URL}/uploads/${exam.file}`, {
-      //       headers: {
-      //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-      //       },
-      //       responseType: "blob",
-      //     })
-      //     .then((res) => {
-      //       setFile(res.data);
-      //     })
-      //     .catch((err) => {
-      //       handleError(err, () => {
-      //         console.error(err.response.data.message);
-      //         alert("שגיאה בטעינת הבחינה, אנא נסה שנית.");
-      //         navigate("/");
-      //       });
-      //     });
+      axios
+        .get(`${import.meta.env.VITE_SERVER_URL}/exams/${examId}/presigned`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => setFilePath(res.data.presignedUrl))
+        .catch((err) => {
+          handleError(err, () => {
+            console.error(err.response.data.message);
+          });
+        });
     }
   }, [exam]);
 
-  console.log(exam);
+  const goToPdf = () => {
+    window.open(filePath, "_blank");
+  };
+
   return (
     <div className="exam-page">
       <div className="exam-container">
@@ -117,18 +114,24 @@ function ExamPage() {
                     <a className="exam-details-item-text">{exam.lecturers}</a>
                   </div>
                   <div className="exam-details-item">
-                    <a className="exam-details-item-header">דירוג:</a>
+                    <a className="exam-details-item-header">דירוג קושי:</a>
                     <ExamRating difficultyRating={exam.difficultyRating} examId={examId} editMode={false} />
                   </div>
                 </div>
               </div>
               <div className="exam-details-left-section">
-                <div className="exam-details-pdf">
-                  <Document file={exam.s3Path}>
+                <div className="exam-details-pdf" onClick={goToPdf}>
+                  <Document file={filePath}>
                     <Page pageNumber={1} renderAnnotationLayer={false} renderTextLayer={false} />
                   </Document>
                 </div>
-                <ExamRating difficultyRating={exam.difficultyRating} examId={examId} editMode={true} />
+
+                <ExamRating
+                  difficultyRating={exam.difficultyRating}
+                  examId={examId}
+                  editMode={true}
+                  setExam={setExam}
+                />
               </div>
             </div>
           </div>

@@ -27,4 +27,21 @@ const uploadFile = async (fileContent, fileName, fileType) => {
   });
 };
 
-export { uploadFile };
+const getPresignedUrl = async (fileName) => {
+  const params = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: fileName,
+    Expires: 60 * 5, // 5 minutes
+  };
+
+  return new Promise((resolve, reject) => {
+    s3.getSignedUrl("getObject", params, (error, url) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(url);
+    });
+  });
+};
+
+export { uploadFile, getPresignedUrl };

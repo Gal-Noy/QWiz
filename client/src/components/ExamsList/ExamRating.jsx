@@ -1,24 +1,69 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { handleError } from "../../utils/axiosUtils";
 
-function ExamRating({ difficultyRating, examId, editMode }) {
+function ExamRating(props) {
+  const { difficultyRating, examId, editMode, setExam } = props;
   const { totalRatings, averageRating } = difficultyRating;
   const fixedAverageRating = averageRating.toFixed(1);
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const currRating = user.exams_ratings?.find((rating) => rating.exam === examId)?.difficulty_rating;
+  const [rating, setRating] = useState(currRating || null);
+
+  const rateExam = async (rating) => {
+    await axios
+      .post(
+        `${import.meta.env.VITE_SERVER_URL}/exams/${examId}/rate`,
+        { rating },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+      .then((res) => {
+        const { updatedExam, user } = res.data;
+        setExam(updatedExam);
+        localStorage.setItem("user", JSON.stringify(user));
+        setRating(rating);
+      })
+      .catch((err) =>
+        handleError(err, () => {
+          console.error(err.response.data.message);
+          alert("שגיאה בדירוג הבחינה, אנא נסה שנית.");
+        })
+      );
+  };
 
   return (
     <div className="table-element row rate">
-      {editMode && (
-        <form className="star-rating">
-          <input className="radio-input" type="radio" id={`5-stars-${examId}`} name="rating" value="5" />
-          <label className="radio-label" htmlFor={`5-stars-${examId}`} />
-          <input className="radio-input" type="radio" id={`4-stars-${examId}`} name="rating" value="4" />
-          <label className="radio-label" htmlFor={`4-stars-${examId}`} />
-          <input className="radio-input" type="radio" id={`3-stars-${examId}`} name="rating" value="3" />
-          <label className="radio-label" htmlFor={`3-stars-${examId}`} />
-          <input className="radio-input" type="radio" id={`2-stars-${examId}`} name="rating" value="2" />
-          <label className="radio-label" htmlFor={`2-stars-${examId}`} />
-          <input className="radio-input" type="radio" id={`1-star"-${examId}`} name="rating" value="1" />
-          <label className="radio-label" htmlFor={`1-star"-${examId}`} />
-        </form>
+      {editMode && !rating && (
+        <div className="exam-rating">
+          <a className="rate-exam-header">דרג/י את הבחינה:</a>
+          <form className="star-rating">
+            {[5, 4, 3, 2, 1].map((star) => (
+              <React.Fragment key={star}>
+                <input className="radio-input" type="radio" id={`${star}-stars-${examId}`} name="rating" value={star} />
+                <label className="radio-label" htmlFor={`${star}-stars-${examId}`} onClick={() => rateExam(star)} />
+              </React.Fragment>
+            ))}
+          </form>
+        </div>
+      )}
+
+      {editMode && rating && (
+        <div className="exam-rating">
+          <a className="rate-exam-header">הדירוג שלך:</a>
+          <form className="star-rating">
+            {[5, 4, 3, 2, 1].map((star) => (
+              <React.Fragment key={star}>
+                <input className="radio-input" type="radio" id={`${star}-stars-${examId}`} name="rating" value={star} />
+                <label className={`radio-label ${star <= rating ? 'selected' : ''}`} htmlFor={`${star}-stars-${examId}`} onClick={() => rateExam(star)} />
+              </React.Fragment>
+            ))}
+          </form>
+        </div>
       )}
 
       {!editMode && (

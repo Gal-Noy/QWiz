@@ -203,6 +203,14 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  width: auto;
+}
+
+.exam-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .star-rating {
@@ -220,6 +228,10 @@
   font-size: 0;
   color: rgba(0, 0, 0, 0.2);
   transition: color 0.1s ease-in-out;
+
+  &.selected {
+    color: gold;
+  }
 }
 
 .radio-label:before {

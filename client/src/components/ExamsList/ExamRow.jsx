@@ -57,13 +57,13 @@ function ExamRow({ exam, favorite }) {
     <div
       className="exam-row"
       onClick={() => {
-        console.log(exam._id)
+        console.log(exam._id);
         window.location.href = `/exam/${exam._id}`;
       }}
     >
       <div className="table-element favorite">
         <div className="checkbox-wrapper-22">
-          <label className="switch" htmlFor={`checkbox-${exam._id}`}>
+          <label className="switch" htmlFor={`checkbox-${exam._id}`} onClick={(e) => e.stopPropagation()}>
             <input type="checkbox" id={`checkbox-${exam._id}`} onChange={handleFavoritesChange} checked={isFavorite} />
             <div className="slider round"></div>
           </label>

@@ -32,6 +32,19 @@ const userSchema = new mongoose.Schema({
       ref: "Exam",
     },
   ],
+  exams_ratings: [
+    {
+      exam: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Exam",
+      },
+      difficulty_rating: {
+        type: Number,
+        min: 0,
+        max: 5,
+      },
+    },
+  ],
   isActive: {
     type: Boolean,
     default: false,

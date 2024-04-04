@@ -173,7 +173,7 @@ function ExamsList(props) {
             }
           />
           <ExamsListHeader
-            label="דירוג"
+            label="דירוג קושי"
             header="rate"
             sortHeader={sortHeader}
             setSortHeader={setSortHeader}

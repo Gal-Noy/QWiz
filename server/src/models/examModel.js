@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const examSchema = mongoose.Schema({
-  s3Path: {
+  s3Key: {
     type: String,
     required: true,
   },

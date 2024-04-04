@@ -46,7 +46,10 @@ examsRouter.put("/:id", examsController.updateExam);
 // DELETE: delete exam by id
 examsRouter.delete("/:id", examsController.deleteExam);
 
-// PUT: rate exam by id
-examsRouter.put("/:id", examsController.rateExam);
+// POST: rate exam by id
+examsRouter.post("/:id/rate", examsController.rateExam);
+
+// GET: get exam presigned URL by id
+examsRouter.get("/:id/presigned", examsController.getPresignedUrl);
 
 export default examsRouter;
