@@ -16,7 +16,7 @@ function UploadedExams({ user }) {
       .then((res) => {
         if (res.status === 200) {
           const fetchedExams = res.data;
-          const sortedExams = fetchedExams.sort((a, b) => (a._id > b._id ? 1 : -1)); // TODO
+          const sortedExams = fetchedExams.sort((a, b) => (a.course > b.course ? 1 : -1));
           setUploadedExams(sortedExams);
         }
       })

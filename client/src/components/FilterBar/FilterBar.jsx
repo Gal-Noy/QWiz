@@ -78,7 +78,11 @@ function FilterBar(props) {
       .get(`${import.meta.env.VITE_SERVER_URL}/exams/course/${courseId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
-      .then((res) => setExams(res.data))
+      .then((res) => {
+        const exams = res.data;
+        const sortedExams = exams.sort((a, b) => (a.year > b.year ? 1 : -1));
+        setExams(exams);
+      })
       .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
   const updateAdvancedSearchLists = () => {

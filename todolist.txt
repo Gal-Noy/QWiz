@@ -1,5 +1,6 @@
-exams list - favorites and profile (isFavorite in examRow)
-profile sections - uploaded and favorites
+examslist ispending
+
+exams list - sorters
 
 pagination
 

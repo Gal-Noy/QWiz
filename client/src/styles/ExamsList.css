@@ -39,7 +39,7 @@
 .exam-row {
   height: 5rem;
   display: flex;
-  align-items: start;
+  align-items: center;
   width: 110vw;
   padding: 1% 2%;
   gap: 4rem;
@@ -94,9 +94,6 @@
   width: 8rem;
 }
 
-.checkbox-wrapper-22 {
-  margin-top: 1rem;
-}
 .checkbox-wrapper-22 .switch {
   display: inline-block;
   height: 34px;
