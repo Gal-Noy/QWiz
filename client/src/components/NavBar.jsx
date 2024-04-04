@@ -12,9 +12,13 @@ function NavBar({ onLogout }) {
 
   const handleLogout = async () => {
     await axios
-      .post(`${import.meta.env.VITE_SERVER_URL}/auth/logout`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
+      .post(
+        `${import.meta.env.VITE_SERVER_URL}/auth/logout`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      )
       .then((res) => {
         if (res.status === 200) {
           localStorage.removeItem("token");

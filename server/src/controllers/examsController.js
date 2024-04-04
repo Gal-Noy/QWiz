@@ -104,20 +104,6 @@ const examsController = {
     }
   },
 
-  getLastExams: async (req, res) => {
-    try {
-      const { page } = req.params ?? 1;
-      const exams = await Exam.find()
-        .populate("course")
-        .sort({ createdAt: -1 })
-        .limit(10)
-        .skip(10 * (page - 1));
-      res.json(exams);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
-
   getCourseExams: async (req, res) => {
     try {
       const course = await Course.findById(req.params.id);
@@ -241,6 +227,24 @@ const examsController = {
       user.favorite_exams = user.favorite_exams.filter((exam) => exam._id.toString() !== examId);
       await user.save();
       res.json(user.favorite_exams);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  rateExam: async (req, res) => {
+    try {
+      const { rating } = req.body;
+      const exam = await Exam.findById(req.params.id);
+      if (!exam) {
+        return res.status(404).json({ message: "Exam not found" });
+      }
+      const totalRatings = exam.difficultyRating.totalRatings + 1;
+      const averageRating =
+        (exam.difficultyRating.averageRating * exam.difficultyRating.totalRatings + rating) / totalRatings;
+      exam.difficultyRating = { totalRatings, averageRating };
+      const updatedExam = await exam.save();
+      res.json(updatedExam);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

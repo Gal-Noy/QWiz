@@ -37,9 +37,6 @@ examsRouter.delete("/favorites/:id", examsController.removeFavoriteExam);
 // GET: get exams by course id
 examsRouter.get("/course/:id", examsController.getCourseExams);
 
-// GET: get last 10 exams
-examsRouter.get("/last/:page?", examsController.getLastExams);
-
 // GET: get exam by id
 examsRouter.get("/:id", examsController.getExamById);
 
@@ -48,5 +45,8 @@ examsRouter.put("/:id", examsController.updateExam);
 
 // DELETE: delete exam by id
 examsRouter.delete("/:id", examsController.deleteExam);
+
+// PUT: rate exam by id
+examsRouter.put("/:id", examsController.rateExam);
 
 export default examsRouter;

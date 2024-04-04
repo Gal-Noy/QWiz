@@ -50,21 +50,11 @@ function ExamsList(props) {
     }
   }, [exams]);
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-  console.log(numPages);
   return !showExams ? null : (
     <div className="exams-list">
       <label className="exams-list-count">סה"כ בחינות נמצאו: {exams.length}</label>
       {!isPending && !error && numPages > 1 && (
         <div className="exams-list-pagination">
-          {/* <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-              Previous
-            </button>
-            <button onClick={() => handlePageChange(currentPage + 1)} disabled={lastExamIndex >= exams.length}>
-              Next
-            </button> */}
           <span
             className={"material-symbols-outlined navigation-arrow" + (currentPage < numPages ? " enabled" : "")}
             onClick={() => {
@@ -184,11 +174,11 @@ function ExamsList(props) {
           />
           <ExamsListHeader
             label="דירוג"
-            header="rank"
+            header="rate"
             sortHeader={sortHeader}
             setSortHeader={setSortHeader}
             sortFunc={(isAsc) =>
-              setExams((prevExams) => prevExams.slice().sort((a, b) => (a.rank > b.rank ? 1 : -1) * (isAsc ? 1 : -1)))
+              setExams((prevExams) => prevExams.slice().sort((a, b) => (a.rate > b.rate ? 1 : -1) * (isAsc ? 1 : -1)))
             }
           />
         </div>

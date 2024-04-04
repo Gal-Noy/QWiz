@@ -88,44 +88,44 @@ function FilterBar(props) {
       );
 
   const updateAdvancedSearchLists = () => {
-    const updatedAdvancedSearchLists = { ...advancedSearchLists };
+    let updatedAdvancedSearchLists = { ...advancedSearchLists };
 
     courseExams.forEach((exam) => {
-      if (!advancedSearchLists.lecturers.includes(exam.lecturers)) {
-        updatedAdvancedSearchLists.lecturers = [...updatedAdvancedSearchLists.lecturers, exam.lecturers];
+      if (!updatedAdvancedSearchLists.lecturers.includes(exam.lecturers)) {
+        updatedAdvancedSearchLists.lecturers.push(exam.lecturers);
       }
-      if (!advancedSearchLists.years.includes(exam.year)) {
-        updatedAdvancedSearchLists.years = [...updatedAdvancedSearchLists.years, exam.year];
+      if (!updatedAdvancedSearchLists.years.includes(exam.year)) {
+        updatedAdvancedSearchLists.years.push(exam.year);
       }
-      if (!advancedSearchLists.semesters.includes(exam.semester)) {
-        updatedAdvancedSearchLists.semesters = [
-          ...updatedAdvancedSearchLists.semesters,
-          `${exam.semester === 1 ? "'א" : exam.semester === 2 ? "'ב" : "'ג"}`,
-        ];
+      const examSemester = exam.semester === 1 ? "'א" : exam.semester === 2 ? "'ב" : "'ג";
+      if (!updatedAdvancedSearchLists.semesters.includes(examSemester)) {
+        updatedAdvancedSearchLists.semesters.push(examSemester);
       }
-      if (!advancedSearchLists.terms.includes(exam.term)) {
-        updatedAdvancedSearchLists.terms = [
-          ...updatedAdvancedSearchLists.terms,
-          `${exam.term === 1 ? "'א" : exam.term === 2 ? "'ב" : "'ג"}`,
-        ];
+      const examTerm = exam.term === 1 ? "'א" : exam.term === 2 ? "'ב" : "'ג";
+      if (!updatedAdvancedSearchLists.terms.includes(examTerm)) {
+        updatedAdvancedSearchLists.terms.push(examTerm);
       }
-      if (!advancedSearchLists.types.includes(exam.type)) {
-        updatedAdvancedSearchLists.types = [
-          ...updatedAdvancedSearchLists.types,
-          `${exam.type === "test" ? "מבחן" : "בוחן"}`,
-        ];
+      const examType = exam.type === "test" ? "מבחן" : "בוחן";
+      if (!updatedAdvancedSearchLists.types.includes(examType)) {
+        updatedAdvancedSearchLists.types.push(examType);
       }
       const minGrade = Math.floor(exam.grade / 10) * 10;
-      if (!advancedSearchLists.minGrades.includes(minGrade)) {
-        updatedAdvancedSearchLists.minGrades = [...updatedAdvancedSearchLists.minGrades, `${minGrade}+`];
+      if (!updatedAdvancedSearchLists.minGrades.includes(`${minGrade}+`)) {
+        updatedAdvancedSearchLists.minGrades.push(`${minGrade}+`);
       }
       const difficultyRating = Math.floor(exam.difficultyRating.averageRating);
-      if (!advancedSearchLists.difficultyRatings.includes(difficultyRating)) {
-        updatedAdvancedSearchLists.difficultyRatings = [
-          ...updatedAdvancedSearchLists.difficultyRatings,
-          `${difficultyRating}+`,
-        ];
+      if (!updatedAdvancedSearchLists.difficultyRatings.includes(`${difficultyRating}+`)) {
+        updatedAdvancedSearchLists.difficultyRatings.push(`${difficultyRating}+`);
       }
+
+      // Sort lists
+      updatedAdvancedSearchLists.lecturers.sort();
+      updatedAdvancedSearchLists.years.sort();
+      updatedAdvancedSearchLists.semesters.sort();
+      updatedAdvancedSearchLists.terms.sort();
+      updatedAdvancedSearchLists.types.sort();
+      updatedAdvancedSearchLists.minGrades.sort();
+      updatedAdvancedSearchLists.difficultyRatings.sort();
 
       setAdvancedSearchLists(updatedAdvancedSearchLists);
     });

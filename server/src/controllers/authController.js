@@ -77,9 +77,9 @@ const authController = {
   logout: async (req, res) => {
     try {
       const userId = req.user.user_id;
-
-      await User.findByIdAndUpdate(userId, { isActive: false });
-
+      const dbUser = await User.findById(userId);
+      dbUser.isActive = false;
+      await dbUser.save();
       return res.status(200).json({ message: "User logged out successfully." });
     } catch (err) {
       return res.status(403).json({ message: "Invalid token." });

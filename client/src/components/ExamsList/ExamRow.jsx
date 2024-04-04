@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { handleError } from "../../utils/axiosUtils";
+import ExamRating from "./ExamRating";
 
 function ExamRow({ exam, favorite }) {
   const [isFavorite, setIsFavorite] = useState(favorite);
@@ -67,12 +68,10 @@ function ExamRow({ exam, favorite }) {
       <div className="table-element lecturers">{exam.lecturers}</div>
       <div className="table-element type">{exam.type === "test" ? "מבחן" : "בוחן"}</div>
       <div className="table-element year">{exam.year}</div>
-      <div className="table-element semester">
-        {exam.semester === "1" ? "א'" : exam.semester === "2" ? "ב'" : "קיץ"}
-      </div>
-      <div className="table-element term">{exam.semester === "1" ? "א'" : exam.semester === "2" ? "ב'" : "ג'"}</div>
+      <div className="table-element semester">{exam.semester === 1 ? "א'" : exam.semester === 2 ? "ב'" : "קיץ"}</div>
+      <div className="table-element term">{exam.semester === 1 ? "א'" : exam.semester === 2 ? "ב'" : "ג'"}</div>
       <div className="table-element grade">{exam.grade}</div>
-      <div className="table-element rank">X X X X X</div>
+      <ExamRating difficultyRating={exam.difficultyRating} examId={exam._id} editMode={false} />
     </div>
   );
 }

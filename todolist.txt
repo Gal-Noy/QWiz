@@ -1,10 +1,4 @@
 
-pagination
-
-rank
+rate
 
 page and forum for each exam
-
-last 10 exams
-
-change local to session storage
