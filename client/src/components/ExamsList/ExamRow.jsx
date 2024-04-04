@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { handleError } from "../../utils/axiosUtils";
 
@@ -48,6 +48,10 @@ function ExamRow({ exam, course, favorite }) {
     }
   };
 
+  useEffect(() => {
+    setIsFavorite(favorite);
+  }, [favorite]);
+
   return (
     <div className="exam-row">
       <div className="table-element favorite">
@@ -58,8 +62,8 @@ function ExamRow({ exam, course, favorite }) {
           </label>
         </div>
       </div>
-      <div className="table-element course-num">{course?.code}</div>
-      <div className="table-element course-name">{course?.name}</div>
+      <div className="table-element course-num">{course ? course.code : "טוען..."}</div>
+      <div className="table-element course-name">{course ? course.name : "טוען..."}</div>
       <div className="table-element lecturers">{exam.lecturers}</div>
       <div className="table-element type">{exam.type === "test" ? "מבחן" : "בוחן"}</div>
       <div className="table-element year">{exam.year}</div>

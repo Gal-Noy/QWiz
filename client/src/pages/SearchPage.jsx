@@ -21,8 +21,6 @@ function SearchPage() {
     <div className="exams-page">
       <PageHeader title={"מאגר המבחנים של QWiz"} paragraphs={paragraphs} />
       <FilterBar
-        exams={exams}
-        setExams={setExams}
         setFilteredExams={setFilteredExams}
         setShowExams={setShowExams}
         setError={setError}

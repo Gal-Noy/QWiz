@@ -9,8 +9,6 @@ function ExamsList(props) {
   const [favoriteExams, setFavoriteExams] = useState([]);
   const [idsToCourses, setIdsToCourses] = useState({});
 
-  console.log(idsToCourses);
-
   useEffect(() => {
     if (showExams) {
       window.scrollTo({
@@ -58,7 +56,6 @@ function ExamsList(props) {
             .catch((err) => {
               handleError(err, () => {
                 console.error(err.response.data.message);
-                alert("שגיאה בטעינת הקורסים, אנא נסה שנית.");
               });
             });
         }

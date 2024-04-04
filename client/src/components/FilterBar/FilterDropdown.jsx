@@ -42,31 +42,35 @@ function FilterDropdown(props) {
       {isOpen && (
         <div className="filter-dropdown-options">
           {searchInput &&
-            filteredOptions.map((option, index) => (
-              <a
-                className="filter-dropdown-item"
-                key={option._id || index}
-                onClick={() => {
-                  setValue(option);
-                  setIsOpen(false);
-                }}
-              >
-                {option.name || option}
-              </a>
-            ))}
+            filteredOptions.map((option, index) =>
+              option !== "" ? (
+                <a
+                  className="filter-dropdown-item"
+                  key={option._id || index}
+                  onClick={() => {
+                    setValue(option);
+                    setIsOpen(false);
+                  }}
+                >
+                  {option.name || option}
+                </a>
+              ) : null
+            )}
           {!searchInput &&
-            options.map((option, index) => (
-              <a
-                className="filter-dropdown-item"
-                key={option._id || index}
-                onClick={() => {
-                  setValue(option);
-                  setIsOpen(false);
-                }}
-              >
-                {option.name || option}
-              </a>
-            ))}
+            options.map((option, index) =>
+              option !== "" ? (
+                <a
+                  className="filter-dropdown-item"
+                  key={option._id || index}
+                  onClick={() => {
+                    setValue(option);
+                    setIsOpen(false);
+                  }}
+                >
+                  {option.name || option}
+                </a>
+              ) : null
+            )}
         </div>
       )}
       {valueChosen && (

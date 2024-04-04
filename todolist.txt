@@ -1,3 +1,5 @@
+sort exams in list
+
 fix favorites and switch exams
 
 add course num to name in search

@@ -5,7 +5,8 @@ import { handleError } from "../../utils/axiosUtils";
 import axios from "axios";
 
 function FilterBar(props) {
-  const { exams, setExams, setFilteredExams, setShowExams, setError } = props;
+  const { setFilteredExams, setShowExams, setError } = props;
+  const [courseExams, setCourseExams] = useState([]);
 
   // Mandatory filters
   const [faculties, setFaculties] = useState([]);
@@ -78,11 +79,7 @@ function FilterBar(props) {
       .get(`${import.meta.env.VITE_SERVER_URL}/exams/course/${courseId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
-      .then((res) => {
-        const exams = res.data;
-        const sortedExams = exams.sort((a, b) => (a.year > b.year ? 1 : -1));
-        setExams(exams);
-      })
+      .then((res) => setCourseExams(res.data))
       .catch((err) =>
         handleError(err, () => {
           console.log(err.response.data.message);
@@ -93,7 +90,7 @@ function FilterBar(props) {
   const updateAdvancedSearchLists = () => {
     const updatedAdvancedSearchLists = { ...advancedSearchLists };
 
-    exams.forEach((exam) => {
+    courseExams.forEach((exam) => {
       if (!advancedSearchLists.lecturers.includes(exam.lecturers)) {
         updatedAdvancedSearchLists.lecturers = [...updatedAdvancedSearchLists.lecturers, exam.lecturers];
       }
@@ -163,7 +160,6 @@ function FilterBar(props) {
     setCourses([]);
     setChosenCourse(null);
     clearAdvancedFilters();
-    setShowExams(false);
   };
 
   const filterAndSearchExams = () => {
@@ -173,7 +169,7 @@ function FilterBar(props) {
       return;
     }
 
-    let filteredExams = exams;
+    let filteredExams = courseExams;
 
     if (freeText) {
       filteredExams = filteredExams.filter(
@@ -247,9 +243,8 @@ function FilterBar(props) {
   }, [chosenCourse]);
 
   useEffect(() => {
-    setFilteredExams(exams);
     updateAdvancedSearchLists();
-  }, [exams]);
+  }, [courseExams]);
 
   return (
     <div className="filter-bar">
