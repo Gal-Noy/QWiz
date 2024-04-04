@@ -1,6 +1,3 @@
-sort exams in list
-
-exams list - sorters
 
 pagination
 

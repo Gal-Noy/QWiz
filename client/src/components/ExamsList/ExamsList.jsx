@@ -9,36 +9,13 @@ function ExamsList(props) {
   const { exams, setExams, showExams, isProfilePage, isPending, error } = props;
   const [favoriteExams, setFavoriteExams] = useState([]);
   const [sortHeader, setSortHeader] = useState("favorite");
+  const [numPages, setNumPages] = useState(exams.length > 0 ? Math.ceil(exams.length / 10) : 0);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // useEffect(() => {
-  //   if (exams.length > 0) {
-  //     if (prevSortHeader === sortHeader) {
-  //       setSortAsc(!sortAsc);
-  //     }
-  //     const sortedExams = exams.sort((a, b) => {
-  //       if (sortHeader === "course-num") {
-  //         return a.course > b.course ? 1 : -1;
-  //       } else if (sortHeader === "course-name") {
-  //         return idsToCourses[a.course].name > idsToCourses[b.course].name ? 1 : -1;
-  //       } else if (sortHeader === "lecturers") {
-  //         return a.lecturers > b.lecturers ? 1 : -1;
-  //       } else if (sortHeader === "type") {
-  //         return a.type > b.type ? 1 : -1;
-  //       } else if (sortHeader === "year") {
-  //         return a.year > b.year ? 1 : -1;
-  //       } else if (sortHeader === "semester") {
-  //         return a.semester > b.semester ? 1 : -1;
-  //       } else if (sortHeader === "term") {
-  //         return a.term > b.term ? 1 : -1;
-  //       } else if (sortHeader === "grade") {
-  //         return a.grade > b.grade ? 1 : -1;
-  //       } else if (sortHeader === "rank") {
-  //         return a.rank > b.rank ? 1 : -1;
-  //       }
-  //     });
-  //     setExams(sortedExams);
-  //   }
-  // }, [sortHeader]);
+  const examsPerPage = 10;
+  const lastExamIndex = currentPage * examsPerPage;
+  const firstExamIndex = lastExamIndex - examsPerPage;
+  const currentExams = exams.slice(firstExamIndex, lastExamIndex);
 
   useEffect(() => {
     if (showExams) {
@@ -67,9 +44,46 @@ function ExamsList(props) {
     }
   }, [showExams]);
 
+  useEffect(() => {
+    if (showExams && exams.length > 0) {
+      setNumPages(Math.ceil(exams.length / examsPerPage));
+    }
+  }, [exams]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+  console.log(numPages);
   return !showExams ? null : (
     <div className="exams-list">
       <label className="exams-list-count">סה"כ בחינות נמצאו: {exams.length}</label>
+      {!isPending && !error && numPages > 1 && (
+        <div className="exams-list-pagination">
+          {/* <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+              Previous
+            </button>
+            <button onClick={() => handlePageChange(currentPage + 1)} disabled={lastExamIndex >= exams.length}>
+              Next
+            </button> */}
+          <span
+            className={"material-symbols-outlined navigation-arrow" + (currentPage < numPages ? " enabled" : "")}
+            onClick={() => {
+              if (currentPage < numPages) setCurrentPage(currentPage + 1);
+            }}
+          >
+            arrow_forward_ios
+          </span>
+          {numPages} / {currentPage}
+          <span
+            className={"material-symbols-outlined navigation-arrow" + (currentPage > 1 ? " enabled" : "")}
+            onClick={() => {
+              if (currentPage > 1) setCurrentPage(currentPage - 1);
+            }}
+          >
+            arrow_back_ios
+          </span>
+        </div>
+      )}
       <div className={"exams-list-container" + (isProfilePage ? " is-profile-page" : "")}>
         <div className="headers-row">
           <ExamsListHeader
@@ -180,9 +194,10 @@ function ExamsList(props) {
         </div>
         {isPending && !error && <div className="exams-list-loading">טוען...</div>}
         {error && <div className="exams-list-error">{error}</div>}
+
         {!isPending && !error && (
           <div className="exams-list-rows">
-            {exams.map((exam) => (
+            {currentExams.map((exam) => (
               <ExamRow key={exam._id} exam={exam} favorite={favoriteExams.includes(exam._id)} />
             ))}
           </div>
