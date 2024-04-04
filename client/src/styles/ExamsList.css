@@ -166,7 +166,8 @@
   display: flex;
   align-items: center;
 
-  &:hover {
+  &:hover,
+  &.is-sorter {
     a {
       text-decoration: underline;
     }

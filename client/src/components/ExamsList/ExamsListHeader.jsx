@@ -27,7 +27,7 @@ function ExamsListHeader(props) {
   }, [sortHeader]);
 
   return (
-    <div className={"table-element header " + header} onClick={handleClick}>
+    <div className={"table-element header " + header + (isSorter ? " is-sorter" : "")} onClick={handleClick}>
       <a>{label}</a>
       {isSorter && isAsc && <span className="material-symbols-outlined sort-arrow">arrow_drop_down</span>}
       {isSorter && !isAsc && <span className="material-symbols-outlined sort-arrow">arrow_drop_up</span>}

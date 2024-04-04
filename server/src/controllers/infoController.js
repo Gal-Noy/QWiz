@@ -168,7 +168,7 @@ const infoController = {
 
   getDepartmentCourses: async (req, res) => {
     try {
-      const courses = await Course.find({ department: req.params.id });
+      const courses = await Course.find({ department: req.params.id })
       res.json(courses);
     } catch (error) {
       res.status(500).json({ message: error.message });

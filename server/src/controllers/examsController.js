@@ -124,7 +124,7 @@ const examsController = {
       if (!course) {
         return res.status(404).json({ message: "Course not found" });
       }
-      const exams = await Exam.find({ course: course._id });
+      const exams = await Exam.find({ course: course._id }).populate("course");
       res.json(exams);
     } catch (error) {
       res.status(500).json({ message: error.message });
