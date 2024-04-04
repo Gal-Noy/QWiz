@@ -33,9 +33,15 @@ function NavBar({ onLogout }) {
 
   return (
     <div className="navbar-container">
-      <Link to="/" className="navbar-logo">
+      <div
+        className="navbar-logo"
+        onClick={() => {
+          setShowUserMenu(false);
+          navigate("/");
+        }}
+      >
         QWiz
-      </Link>
+      </div>
       <div className="navbar-profile">
         <img
           className={"avatar-pic" + (showUserMenu ? " active" : "")}
