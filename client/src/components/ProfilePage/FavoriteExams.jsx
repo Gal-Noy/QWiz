@@ -17,7 +17,6 @@ function FavoriteExams() {
       })
       .then((res) => {
         if (res.status === 200) {
-          console.log(res.data);
           const fetchedExams = res.data;
           const sortedExams = fetchedExams.sort((a, b) => (a.course > b.course ? 1 : -1));
           setFavoriteExams(sortedExams);
@@ -35,7 +34,8 @@ function FavoriteExams() {
 
   return (
     <ExamsList
-      filteredExams={favoriteExams}
+      exams={favoriteExams}
+      setExams={setFavoriteExams}
       showExams={true}
       isProfilePage={true}
       isPending={isPending}

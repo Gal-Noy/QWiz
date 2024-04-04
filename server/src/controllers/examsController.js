@@ -6,7 +6,7 @@ import { uploadFile } from "../utils/s3.js";
 const examsController = {
   getAllExams: async (req, res) => {
     try {
-      const exams = await Exam.find();
+      const exams = await Exam.find().populate("course");
       res.json(exams);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -108,6 +108,7 @@ const examsController = {
     try {
       const { page } = req.params ?? 1;
       const exams = await Exam.find()
+        .populate("course")
         .sort({ createdAt: -1 })
         .limit(10)
         .skip(10 * (page - 1));
@@ -148,7 +149,7 @@ const examsController = {
       if (lecturers) filter.lecturers = lecturers;
       if (difficultyRating) filter.difficultyRating.averageRating = { $gte: difficultyRating }; // greater than or equal
 
-      const exams = await Exam.find(filter);
+      const exams = await Exam.find(filter).populate("course");
       res.json(exams);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -157,7 +158,7 @@ const examsController = {
 
   getExamById: async (req, res) => {
     try {
-      const exam = await Exam.findById(req.params.id);
+      const exam = await Exam.findById(req.params.id).populate("course");
       if (!exam) {
         return res.status(404).json({ message: "Exam not found" });
       }
@@ -192,7 +193,12 @@ const examsController = {
 
   getUploadedExams: async (req, res) => {
     try {
-      const user = await User.findById(req.user.user_id).populate("uploaded_exams");
+      const user = await User.findById(req.user.user_id).populate({
+        path: "uploaded_exams",
+        populate: {
+          path: "course",
+        },
+      });
       res.json(user.uploaded_exams);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -201,7 +207,12 @@ const examsController = {
 
   getFavoriteExams: async (req, res) => {
     try {
-      const user = await User.findById(req.user.user_id).populate("favorite_exams");
+      const user = await User.findById(req.user.user_id).populate({
+        path: "favorite_exams",
+        populate: {
+          path: "course",
+        },
+      });
       res.json(user.favorite_exams);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -211,7 +222,7 @@ const examsController = {
   addFavoriteExam: async (req, res) => {
     try {
       const user = await User.findById(req.user.user_id);
-      const exam = await Exam.findById(req.body.exam);
+      const exam = await Exam.findById(req.body.exam).populate("course");
       if (!exam) {
         return res.status(404).json({ message: "Exam not found" });
       }

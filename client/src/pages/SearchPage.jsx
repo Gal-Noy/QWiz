@@ -20,12 +20,14 @@ function SearchPage() {
   return (
     <div className="exams-page">
       <PageHeader title={"מאגר המבחנים של QWiz"} paragraphs={paragraphs} />
-      <FilterBar
-        setFilteredExams={setFilteredExams}
-        setShowExams={setShowExams}
-        setError={setError}
+      <FilterBar setFilteredExams={setFilteredExams} setShowExams={setShowExams} setError={setError} />
+      <ExamsList
+        exams={filteredExams}
+        setExams={setFilteredExams}
+        showExams={showExams}
+        isProfilePage={false}
+        error={error}
       />
-      <ExamsList filteredExams={filteredExams} showExams={showExams} isProfilePage={false} error={error} />
     </div>
   );
 }

@@ -75,17 +75,13 @@
 }
 
 .grade,
-.term {
-  width: 5rem;
-}
-
 .year,
-.semester {
+.term {
   width: 7rem;
 }
 
 .type {
-  width: 10rem;
+  width: 12rem;
 }
 .rank,
 .course-num,
@@ -95,8 +91,9 @@
 .course-name {
   width: 20rem;
 }
-.favorite {
-  width: 8rem;
+.favorite,
+.semester {
+  width: 10rem;
 }
 
 .checkbox-wrapper-22 .switch {
@@ -162,4 +159,16 @@
   padding: 2rem;
   font-size: 1.5rem;
   color: var(--red1);
+}
+
+.table-element.header {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    a {
+      text-decoration: underline;
+    }
+  }
 }

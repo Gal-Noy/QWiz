@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { handleError } from "../../utils/axiosUtils";
 
-function ExamRow({ exam, course, favorite }) {
+function ExamRow({ exam, favorite }) {
   const [isFavorite, setIsFavorite] = useState(favorite);
 
   const addToFavorites = () => {
@@ -56,14 +56,14 @@ function ExamRow({ exam, course, favorite }) {
     <div className="exam-row">
       <div className="table-element favorite">
         <div className="checkbox-wrapper-22">
-          <label className="switch" htmlFor="checkbox">
-            <input type="checkbox" id="checkbox" onChange={handleFavoritesChange} checked={isFavorite} />
+          <label className="switch" htmlFor={`checkbox-${exam._id}`}>
+            <input type="checkbox" id={`checkbox-${exam._id}`} onChange={handleFavoritesChange} checked={isFavorite} />
             <div className="slider round"></div>
           </label>
         </div>
       </div>
-      <div className="table-element course-num">{course ? course.code : "טוען..."}</div>
-      <div className="table-element course-name">{course ? course.name : "טוען..."}</div>
+      <div className="table-element course-num">{exam.course.code}</div>
+      <div className="table-element course-name">{exam.course.name}</div>
       <div className="table-element lecturers">{exam.lecturers}</div>
       <div className="table-element type">{exam.type === "test" ? "מבחן" : "בוחן"}</div>
       <div className="table-element year">{exam.year}</div>

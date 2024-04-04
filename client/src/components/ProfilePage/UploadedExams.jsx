@@ -34,7 +34,8 @@ function UploadedExams() {
 
   return (
     <ExamsList
-      filteredExams={uploadedExams}
+      exams={uploadedExams}
+      setExams={setUploadedExams}
       showExams={true}
       isProfilePage={true}
       isPending={isPending}
