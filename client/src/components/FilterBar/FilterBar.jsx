@@ -9,12 +9,16 @@ function FilterBar(props) {
   const [courseExams, setCourseExams] = useState([]);
 
   // Mandatory filters
-  const [faculties, setFaculties] = useState([]);
-  const [chosenFaculty, setChosenFaculty] = useState(null);
-  const [departments, setDepartments] = useState([]);
-  const [chosenDepartment, setChosenDepartment] = useState(null);
-  const [courses, setCourses] = useState([]);
-  const [chosenCourse, setChosenCourse] = useState(null);
+  const [categoriesLists, setCategoriesLists] = useState({
+    faculties: [],
+    departments: [],
+    courses: [],
+  });
+  const [chosenCategories, setChosenCategories] = useState({
+    faculty: null,
+    department: null,
+    course: null,
+  });
 
   // Optional filters (Advanced search)
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
@@ -46,7 +50,7 @@ function FilterBar(props) {
       .then((res) => {
         const faculties = res.data;
         const sortedFaculties = faculties.sort((a, b) => (a.name > b.name ? 1 : -1));
-        setFaculties(sortedFaculties);
+        setCategoriesLists({ faculties: sortedFaculties, departments: [], courses: [] });
       })
       .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
@@ -58,7 +62,7 @@ function FilterBar(props) {
       .then((res) => {
         const departments = res.data;
         const sortedDepartments = departments.sort((a, b) => (a.name > b.name ? 1 : -1));
-        setDepartments(sortedDepartments);
+        setCategoriesLists({ ...categoriesLists, departments: sortedDepartments, courses: [] });
       })
       .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
@@ -70,7 +74,7 @@ function FilterBar(props) {
       .then((res) => {
         const courses = res.data;
         const sortedCourses = courses.sort((a, b) => (a.name > b.name ? 1 : -1));
-        setCourses(sortedCourses);
+        setCategoriesLists({ ...categoriesLists, courses: sortedCourses });
       })
       .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
@@ -154,17 +158,14 @@ function FilterBar(props) {
   };
 
   const clearFilters = () => {
-    setChosenFaculty(null);
-    setDepartments([]);
-    setChosenDepartment(null);
-    setCourses([]);
-    setChosenCourse(null);
+    setCategoriesLists({ departments: [], courses: [] });
+    setChosenCategories({ faculty: null, department: null, course: null });
     clearAdvancedFilters();
   };
 
   const filterAndSearchExams = () => {
     // Exams are already filtered by faculty, department, and course
-    if (!chosenCourse || !chosenDepartment || !chosenFaculty) {
+    if (!chosenCategories.faculty || !chosenCategories.department || !chosenCategories.course) {
       alert("יש לבחור פקולטה, מחלקה וקורס לפני החיפוש");
       return;
     }
@@ -212,35 +213,31 @@ function FilterBar(props) {
   }, []);
 
   useEffect(() => {
-    setDepartments([]);
-    setChosenDepartment(null);
-    setCourses([]);
-    setChosenCourse(null);
+    setCategoriesLists({ ...categoriesLists, departments: [], courses: [] });
+    setChosenCategories({ department: null, course: null });
     clearAdvancedFilters();
-    if (chosenFaculty) {
-      fetchDepartmentsByFaculty(chosenFaculty._id);
+    if (chosenCategories.faculty) {
+      fetchDepartmentsByFaculty(chosenCategories.faculty._id);
     }
-  }, [chosenFaculty]);
+  }, [chosenCategories.faculty]);
 
   useEffect(() => {
-    setCourses([]);
-    setChosenCourse(null);
-    if (!chosenDepartment) {
+    setCategoriesLists({ ...categoriesLists, courses: [] });
+    setChosenCategories({ ...chosenCategories, course: null });
+    if (chosenCategories.department) {
+      fetchCoursesByDepartment(chosenCategories.department._id);
+    } else {
       clearAdvancedFilters();
     }
-    if (chosenDepartment) {
-      fetchCoursesByDepartment(chosenDepartment._id);
-    }
-  }, [chosenDepartment]);
+  }, [chosenCategories.department]);
 
   useEffect(() => {
-    if (!chosenCourse) {
+    if (chosenCategories.course) {
+      fetchCourseExams(chosenCategories.course._id);
+    } else {
       clearAdvancedFilters();
     }
-    if (chosenCourse) {
-      fetchCourseExams(chosenCourse._id);
-    }
-  }, [chosenCourse]);
+  }, [chosenCategories.course]);
 
   useEffect(() => {
     updateAdvancedSearchLists();
@@ -253,26 +250,26 @@ function FilterBar(props) {
         <FilterDropdown
           index={0}
           label="פקולטה"
-          options={faculties}
-          value={chosenFaculty}
-          setValue={(val) => setChosenFaculty(val)}
-          isAvailable={faculties.length > 0}
+          options={categoriesLists.faculties}
+          value={chosenCategories.faculty}
+          setValue={(val) => setChosenCategories({ ...chosenCategories, faculty: val })}
+          isAvailable={categoriesLists.faculties.length > 0}
         />
         <FilterDropdown
           index={1}
           label="מחלקה"
-          options={departments}
-          value={chosenDepartment}
-          setValue={(val) => setChosenDepartment(val)}
-          isAvailable={departments.length > 0}
+          options={categoriesLists.departments}
+          value={chosenCategories.department}
+          setValue={(val) => setChosenCategories({ ...chosenCategories, department: val })}
+          isAvailable={categoriesLists.departments.length > 0}
         />
         <FilterDropdown
           index={2}
           label="קורס"
-          options={courses}
-          value={chosenCourse}
-          setValue={(val) => setChosenCourse(val)}
-          isAvailable={courses.length > 0}
+          options={categoriesLists.courses}
+          value={chosenCategories.course}
+          setValue={(val) => setChosenCategories({ ...chosenCategories, course: val })}
+          isAvailable={categoriesLists.courses.length > 0}
         />
       </div>
       <div className={"advanced-filters-rows" + (showAdvancedFilters ? " show" : "")}>
