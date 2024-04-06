@@ -166,6 +166,7 @@
   cursor: pointer;
   transition: all 0.3s;
   position: relative;
+  margin-top: 2rem;
 
   &:hover {
     background-color: var(--cyan1);
@@ -189,8 +190,8 @@
 }
 
 #pdf-preview {
-  width: 65vw;
-  }
+  min-width: 50vw;
+}
 
 .react-pdf__Page__canvas {
   margin: 2rem auto;

@@ -178,7 +178,14 @@ function ExamsList(props) {
             sortHeader={sortHeader}
             setSortHeader={setSortHeader}
             sortFunc={(isAsc) =>
-              setExams((prevExams) => prevExams.slice().sort((a, b) => (a.rate > b.rate ? 1 : -1) * (isAsc ? 1 : -1)))
+              setExams((prevExams) =>
+                prevExams
+                  .slice()
+                  .sort(
+                    (a, b) =>
+                      (a.difficultyRating.averageRating > b.difficultyRating.averageRating ? 1 : -1) * (isAsc ? 1 : -1)
+                  )
+              )
             }
           />
         </div>

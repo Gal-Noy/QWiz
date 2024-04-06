@@ -5,11 +5,10 @@ import { handleError } from "../../utils/axiosUtils";
 function ExamRating(props) {
   const { difficultyRating, examId, editMode, setExam } = props;
   const { totalRatings, averageRating } = difficultyRating;
-  const fixedAverageRating = averageRating.toFixed(1);
   const user = JSON.parse(localStorage.getItem("user"));
 
   const currRating = user.exams_ratings?.find((rating) => rating.exam === examId)?.difficulty_rating;
-  const [rating, setRating] = useState(currRating || null);
+  const [rating, setRating] = useState(currRating ? currRating : null);
 
   const rateExam = async (rating) => {
     await axios
@@ -59,7 +58,11 @@ function ExamRating(props) {
             {[5, 4, 3, 2, 1].map((star) => (
               <React.Fragment key={star}>
                 <input className="radio-input" type="radio" id={`${star}-stars-${examId}`} name="rating" value={star} />
-                <label className={`radio-label ${star <= rating ? 'selected' : ''}`} htmlFor={`${star}-stars-${examId}`} onClick={() => rateExam(star)} />
+                <label
+                  className={`radio-label ${star <= rating ? "selected" : ""}`}
+                  htmlFor={`${star}-stars-${examId}`}
+                  onClick={() => rateExam(star)}
+                />
               </React.Fragment>
             ))}
           </form>
@@ -69,15 +72,16 @@ function ExamRating(props) {
       {!editMode && (
         <meter
           className="average-rating"
+          id={`average-rating-${examId}`}
           min="0"
           max="5"
-          value={fixedAverageRating}
-          title={`${fixedAverageRating} out of 5 stars`}
+          value={averageRating}
+          title={`${averageRating} out of 5 stars`}
         >
-          {fixedAverageRating} out of 5
+          {averageRating} out of 5
           <style jsx="true">{`
-            .average-rating::before {
-              --percent: calc(${fixedAverageRating} / 5 * 100%);
+            #average-rating-${examId}::before {
+              --percent: calc(${averageRating} / 5 * 100%);
             }
           `}</style>
         </meter>

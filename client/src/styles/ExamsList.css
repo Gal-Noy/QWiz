@@ -14,11 +14,8 @@
   border-top-right-radius: 2rem;
   width: 90vw;
   height: 85vh;
-
   overflow: auto;
-  scrollbar-width: thin;
   scrollbar-color: var(--orange1) var(--yellow4);
-
   border: 2px solid var(--orange1);
 
   &.is-profile-page {
@@ -203,7 +200,6 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  width: auto;
 }
 
 .exam-rating {

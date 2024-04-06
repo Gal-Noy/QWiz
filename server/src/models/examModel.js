@@ -33,7 +33,7 @@ const examSchema = mongoose.Schema({
   },
   term: {
     type: Number,
-    enum: [1, 2, 3], // מועד א', מועד ב', מועד מיוחד
+    enum: [1, 2, 3], // מועד א', מועד ב', מועד ג'
     default: 1,
     required: true,
   },

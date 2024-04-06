@@ -297,7 +297,7 @@ function UploadForm() {
               >
                 <option value="1">א'</option>
                 <option value="2">ב'</option>
-                <option value="3">מיוחד</option>
+                <option value="3">ג'</option>
               </select>
             </div>
             <div className="upload-form-attr">
