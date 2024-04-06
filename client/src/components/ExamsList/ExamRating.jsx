@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { handleError } from "../../utils/axiosUtils";
+
+import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 
 function ExamRating(props) {
   const { difficultyRating, examId, editMode, setExam } = props;
@@ -11,22 +11,16 @@ function ExamRating(props) {
   const [rating, setRating] = useState(currRating ? currRating : null);
 
   const rateExam = async (rating) => {
-    await axios
-      .post(
-        `${import.meta.env.VITE_SERVER_URL}/exams/${examId}/rate`,
-        { rating },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
+    await axiosInstance
+      .post(`/exams/${examId}/rate`, { rating })
+      .then((res) =>
+        handleResult(res, 200, () => {
+          const { updatedExam, user } = res.data;
+          setExam(updatedExam);
+          localStorage.setItem("user", JSON.stringify(user));
+          setRating(rating);
+        })
       )
-      .then((res) => {
-        const { updatedExam, user } = res.data;
-        setExam(updatedExam);
-        localStorage.setItem("user", JSON.stringify(user));
-        setRating(rating);
-      })
       .catch((err) =>
         handleError(err, () => {
           console.error(err.response.data.message);

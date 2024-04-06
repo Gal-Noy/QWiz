@@ -32,7 +32,10 @@
     width: 25vw;
   }
   &.m {
-    width: 20vw;
+    width: 32%;
+  }
+  &.s {
+    width: 24%;
   }
 
   &.disabled {
@@ -61,6 +64,16 @@
   padding: 0.5rem;
 }
 
+.filter-dropown-label {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.filter-dropdown-header-buttons {
+  display: flex;
+}
+
 .filter-dropdown-menu-open {
   position: absolute;
   top: 100%;
@@ -71,12 +84,15 @@
   background-color: white;
   max-height: 0;
   z-index: 1;
+  display: none;
 
   &.show {
+    display: flex;
     max-height: 35vh;
     border: 1px solid var(--orange1);
     border-top: none;
     border-radius: 0 0 5px 5px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
 
     .filter-dropdown-search-input {
       opacity: 1;
@@ -98,7 +114,7 @@
   li {
     cursor: pointer;
     transition: all 0.3s;
-    padding: 0.5rem 0.75rem;
+    padding: 0.5rem 1rem;
 
     &:hover {
       background-color: var(--orange2);
@@ -120,23 +136,43 @@
   }
 }
 
-#filter-bar-buttons {
+.bottom-filters-container {
+  position: relative;
   background-color: var(--orange2);
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--orange1);
   border-radius: 5px;
-  width: 90%;
-  justify-content: start;
-}
-
-.filter-bar-buttons-right-options {
-  display: flex;
+  width: 66%;
   justify-content: space-between;
-  width: 35%;
   padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
 }
 
-.filter-bar-right-option {
+.advanced-filters-rows {
+  display: flex;
+  flex-wrap: wrap;
+  transition: all 0.3s ease;
+  max-height: 0;
+  overflow: hidden;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+
+  &.show {
+    margin-bottom: 1rem;
+    max-height: 20vh;
+    overflow: visible;
+  }
+}
+
+.filter-bar-buttons-row {
+  display: flex;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+.filter-bar-button {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -147,13 +183,25 @@
   background-color: var(--orange2);
   border: 0;
   font-size: 1.2rem;
-  border-left: 2px solid var(--orange1);
-  border-right: 2px solid var(--orange1);
+  border-radius: 5px;
 
   &:hover {
     background-color: var(--orange3);
   }
-  &:last-child {
-    border-right: 0;
+}
+.filter-bar-search-input {
+  width: 90%;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  padding: 0.5rem;
+  border: 0;
+
+  &:focus {
+    outline: none;
   }
+}
+
+#filter-bar-search-button {
+  font-weight: 700;
 }

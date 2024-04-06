@@ -52,3 +52,5 @@ export const handleError = (error, callback) => {
     }
   }
 };
+
+export default axiosInstance;

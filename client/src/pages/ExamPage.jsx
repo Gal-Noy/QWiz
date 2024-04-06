@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { handleError } from "../utils/axiosUtils";
+
+import axiosInstance, { handleError, handleResult } from "../utils/axiosInstance";
 import ExamRating from "../components/ExamsList/ExamRating";
 import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
@@ -15,17 +15,9 @@ function ExamPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_SERVER_URL}/exams/${examId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          setExam(res.data);
-        }
-      })
+    axiosInstance
+      .get(`/exams/${examId}`)
+      .then((res) => handleResult(res, 200, () => setExam(res.data)))
       .then(() => {
         setIsPending(false);
       })
@@ -40,13 +32,9 @@ function ExamPage() {
 
   useEffect(() => {
     if (exam) {
-      axios
-        .get(`${import.meta.env.VITE_SERVER_URL}/exams/${examId}/presigned`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
-        .then((res) => setFilePath(res.data.presignedUrl))
+      axiosInstance
+        .get(`/exams/${examId}/presigned`)
+        .then((res) => handleResult(res, 200, () => setFilePath(res.data.url)))
         .catch((err) => {
           handleError(err, () => {
             console.error(err.response.data.message);

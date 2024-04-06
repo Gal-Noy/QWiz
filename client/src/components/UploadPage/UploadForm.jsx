@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import "../../styles/UploadForm.css";
 import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-import axios from "axios";
-import { handleError } from "../../utils/axiosUtils";
+
+import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import SelectFilter from "./SelectFilter";
 
@@ -62,24 +62,25 @@ function UploadForm() {
     formData.append("file", file);
     formData.append("examData", JSON.stringify(examData));
 
-    await axios
-      .post(`${import.meta.env.VITE_SERVER_URL}/exams`, formData, {
+    await axiosInstance
+      .post("/exams", formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
-      .then((res) => {
-        if (res.status === 201) {
-          const updatedUser = res.data.user;
-          localStorage.setItem("user", JSON.stringify(updatedUser));
-          var stayOnPage = window.confirm("המבחן נוסף בהצלחה! האם תרצה להוסיף עוד מבחן?");
-          if (!stayOnPage) {
-            navigate("/");
+      .then((res) =>
+        handleResult(res, 201, () => {
+          if (res.status === 201) {
+            const updatedUser = res.data.user;
+            localStorage.setItem("user", JSON.stringify(updatedUser));
+            var stayOnPage = window.confirm("המבחן נוסף בהצלחה! האם תרצה להוסיף עוד מבחן?");
+            if (!stayOnPage) {
+              navigate("/");
+            }
+            clearForm();
           }
-          clearForm();
-        }
-      })
+        })
+      )
       .then(() => setIsPending(false))
       .catch((err) =>
         handleError(err, () => {
@@ -120,36 +121,36 @@ function UploadForm() {
   const [courses, setCourses] = useState([]);
 
   const fetchFaculties = async () =>
-    await axios
-      .get(`${import.meta.env.VITE_SERVER_URL}/info/faculties`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
-      .then((res) => {
-        const sortedFaculties = res.data.sort((a, b) => (a.name > b.name ? 1 : -1));
-        setFaculties(sortedFaculties);
-      })
+    await axiosInstance
+      .get(`/info/faculties`)
+      .then((res) =>
+        handleResult(res, 200, () => {
+          const sortedFaculties = res.data.sort((a, b) => (a.name > b.name ? 1 : -1));
+          setFaculties(sortedFaculties);
+        })
+      )
       .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
   const fetchDepartmentsByFaculty = async (facultyId) =>
-    await axios
-      .get(`${import.meta.env.VITE_SERVER_URL}/info/faculty/${facultyId}/departments`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
-      .then((res) => {
-        const sortedDepartments = res.data.sort((a, b) => (a.name > b.name ? 1 : -1));
-        setDepartments(sortedDepartments);
-      })
+    await axiosInstance
+      .get(`/info/faculty/${facultyId}/departments`)
+      .then((res) =>
+        handleResult(res, 200, () => {
+          const sortedDepartments = res.data.sort((a, b) => (a.name > b.name ? 1 : -1));
+          setDepartments(sortedDepartments);
+        })
+      )
       .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
   const fetchCoursesByDepartment = async (departmentId) =>
-    await axios
-      .get(`${import.meta.env.VITE_SERVER_URL}/info/department/${departmentId}/courses`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
-      .then((res) => {
-        const sortedCourses = res.data.sort((a, b) => (a.name > b.name ? 1 : -1));
-        setCourses(sortedCourses);
-      })
+    await axiosInstance
+      .get(`/info/department/${departmentId}/courses`)
+      .then((res) =>
+        handleResult(res, 200, () => {
+          const sortedCourses = res.data.sort((a, b) => (a.name > b.name ? 1 : -1));
+          setCourses(sortedCourses);
+        })
+      )
       .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
   useEffect(() => {

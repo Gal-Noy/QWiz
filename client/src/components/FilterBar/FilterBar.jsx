@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import FilterDropdown from "./FilterDropdown";
 import "../../styles/FilterBar.css";
-import { handleError } from "../../utils/axiosUtils";
-import axios from "axios";
+import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 
 function FilterBar(props) {
   const { setFilteredExams, setShowExams, setError } = props;
@@ -43,47 +42,45 @@ function FilterBar(props) {
   const [freeText, setFreeText] = useState("");
 
   const fetchFaculties = async () =>
-    await axios
-      .get(`${import.meta.env.VITE_SERVER_URL}/info/faculties`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
-      .then((res) => {
-        const faculties = res.data;
-        const sortedFaculties = faculties.sort((a, b) => (a.name > b.name ? 1 : -1));
-        setCategoriesLists({ faculties: sortedFaculties, departments: [], courses: [] });
-      })
+    await axiosInstance
+      .get("/info/faculties")
+      .then((res) =>
+        handleResult(res, 200, () => {
+          const faculties = res.data;
+          const sortedFaculties = faculties.sort((a, b) => (a.name > b.name ? 1 : -1));
+          setCategoriesLists({ faculties: sortedFaculties, departments: [], courses: [] });
+        })
+      )
       .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
   const fetchDepartmentsByFaculty = async (facultyId) =>
-    await axios
-      .get(`${import.meta.env.VITE_SERVER_URL}/info/faculty/${facultyId}/departments`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
-      .then((res) => {
-        const departments = res.data;
-        const sortedDepartments = departments.sort((a, b) => (a.name > b.name ? 1 : -1));
-        setCategoriesLists({ ...categoriesLists, departments: sortedDepartments, courses: [] });
-      })
+    await axiosInstance
+      .get(`/info/faculty/${facultyId}/departments`)
+      .then((res) =>
+        handleResult(res, 200, () => {
+          const departments = res.data;
+          const sortedDepartments = departments.sort((a, b) => (a.name > b.name ? 1 : -1));
+          setCategoriesLists({ ...categoriesLists, departments: sortedDepartments, courses: [] });
+        })
+      )
       .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
   const fetchCoursesByDepartment = async (departmentId) =>
-    await axios
-      .get(`${import.meta.env.VITE_SERVER_URL}/info/department/${departmentId}/courses`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
-      .then((res) => {
-        const courses = res.data;
-        const sortedCourses = courses.sort((a, b) => (a.name > b.name ? 1 : -1));
-        setCategoriesLists({ ...categoriesLists, courses: sortedCourses });
-      })
+    await axiosInstance
+      .get(`/info/department/${departmentId}/courses`)
+      .then((res) =>
+        handleResult(res, 200, () => {
+          const courses = res.data;
+          const sortedCourses = courses.sort((a, b) => (a.name > b.name ? 1 : -1));
+          setCategoriesLists({ ...categoriesLists, courses: sortedCourses });
+        })
+      )
       .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
   const fetchCourseExams = async (courseId) =>
-    await axios
-      .get(`${import.meta.env.VITE_SERVER_URL}/exams/course/${courseId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
-      .then((res) => setCourseExams(res.data))
+    await axiosInstance
+      .get(`/exams/course/${courseId}`)
+      .then((res) => handleResult(res, 200, () => setCourseExams(res.data)))
       .catch((err) =>
         handleError(err, () => {
           console.log(err.response.data.message);
@@ -154,7 +151,7 @@ function FilterBar(props) {
       minGrades: [],
       difficultyRatings: [],
     });
-    setFreeText("");
+    setFreeText;
   };
 
   const clearFilters = () => {
@@ -245,87 +242,6 @@ function FilterBar(props) {
 
   return (
     <div className="filter-bar">
-      {/* 
-      <div className={"advanced-filters-rows" + (showAdvancedFilters ? " show" : "")}>
-        <div className="filter-bar-row">
-          <FilterDropdown
-            index={3}
-            label="מרצים"
-            options={advancedSearchLists.lecturers}
-            value={advancedSearchChoices.lecturers}
-            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, lecturers: val })}
-            isAvailable={advancedSearchLists.lecturers.length > 0}
-          />
-          <FilterDropdown
-            index={4}
-            label="שנה"
-            options={advancedSearchLists.years}
-            value={advancedSearchChoices.year}
-            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, year: val })}
-            isAvailable={advancedSearchLists.years.length > 0}
-          />
-          <FilterDropdown
-            index={5}
-            label="סמסטר"
-            options={advancedSearchLists.semesters}
-            value={advancedSearchChoices.semester}
-            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, semester: val })}
-            isAvailable={advancedSearchLists.semesters.length > 0}
-          />
-        </div>
-        <div className="filter-bar-row">
-          <FilterDropdown
-            index={6}
-            label="מועד"
-            options={advancedSearchLists.terms}
-            value={advancedSearchChoices.term}
-            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, term: val })}
-            isAvailable={advancedSearchLists.terms.length > 0}
-          />
-          <FilterDropdown
-            index={7}
-            label="סוג"
-            options={advancedSearchLists.types}
-            value={advancedSearchChoices.type}
-            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, type: val })}
-            isAvailable={advancedSearchLists.types.length > 0}
-          />
-          <FilterDropdown
-            index={8}
-            label="ציון מינימלי"
-            options={advancedSearchLists.minGrades}
-            value={advancedSearchChoices.minGrade}
-            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, minGrade: val })}
-            isAvailable={advancedSearchLists.minGrades.length > 0}
-          />
-          <FilterDropdown
-            index={9}
-            label="דרגת קושי"
-            options={advancedSearchLists.difficultyRatings}
-            value={advancedSearchChoices.difficultyRating}
-            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, difficultyRating: val })}
-            isAvailable={advancedSearchLists.difficultyRatings.length > 0}
-          />
-        </div>
-      </div>
-      <div id="filter-bar-buttons">
-        <button className="filter-bar-btn" onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}>
-          סינון מתקדם
-        </button>
-        <button className="filter-bar-btn" onClick={clearFilters}>
-          נקה סינון
-        </button>
-        <input
-          className="free-text-input"
-          type="text"
-          placeholder="טקסט חופשי"
-          value={freeText}
-          onChange={(e) => setFreeText(e.target.value)}
-        />
-        <button className="filter-bar-btn" onClick={filterAndSearchExams}>
-          חפש מבחנים
-        </button>
-      </div> */}
       <div id="mandatory-filters-row" className="filter-bar-row">
         <FilterDropdown
           label="פקולטה"
@@ -333,6 +249,8 @@ function FilterBar(props) {
           value={chosenCategories.faculty}
           setValue={(val) => setChosenCategories({ ...chosenCategories, faculty: val })}
           isAvailable={categoriesLists.faculties.length > 0}
+          size={"l"}
+          isSearchable={true}
         />
         <FilterDropdown
           label="מחלקה"
@@ -340,6 +258,8 @@ function FilterBar(props) {
           value={chosenCategories.department}
           setValue={(val) => setChosenCategories({ ...chosenCategories, department: val })}
           isAvailable={categoriesLists.departments.length > 0}
+          size={"l"}
+          isSearchable={true}
         />
         <FilterDropdown
           label="קורס"
@@ -347,17 +267,96 @@ function FilterBar(props) {
           value={chosenCategories.course}
           setValue={(val) => setChosenCategories({ ...chosenCategories, course: val })}
           isAvailable={categoriesLists.courses.length > 0}
+          size={"l"}
+          isSearchable={true}
         />
       </div>
-      <div id="filter-bar-buttons" className="filter-bar-row">
-        <div className="filter-bar-buttons-right-options">
-          <button className="filter-bar-right-option" onClick={clearFilters}>
+      <div className="bottom-filters-container">
+        <div className={"advanced-filters-rows" + (showAdvancedFilters ? " show" : "")}>
+          <FilterDropdown
+            label="מרצים"
+            options={advancedSearchLists.lecturers}
+            value={advancedSearchChoices.lecturers}
+            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, lecturers: val })}
+            isAvailable={advancedSearchLists.lecturers.length > 0}
+            size={"m"}
+            isSearchable={false}
+          />
+          <FilterDropdown
+            label="שנה"
+            options={advancedSearchLists.years}
+            value={advancedSearchChoices.year}
+            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, year: val })}
+            isAvailable={advancedSearchLists.years.length > 0}
+            size={"m"}
+            isSearchable={false}
+          />
+          <FilterDropdown
+            label="סמסטר"
+            options={advancedSearchLists.semesters}
+            value={advancedSearchChoices.semester}
+            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, semester: val })}
+            isAvailable={advancedSearchLists.semesters.length > 0}
+            size={"m"}
+            isSearchable={false}
+          />
+          <FilterDropdown
+            label="מועד"
+            options={advancedSearchLists.terms}
+            value={advancedSearchChoices.term}
+            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, term: val })}
+            isAvailable={advancedSearchLists.terms.length > 0}
+            size={"s"}
+            isSearchable={false}
+          />
+          <FilterDropdown
+            label="סוג"
+            options={advancedSearchLists.types}
+            value={advancedSearchChoices.type}
+            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, type: val })}
+            isAvailable={advancedSearchLists.types.length > 0}
+            size={"s"}
+            isSearchable={false}
+          />
+          <FilterDropdown
+            label="ציון מינימלי"
+            options={advancedSearchLists.minGrades}
+            value={advancedSearchChoices.minGrade}
+            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, minGrade: val })}
+            isAvailable={advancedSearchLists.minGrades.length > 0}
+            size={"s"}
+            isSearchable={false}
+          />
+          <FilterDropdown
+            label="דרגת קושי"
+            options={advancedSearchLists.difficultyRatings}
+            value={advancedSearchChoices.difficultyRating}
+            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, difficultyRating: val })}
+            isAvailable={advancedSearchLists.difficultyRatings.length > 0}
+            size={"s"}
+            isSearchable={false}
+          />
+        </div>
+        <div className="filter-bar-buttons-row">
+          <div className="filter-bar-button" onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}>
             חיפוש מתקדם
-            <span className="material-symbols-outlined filter-dropdown-arrow">expand_more</span>
-          </button>
-          <button className="filter-bar-right-option" onClick={clearFilters}>
+            <span className="material-symbols-outlined filter-dropdown-arrow">
+              {showAdvancedFilters ? "expand_less" : "expand_more"}
+            </span>
+          </div>
+          <div className="filter-bar-button" id="filter-bar-clear-filter-button" onClick={clearFilters}>
             נקה סינון
-          </button>
+          </div>
+          <input
+            className="filter-bar-search-input"
+            type="text"
+            placeholder="טקסט חופשי"
+            value={freeText}
+            onChange={(e) => setFreeText(e.target.value)}
+          />
+          <div className="filter-bar-button" id="filter-bar-search-button" onClick={filterAndSearchExams}>
+            חפש מבחנים
+          </div>
         </div>
       </div>
     </div>

@@ -1,43 +1,27 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { handleError } from "../../utils/axiosUtils";
+
+import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import ExamRating from "./ExamRating";
 
 function ExamRow({ exam, favorite }) {
   const [isFavorite, setIsFavorite] = useState(favorite);
 
-  const addToFavorites = () => {
-    axios
-      .post(
-        `${import.meta.env.VITE_SERVER_URL}/exams/favorites`,
-        { exam },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      )
-      .catch((err) => {
-        handleError(err, () => {
-          console.error(err.response.data.message);
-          alert("שגיאה בהוספת הבחינה למועדפים, אנא נסה שנית.");
-        });
+  const addToFavorites = async () => {
+    await axiosInstance.post("/exams/favorites", { exam }).catch((err) => {
+      handleError(err, () => {
+        console.error(err.response.data.message);
+        alert("שגיאה בהוספת הבחינה למועדפים, אנא נסה שנית.");
       });
+    });
   };
 
-  const removeFromFavorites = () => {
-    axios
-      .delete(`${import.meta.env.VITE_SERVER_URL}/exams/favorites/${exam._id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      .catch((err) => {
-        handleError(err, () => {
-          console.error(err.response.data.message);
-          alert("שגיאה בהסרת הבחינה מהמועדפים, אנא נסה שנית.");
-        });
+  const removeFromFavorites = async () => {
+    await axios.delete(`/exams/favorites/${exam._id}`).catch((err) => {
+      handleError(err, () => {
+        console.error(err.response.data.message);
+        alert("שגיאה בהסרת הבחינה מהמועדפים, אנא נסה שנית.");
       });
+    });
   };
 
   const handleFavoritesChange = (e) => {

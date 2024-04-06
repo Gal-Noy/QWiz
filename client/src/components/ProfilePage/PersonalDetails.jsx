@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { handleError } from "../../utils/axiosUtils";
-import axios from "axios";
+import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import defaultAvatar from "../../assets/default-avatar.jpg";
 import "../../styles/ProfilePage.css";
 
@@ -14,27 +13,27 @@ function PersonalDetails() {
     id_number: user.id_number || "",
   });
 
-  const saveChanges = () => {
+  const saveChanges = async () => {
     if (!editedUser.name || !editedUser.email) {
       alert("אנא מלא/י את השדות שם מלא ודואר אלקטרוני");
       return;
     }
-    axios
-      .put(`${import.meta.env.VITE_SERVER_URL}/users/${user._id}`, editedUser, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          localStorage.setItem("user", JSON.stringify(res.data));
-          setEditedUser({
-            ...res.data,
-            password: "",
-            phone_number: res.data.phone_number || "",
-            id_number: res.data.id_number || "",
-          });
-          alert("הפרטים עודכנו בהצלחה");
-        }
-      })
+    await axiosInstance
+      .put(`/users/${user._id}`, editedUser)
+      .then((res) =>
+        handleResult(200, () => {
+          if (res.status === 200) {
+            localStorage.setItem("user", JSON.stringify(res.data));
+            setEditedUser({
+              ...res.data,
+              password: "",
+              phone_number: res.data.phone_number || "",
+              id_number: res.data.id_number || "",
+            });
+            alert("הפרטים עודכנו בהצלחה");
+          }
+        })
+      )
       .then(() => setEditMode(false))
       .catch((err) =>
         handleError(err, () => {

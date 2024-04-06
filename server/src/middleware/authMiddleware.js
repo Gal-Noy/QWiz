@@ -45,6 +45,16 @@ export const authenticateToken = async (req, res, next) => {
     req.user = decoded;
     next();
   } catch (err) {
-    return res.status(403).json({ message: "Invalid token." });
+    if (err.name === "TokenExpiredError") {
+      const decoded = jwt.decode(token);
+      const user = await User.findById(decoded.user_id);
+      if (user) {
+        user.isActive = false;
+        await user.save();
+      }
+      return res.status(401).json({ message: "Token expired." });
+    } else {
+      return res.status(403).json({ message: "Invalid token." });
+    }
   }
 };

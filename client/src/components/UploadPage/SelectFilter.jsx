@@ -33,7 +33,7 @@ const SelectFilter = (props) => {
   }, []);
 
   useEffect(() => {
-    setSearchValue("");
+    setSearchValue;
     setDisabled(!!!dependency);
   }, [dependency]);
 

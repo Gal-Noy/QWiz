@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { handleError } from "../../utils/axiosUtils";
+import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import ExamRow from "./ExamRow";
 import ExamsListHeader from "./ExamsListHeader";
 import "../../styles/ExamsList.css";
@@ -23,18 +22,16 @@ function ExamsList(props) {
         top: document.body.scrollHeight,
         behavior: "smooth",
       });
-      axios
-        .get(`${import.meta.env.VITE_SERVER_URL}/exams/favorites`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
-        .then((res) => {
-          if (res.status === 200) {
-            const favoriteExamsIds = res.data.map((exam) => exam._id);
-            setFavoriteExams(favoriteExamsIds);
-          }
-        })
+      axiosInstance
+        .get("/exams/favorites")
+        .then((res) =>
+          handleResult(res, 200, () => {
+            if (res.status === 200) {
+              const favoriteExamsIds = res.data.map((exam) => exam._id);
+              setFavoriteExams(favoriteExamsIds);
+            }
+          })
+        )
         .catch((err) => {
           handleError(err, () => {
             console.error(err.response.data.message);
