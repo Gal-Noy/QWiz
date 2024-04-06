@@ -55,9 +55,10 @@ const authController = {
       if (user && (await bcrypt.compare(password, user.password))) {
         if (user.isActive) return res.status(400).json({ message: "User is already logged in." });
 
-        const token = jwt.sign({ user_id: user._id, email }, process.env.TOKEN_KEY, { expiresIn: "1d" });
+        const token = jwt.sign({ user_id: user._id, email }, process.env.TOKEN_KEY, { expiresIn: "1h" });
 
         user.isActive = true;
+        user.lastActivity = Date.now();
         await user.save();
 
         return res.status(200).json({
@@ -77,9 +78,13 @@ const authController = {
   logout: async (req, res) => {
     try {
       const userId = req.user.user_id;
+
       const dbUser = await User.findById(userId);
+
       dbUser.isActive = false;
+      dbUser.lastActivity = Date.now();
       await dbUser.save();
+
       return res.status(200).json({ message: "User logged out successfully." });
     } catch (err) {
       return res.status(403).json({ message: "Invalid token." });

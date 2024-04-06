@@ -158,7 +158,7 @@ function FilterBar(props) {
   };
 
   const clearFilters = () => {
-    setCategoriesLists({ departments: [], courses: [] });
+    setCategoriesLists({ ...categoriesLists, departments: [], courses: [] });
     setChosenCategories({ faculty: null, department: null, course: null });
     clearAdvancedFilters();
   };
@@ -214,7 +214,7 @@ function FilterBar(props) {
 
   useEffect(() => {
     setCategoriesLists({ ...categoriesLists, departments: [], courses: [] });
-    setChosenCategories({ department: null, course: null });
+    setChosenCategories({ ...chosenCategories, department: null, course: null });
     clearAdvancedFilters();
     if (chosenCategories.faculty) {
       fetchDepartmentsByFaculty(chosenCategories.faculty._id);
@@ -245,8 +245,7 @@ function FilterBar(props) {
 
   return (
     <div className="filter-bar">
-      <div className="filter-bar-search-message">* ניתן להקליד על מנת לחפש פריטים ברשימות</div>
-      <div id="mandatory-filters-row" className="filter-bar-row">
+      {/* <div id="mandatory-filters-row" className="filter-bar-row">
         <FilterDropdown
           index={0}
           label="פקולטה"
@@ -351,7 +350,7 @@ function FilterBar(props) {
         <button className="filter-bar-btn" onClick={filterAndSearchExams}>
           חפש מבחנים
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -189,10 +189,3 @@
   margin-right: -1rem;
   opacity: 0;
 }
-
-.filter-bar-search-message {
-  position: absolute;
-  top: -2rem;
-  right: 1rem;
-  font-size: 1.2rem;
-}
