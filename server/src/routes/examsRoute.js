@@ -19,9 +19,6 @@ examsRouter.get("/", examsController.getAllExams);
 // POST: create a new exam
 examsRouter.post("/", upload.single("file"), examsController.createExam);
 
-// GET: filter exams
-examsRouter.get("/filter", examsController.filterExams);
-
 // GET: get uploaded exams
 examsRouter.get("/uploaded", examsController.getUploadedExams);
 

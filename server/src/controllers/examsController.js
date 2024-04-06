@@ -117,31 +117,6 @@ const examsController = {
     }
   },
 
-  filterExams: async (req, res) => {
-    try {
-      const { faculty, department, course, year, semester, term, type, grade, lecturers, difficultyRating } = req.body;
-
-      if (!faculty || !department || !course) {
-        return res.status(400).json({ message: "Please provide faculty, department, and course" });
-      }
-
-      const filter = { faculty, department, course };
-
-      if (year) filter.year = year;
-      if (semester) filter.semester = semester;
-      if (term) filter.term = term;
-      if (type) filter.type = type;
-      if (grade) filter.grade = { $gte: grade }; // greater than or equal
-      if (lecturers) filter.lecturers = lecturers;
-      if (difficultyRating) filter.difficultyRating.averageRating = { $gte: difficultyRating }; // greater than or equal
-
-      const exams = await Exam.find(filter).populate("course").select("-s3Key");
-      res.json(exams);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
-
   getExamById: async (req, res) => {
     try {
       const exam = await Exam.findById(req.params.id)
@@ -290,21 +265,6 @@ const examsController = {
 
       const updatedExam = await exam.save();
       await dbUser.save();
-
-      // const totalRatings = exam.difficultyRating.totalRatings + 1;
-      // const averageRating =
-      //   (exam.difficultyRating.averageRating * exam.difficultyRating.totalRatings + rating) / totalRatings;
-
-      // exam.difficultyRating = { totalRatings, averageRating };
-      // const updatedExam = await exam.save();
-
-      // const examRating = dbUser.exams_ratings.find((rating) => rating.exam.toString() === req.params.id);
-      // if (examRating) {
-      //   examRating.difficulty_rating = rating;
-      // } else {
-      //   dbUser.exams_ratings.push({ exam: req.params.id, difficulty_rating: rating });
-      // }
-      // await dbUser.save();
 
       updatedExam.s3Key = undefined;
       res.json({ updatedExam, user: dbUser });

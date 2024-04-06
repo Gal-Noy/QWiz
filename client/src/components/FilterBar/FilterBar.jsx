@@ -245,32 +245,7 @@ function FilterBar(props) {
 
   return (
     <div className="filter-bar">
-      {/* <div id="mandatory-filters-row" className="filter-bar-row">
-        <FilterDropdown
-          index={0}
-          label="פקולטה"
-          options={categoriesLists.faculties}
-          value={chosenCategories.faculty}
-          setValue={(val) => setChosenCategories({ ...chosenCategories, faculty: val })}
-          isAvailable={categoriesLists.faculties.length > 0}
-        />
-        <FilterDropdown
-          index={1}
-          label="מחלקה"
-          options={categoriesLists.departments}
-          value={chosenCategories.department}
-          setValue={(val) => setChosenCategories({ ...chosenCategories, department: val })}
-          isAvailable={categoriesLists.departments.length > 0}
-        />
-        <FilterDropdown
-          index={2}
-          label="קורס"
-          options={categoriesLists.courses}
-          value={chosenCategories.course}
-          setValue={(val) => setChosenCategories({ ...chosenCategories, course: val })}
-          isAvailable={categoriesLists.courses.length > 0}
-        />
-      </div>
+      {/* 
       <div className={"advanced-filters-rows" + (showAdvancedFilters ? " show" : "")}>
         <div className="filter-bar-row">
           <FilterDropdown
@@ -351,6 +326,40 @@ function FilterBar(props) {
           חפש מבחנים
         </button>
       </div> */}
+      <div id="mandatory-filters-row" className="filter-bar-row">
+        <FilterDropdown
+          label="פקולטה"
+          options={categoriesLists.faculties}
+          value={chosenCategories.faculty}
+          setValue={(val) => setChosenCategories({ ...chosenCategories, faculty: val })}
+          isAvailable={categoriesLists.faculties.length > 0}
+        />
+        <FilterDropdown
+          label="מחלקה"
+          options={categoriesLists.departments}
+          value={chosenCategories.department}
+          setValue={(val) => setChosenCategories({ ...chosenCategories, department: val })}
+          isAvailable={categoriesLists.departments.length > 0}
+        />
+        <FilterDropdown
+          label="קורס"
+          options={categoriesLists.courses}
+          value={chosenCategories.course}
+          setValue={(val) => setChosenCategories({ ...chosenCategories, course: val })}
+          isAvailable={categoriesLists.courses.length > 0}
+        />
+      </div>
+      <div id="filter-bar-buttons" className="filter-bar-row">
+        <div className="filter-bar-buttons-right-options">
+          <button className="filter-bar-right-option" onClick={clearFilters}>
+            חיפוש מתקדם
+            <span className="material-symbols-outlined filter-dropdown-arrow">expand_more</span>
+          </button>
+          <button className="filter-bar-right-option" onClick={clearFilters}>
+            נקה סינון
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
