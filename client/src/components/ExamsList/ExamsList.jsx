@@ -7,7 +7,7 @@ import "../../styles/ExamsList.css";
 function ExamsList(props) {
   const { exams, setExams, showExams, isProfilePage, isPending, error } = props;
   const [favoriteExams, setFavoriteExams] = useState([]);
-  const [sortHeader, setSortHeader] = useState("favorite");
+  const [sortHeader, setSortHeader] = useState("");
   const [numPages, setNumPages] = useState(exams.length > 0 ? Math.ceil(exams.length / 10) : 0);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -53,18 +53,18 @@ function ExamsList(props) {
       {!isPending && !error && numPages > 1 && (
         <div className="exams-list-pagination">
           <span
-            className={"material-symbols-outlined navigation-arrow" + (currentPage < numPages ? " enabled" : "")}
+            className={"material-symbols-outlined navigation-arrow" + (currentPage > 1 ? " enabled" : "")}
             onClick={() => {
-              if (currentPage < numPages) setCurrentPage(currentPage + 1);
+              if (currentPage > 1) setCurrentPage(currentPage - 1);
             }}
           >
             arrow_forward_ios
           </span>
           {numPages} / {currentPage}
           <span
-            className={"material-symbols-outlined navigation-arrow" + (currentPage > 1 ? " enabled" : "")}
+            className={"material-symbols-outlined navigation-arrow" + (currentPage < numPages ? " enabled" : "")}
             onClick={() => {
-              if (currentPage > 1) setCurrentPage(currentPage - 1);
+              if (currentPage < numPages) setCurrentPage(currentPage + 1);
             }}
           >
             arrow_back_ios
@@ -118,7 +118,17 @@ function ExamsList(props) {
             setSortHeader={setSortHeader}
             sortFunc={(isAsc) =>
               setExams((prevExams) =>
-                prevExams.slice().sort((a, b) => (a.lecturers > b.lecturers ? 1 : -1) * (isAsc ? 1 : -1))
+                prevExams
+                  .slice()
+                  .sort((a, b) =>
+                    !a.lecturers && !b.lecturers
+                      ? 0
+                      : !a.lecturers
+                      ? 1
+                      : !b.lecturers
+                      ? -1
+                      : (isAsc ? 1 : -1) * a.lecturers.localeCompare(b.lecturers)
+                  )
               )
             }
           />
@@ -178,9 +188,13 @@ function ExamsList(props) {
               setExams((prevExams) =>
                 prevExams
                   .slice()
-                  .sort(
-                    (a, b) =>
-                      (a.difficultyRating.averageRating > b.difficultyRating.averageRating ? 1 : -1) * (isAsc ? 1 : -1)
+                  .sort((a, b) =>
+                    a.difficultyRating.averageRating !== 0 && b.difficultyRating.averageRating !== 0
+                      ? (a.difficultyRating.averageRating > b.difficultyRating.averageRating ? 1 : -1) *
+                        (isAsc ? 1 : -1)
+                      : a.difficultyRating.averageRating === 0
+                      ? 1
+                      : -1
                   )
               )
             }

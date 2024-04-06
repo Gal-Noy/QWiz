@@ -24,6 +24,11 @@
   }
 }
 
+.exams-list-rows {
+  display: flex;
+  flex-direction: column;
+}
+
 .headers-row {
   position: sticky;
   top: 0;
