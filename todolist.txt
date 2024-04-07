@@ -3,3 +3,6 @@ thread for each exam
 tags
 views
 forums search and through exams
+favorite/followed threads
+notifications
+opened/created threads by me

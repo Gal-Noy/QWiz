@@ -8,6 +8,11 @@
   border-radius: 10px;
   padding: 2rem;
 }
+
+.loading-exam {
+  padding: 2rem;
+}
+
 .exam-details-right-section {
   display: flex;
   flex-direction: column;
