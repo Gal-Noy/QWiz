@@ -72,6 +72,7 @@ const examsController = {
         grade,
         lecturers,
         difficultyRating: { totalRatings, averageRating },
+        uploadedBy: req.user.user_id,
       });
 
       // Handle user
@@ -85,10 +86,8 @@ const examsController = {
       ) {
         dbUser.phone_number = phone_number;
         dbUser.id_number = id_number;
+        await dbUser.save();
       }
-      dbUser.uploaded_exams.push(exam._id);
-
-      await dbUser.save();
 
       const newExam = await exam.save();
       newExam.s3Key = undefined;
@@ -165,15 +164,8 @@ const examsController = {
 
   getUploadedExams: async (req, res) => {
     try {
-      const user = await User.findById(req.user.user_id)
-        .populate({
-          path: "uploaded_exams",
-          populate: {
-            path: "course",
-          },
-        })
-        .select("-s3Key");
-      res.json(user.uploaded_exams);
+      const exams = await Exam.find({ uploadedBy: req.user.user_id }).populate("course").select("-s3Key");
+      res.json(exams);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

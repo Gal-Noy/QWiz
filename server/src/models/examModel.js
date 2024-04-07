@@ -51,10 +51,23 @@ const examSchema = mongoose.Schema({
   lecturers: {
     type: String,
   },
+  uploadedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   difficultyRating: {
     totalRatings: { type: Number, default: 0 },
     averageRating: { type: Number, default: 0, min: 0, max: 5 },
   },
+
+  /**
+   * Fields to add:
+   *  - forum: { type: mongoose.Schema.Types.ObjectId, ref: "Forum" }
+   *  - uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+   *  - change ratings to an array of {user, rating}
+   *
+   * **/
 });
 
 export const Exam = mongoose.model("Exam", examSchema);

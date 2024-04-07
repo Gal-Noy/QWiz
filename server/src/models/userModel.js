@@ -20,12 +20,6 @@ const userSchema = new mongoose.Schema({
   id_number: {
     type: String,
   },
-  uploaded_exams: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Exam",
-    },
-  ],
   favorite_exams: [
     {
       type: mongoose.Schema.Types.ObjectId,
