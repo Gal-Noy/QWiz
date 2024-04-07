@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance, { handleError, handleResult } from "../utils/axiosInstance";
+import "../styles/ExamRating.css";
 
 function ExamRating(props) {
   const { difficultyRating, examId, editMode, setExam } = props;

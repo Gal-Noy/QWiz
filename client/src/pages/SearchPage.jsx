@@ -17,7 +17,7 @@ function SearchPage() {
   ];
 
   return (
-    <div className="exams-page">
+    <div className="search-page">
       <PageHeader title={"מאגר המבחנים של QWiz"} paragraphs={paragraphs} />
       <FilterBar setFilteredExams={setFilteredExams} setShowExams={setShowExams} setError={setError} />
       <ExamsList

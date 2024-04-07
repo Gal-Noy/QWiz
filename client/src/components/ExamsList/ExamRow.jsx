@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import axiosInstance, { handleError } from "../../utils/axiosInstance";
 import ExamRating from "../ExamRating";
 
 function ExamRow({ exam, favorite }) {

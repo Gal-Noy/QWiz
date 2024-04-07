@@ -1,0 +1,10 @@
+.exam-forum {
+  width: 90%;
+  min-height: 50vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: var(--red2);
+  border-radius: 10px;
+  padding: 2rem;
+}

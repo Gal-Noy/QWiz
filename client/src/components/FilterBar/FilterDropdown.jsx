@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import "../../styles/FilterBar.css";
 
 function FilterDropdown(props) {
   const { label, options, value, setValue, isAvailable, size, isSearchable } = props;

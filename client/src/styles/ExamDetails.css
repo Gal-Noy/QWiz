@@ -1,0 +1,62 @@
+.exam-details {
+  width: 90%;
+  min-height: 50vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: var(--cyan4);
+  border-radius: 10px;
+  padding: 2rem;
+}
+.exam-details-right-section {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  gap: 1rem;
+}
+.exam-details-header {
+  font-size: 2rem;
+  font-weight: bold;
+  color: navy;
+}
+
+.exam-details-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.exam-details-item {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 1.3rem;
+}
+
+.exam-details-item-header {
+  font-weight: bold;
+}
+
+.exam-details-left-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 50%;
+}
+
+.exam-details-pdf {
+  width: 70%;
+  height: 70vh;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.react-pdf__Page__canvas {
+  margin: 0 auto;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  &:hover {
+    border: 1px solid var(--cyan3);
+    box-shadow: 0 0 10px var(--cyan3);
+  }
+  box-sizing: border-box;
+}
