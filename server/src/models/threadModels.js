@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
 
-// Designed as a tree structure, where the root node is the forum and the children are the comments
-// first level called comments, deeper level called replies
+// Each exam has a a list of threads
+// Threads are the main posts, and they are designed as a tree structure
+// The root node is the thread instance and the children are the comments
+// first level called comments, deeper level called replies (comments of comments)
 
-const forumSchema = new mongoose.Schema({
+const threadSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -11,11 +13,6 @@ const forumSchema = new mongoose.Schema({
   exam: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Exam",
-    required: true,
-  },
-  course: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Course",
     required: true,
   },
   creator: {
@@ -49,7 +46,7 @@ const forumSchema = new mongoose.Schema({
   ],
 });
 
-export const Forum = mongoose.model("Forum", forumSchema);
+export const Thread = mongoose.model("Thread", threadSchema);
 
 const commentSchema = new mongoose.Schema({
   content: {

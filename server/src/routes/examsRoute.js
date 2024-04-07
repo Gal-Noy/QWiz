@@ -1,7 +1,7 @@
 import express from "express";
 import examsController from "../controllers/examsController.js";
 import multer from "multer";
-import { authenticateToken } from "../middleware/authMiddleware.js";
+import { authenticateToken, authenticateAdmin } from "../middleware/authMiddleware.js";
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -41,7 +41,7 @@ examsRouter.get("/:id", examsController.getExamById);
 examsRouter.put("/:id", examsController.updateExam);
 
 // DELETE: delete exam by id
-examsRouter.delete("/:id", examsController.deleteExam);
+examsRouter.delete("/:id", authenticateAdmin, examsController.deleteExam);
 
 // POST: rate exam by id
 examsRouter.post("/:id/rate", examsController.rateExam);

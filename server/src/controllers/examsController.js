@@ -1,7 +1,8 @@
 import { Exam } from "../models/examModel.js";
 import { User } from "../models/userModel.js";
 import { Course } from "../models/infoModels.js";
-import { Forum } from "../models/forumModels.js";
+import { Thread } from "../models/threadModels.js";
+import { deleteCommentRecursively } from "../controllers/threadsController.js";
 import { uploadFile, getPresignedUrl } from "../utils/s3.js";
 
 const examsController = {
@@ -164,7 +165,23 @@ const examsController = {
 
   deleteExam: async (req, res) => {
     try {
-      await Exam.findByIdAndDelete(req.params.id);
+      const exam = await Exam.findById(req.params.id);
+
+      if (!exam) {
+        return res.status(404).json({ message: "Exam not found" });
+      }
+
+      const examThreads = await Thread.find({ exam: req.params.id });
+      for (let thread of examThreads) {
+        if (thread.comments.length > 0) {
+          for (let comment of thread.comments) {
+            await deleteCommentRecursively(comment);
+          }
+        }
+        await thread.remove();
+      }
+
+      await exam.remove();
       res.json({ message: "Exam deleted successfully" });
     } catch (error) {
       res.status(500).json({ message: error.message });

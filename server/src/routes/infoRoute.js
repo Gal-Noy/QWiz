@@ -1,6 +1,6 @@
 import express from "express";
 import infoController from "../controllers/infoController.js";
-import { authenticateToken } from "../middleware/authMiddleware.js";
+import { authenticateToken, authenticateAdmin } from "../middleware/authMiddleware.js";
 
 const infoRouter = express.Router();
 infoRouter.use(authenticateToken);
@@ -14,13 +14,13 @@ infoRouter.get("/faculties", infoController.getFaculties);
 infoRouter.get("/faculty/:id", infoController.getFacultyById);
 
 // POST: create a new faculty
-infoRouter.post("/faculty", infoController.createFaculty);
+infoRouter.post("/faculty", authenticateAdmin, infoController.createFaculty);
 
 // PUT: update faculty by id
-infoRouter.put("/faculty/:id", infoController.updateFaculty);
+infoRouter.put("/faculty/:id", authenticateAdmin, infoController.updateFaculty);
 
 // DELETE: delete faculty by id
-infoRouter.delete("/faculty/:id", infoController.deleteFaculty);
+infoRouter.delete("/faculty/:id", authenticateAdmin, infoController.deleteFaculty);
 
 // Departments
 
@@ -31,13 +31,13 @@ infoRouter.get("/departments", infoController.getDepartments);
 infoRouter.get("/department/:id", infoController.getDepartmentById);
 
 // POST: create a new department
-infoRouter.post("/department", infoController.createDepartment);
+infoRouter.post("/department", authenticateAdmin, infoController.createDepartment);
 
 // PUT: update department by id
-infoRouter.put("/department/:id", infoController.updateDepartment);
+infoRouter.put("/department/:id", authenticateAdmin, infoController.updateDepartment);
 
 // DELETE: delete department by id
-infoRouter.delete("/department/:id", infoController.deleteDepartment);
+infoRouter.delete("/department/:id", authenticateAdmin, infoController.deleteDepartment);
 
 // Courses
 
@@ -48,13 +48,13 @@ infoRouter.get("/courses", infoController.getCourses);
 infoRouter.get("/course/:id", infoController.getCourseById);
 
 // POST: create a new course
-infoRouter.post("/course", infoController.createCourse);
+infoRouter.post("/course", authenticateAdmin, infoController.createCourse);
 
 // PUT: update course by id
-infoRouter.put("/course/:id", infoController.updateCourse);
+infoRouter.put("/course/:id", authenticateAdmin, infoController.updateCourse);
 
 // DELETE: delete course by id
-infoRouter.delete("/course/:id", infoController.deleteCourse);
+infoRouter.delete("/course/:id", authenticateAdmin, infoController.deleteCourse);
 
 // Filters
 

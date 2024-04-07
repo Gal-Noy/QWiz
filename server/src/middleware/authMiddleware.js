@@ -58,3 +58,12 @@ export const authenticateToken = async (req, res, next) => {
     }
   }
 };
+
+export const authenticateAdmin = async (req, res, next) => {
+  const user = await User.findById(req.user.user_id);
+  if (user.role !== "admin") {
+    return res.status(403).json({ message: "Access denied. Admin only." });
+  }
+
+  next();
+};
