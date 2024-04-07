@@ -44,4 +44,20 @@ const getPresignedUrl = async (fileName) => {
   });
 };
 
-export { uploadFile, getPresignedUrl };
+const deleteFile = async (fileName) => {
+  const params = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: fileName,
+  };
+
+  return new Promise((resolve, reject) => {
+    s3.deleteObject(params, (error, data) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(data);
+    });
+  });
+};
+
+export { uploadFile, getPresignedUrl, deleteFile };

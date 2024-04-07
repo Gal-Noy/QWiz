@@ -85,10 +85,6 @@ const threadsController = {
         return res.status(404).json({ message: "Thread not found" });
       }
 
-      if (thread.creator.toString() !== req.user.user_id) {
-        return res.status(403).json({ message: "Access denied" });
-      }
-
       await thread.remove();
 
       res.json({ message: "Thread deleted" });

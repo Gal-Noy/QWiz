@@ -21,7 +21,7 @@ threadsRouter.post("/", threadsController.createThread);
 threadsRouter.put("/:id", authenticateAdmin, threadsController.updateThread);
 
 // DELETE: delete thread by id
-threadsRouter.delete("/:id", threadsController.deleteThread);
+threadsRouter.delete("/:id", authenticateAdmin, threadsController.deleteThread);
 
 // GET: get threads by user id
 threadsRouter.get("/user/:id", authenticateAdmin, threadsController.getThreadsByUserId);
@@ -36,7 +36,7 @@ threadsRouter.get("/tags/:tags", threadsController.getThreadsByTags);
 threadsRouter.post("/:id/toggle", threadsController.toggleThreadClosed);
 
 // GET: get comment by id
-threadsRouter.get("/comment/:id", threadsController.getCommentById);
+threadsRouter.get("/comment/:id", authenticateAdmin, threadsController.getCommentById);
 
 // POST: add a new comment to a thread
 threadsRouter.post("/:id/comment", threadsController.addCommentToThread);

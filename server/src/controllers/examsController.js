@@ -1,8 +1,7 @@
 import { Exam } from "../models/examModel.js";
 import { User } from "../models/userModel.js";
 import { Course } from "../models/infoModels.js";
-import { Thread } from "../models/threadModels.js";
-import { uploadFile, getPresignedUrl } from "../utils/s3.js";
+import { uploadFile, getPresignedUrl, deleteFile } from "../utils/s3.js";
 
 const examsController = {
   getAllExams: async (req, res) => {
@@ -169,6 +168,8 @@ const examsController = {
       if (!exam) {
         return res.status(404).json({ message: "Exam not found" });
       }
+
+      await deleteFile(exam.s3Key);
 
       await exam.remove();
       res.json({ message: "Exam deleted successfully" });

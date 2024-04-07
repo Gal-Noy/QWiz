@@ -9,7 +9,7 @@ usersRouter.use(authenticateToken);
 usersRouter.get("/", authenticateAdmin, usersController.getAllUsers);
 
 // GET: get a user by id
-usersRouter.get("/:id", usersController.getUserById);
+usersRouter.get("/:id", authenticateAdmin, usersController.getUserById);
 
 // PUT: update a user by id
 usersRouter.put("/:id", usersController.updateUserById);
