@@ -11,9 +11,6 @@ threadsRouter.get("/", authenticateAdmin, threadsController.getAllThreads);
 // GET: get threads by exam
 threadsRouter.get("/exam/:id", threadsController.getThreadsByExam);
 
-// GET: get threads by course
-threadsRouter.get("/course/:id", threadsController.getThreadsByCourse);
-
 // GET: get thread by id
 threadsRouter.get("/:id", threadsController.getThreadById);
 
@@ -54,12 +51,9 @@ threadsRouter.put("/:threadId/comment/:commentId", threadsController.updateComme
 threadsRouter.put("/:threadId/comment/:commentId/reply/:replyId", threadsController.updateReplyInComment);
 
 // PUT: toggle like on a comment
-threadsRouter.put("comment/:id/like", threadsController.toggleLikeOnComment);
+threadsRouter.put("/comment/:id/like", threadsController.toggleLikeOnComment);
 
-// DELETE: delete comment from a thread
-threadsRouter.delete("/:threadId/comment/:commentId", threadsController.deleteCommentFromThread);
-
-// DELETE: delete reply from a comment
-threadsRouter.delete("/:threadId/comment/:commentId/reply/:replyId", threadsController.deleteReplyFromComment);
+// DELETE: delete a comment
+threadsRouter.delete("/comment/:id", authenticateAdmin, threadsController.deleteComment);
 
 export default threadsRouter;

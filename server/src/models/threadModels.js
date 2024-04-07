@@ -46,6 +46,11 @@ const threadSchema = new mongoose.Schema({
   ],
 });
 
+threadSchema.pre("remove", async function (next) {
+  await Comment.deleteMany({ _id: { $in: this.comments } });
+  next();
+});
+
 export const Thread = mongoose.model("Thread", threadSchema);
 
 const commentSchema = new mongoose.Schema({
@@ -74,6 +79,11 @@ const commentSchema = new mongoose.Schema({
       ref: "Comment",
     },
   ],
+});
+
+commentSchema.pre("remove", async function (next) {
+  await Comment.deleteMany({ _id: { $in: this.replies } });
+  next();
 });
 
 export const Comment = mongoose.model("Comment", commentSchema);

@@ -15,22 +15,6 @@ const commentPopulate = {
   options: { sort: { createdAt: "asc" } },
 };
 
-export const deleteCommentRecursively = async (commentId) => {
-  const comment = await Comment.findById(commentId);
-
-  if (!comment) {
-    return;
-  }
-
-  if (comment.replies.length > 0) {
-    for (const replyId of comment.replies) {
-      await deleteCommentRecursively(replyId);
-    }
-  }
-
-  await comment.remove();
-};
-
 const threadsController = {
   // Threads
 
@@ -46,18 +30,6 @@ const threadsController = {
   getThreadsByExam: async (req, res) => {
     try {
       const threads = await Thread.find({ exam: req.params.id }).populate(threadPopulate);
-      res.json(threads);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
-
-  getThreadsByCourse: async (req, res) => {
-    try {
-      const courseExams = await Exam.find({ course: req.params.id });
-      const threads = await Thread.find({ exam: { $in: courseExams.map((exam) => exam._id) } }).populate(
-        threadPopulate
-      );
       res.json(threads);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -115,12 +87,6 @@ const threadsController = {
 
       if (thread.creator.toString() !== req.user.user_id) {
         return res.status(403).json({ message: "Access denied" });
-      }
-
-      if (thread.comments.length > 0) {
-        for (const commentId of thread.comments) {
-          await deleteCommentRecursively(commentId);
-        }
       }
 
       await thread.remove();
@@ -329,72 +295,17 @@ const threadsController = {
     }
   },
 
-  deleteCommentFromThread: async (req, res) => {
+  deleteComment: async (req, res) => {
     try {
-      const thread = await Thread.findById(req.params.threadId).populate(threadPopulate);
-
-      if (!thread) {
-        return res.status(404).json({ message: "Thread not found" });
-      }
-      if (thread.isClosed) {
-        return res.status(403).json({ message: "Thread is closed" });
-      }
-
-      const comment = thread.comments.find((comment) => comment._id.toString() === req.params.commentId);
+      const comment = await Comment.findById(req.body.commentId);
 
       if (!comment) {
         return res.status(404).json({ message: "Comment not found" });
       }
 
-      if (comment.sender.toString() !== req.user.user_id && thread.creator.toString() !== req.user.user_id) {
-        // only creator of the comment or the thread can delete the comment
-        return res.status(403).json({ message: "Access denied" });
-      }
+      await comment.remove();
 
-      await deleteCommentRecursively(req.params.commentId);
-
-      thread.comments = thread.comments.filter((comment) => comment._id.toString() !== req.params.commentId);
-      await thread.save();
-
-      res.json(thread);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
-
-  deleteReplyFromComment: async (req, res) => {
-    try {
-      const thread = await Thread.findById(req.params.threadId).populate(threadPopulate);
-
-      if (!thread) {
-        return res.status(404).json({ message: "Thread not found" });
-      }
-      if (thread.isClosed) {
-        return res.status(403).json({ message: "Thread is closed" });
-      }
-
-      const comment = await Comment.findById(req.params.commentId).populate(commentPopulate);
-
-      if (!comment) {
-        return res.status(404).json({ message: "Comment not found" });
-      }
-
-      const reply = comment.replies.find((reply) => reply._id.toString() === req.params.replyId);
-
-      if (!reply) {
-        return res.status(404).json({ message: "Reply not found" });
-      }
-      if (reply.sender.toString() !== req.user.user_id && thread.creator.toString() !== req.user.user_id) {
-        // only creator of the reply or the thread can delete the reply
-        return res.status(403).json({ message: "Access denied" });
-      }
-
-      await deleteCommentRecursively(req.params.replyId);
-
-      comment.replies = comment.replies.filter((reply) => reply._id.toString() !== req.params.replyId);
-      await comment.save();
-
-      res.json(comment);
+      res.json({ message: "Comment deleted" });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

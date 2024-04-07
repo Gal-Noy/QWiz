@@ -2,7 +2,6 @@ import { Exam } from "../models/examModel.js";
 import { User } from "../models/userModel.js";
 import { Course } from "../models/infoModels.js";
 import { Thread } from "../models/threadModels.js";
-import { deleteCommentRecursively } from "../controllers/threadsController.js";
 import { uploadFile, getPresignedUrl } from "../utils/s3.js";
 
 const examsController = {
@@ -96,7 +95,7 @@ const examsController = {
       await dbUser.save();
 
       const newExam = await exam.save();
-      newExam.s3Key = undefined;
+      delete newExam.s3Key;
 
       const response = {
         exam: newExam,
@@ -156,7 +155,7 @@ const examsController = {
       }
       exam.set(req.body);
       const updatedExam = await exam.save();
-      updatedExam.s3Key = undefined;
+      delete updatedExam.s3Key;
       res.json(updatedExam);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -169,16 +168,6 @@ const examsController = {
 
       if (!exam) {
         return res.status(404).json({ message: "Exam not found" });
-      }
-
-      const examThreads = await Thread.find({ exam: req.params.id });
-      for (let thread of examThreads) {
-        if (thread.comments.length > 0) {
-          for (let comment of thread.comments) {
-            await deleteCommentRecursively(comment);
-          }
-        }
-        await thread.remove();
       }
 
       await exam.remove();
@@ -284,7 +273,7 @@ const examsController = {
       const updatedExam = await exam.save();
       await dbUser.save();
 
-      updatedExam.s3Key = undefined;
+      delete updatedExam.s3Key;
       res.json({ updatedExam, user: dbUser });
     } catch (error) {
       res.status(500).json({ message: error.message });

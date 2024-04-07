@@ -7,6 +7,11 @@ const facultySchema = mongoose.Schema({
   },
 });
 
+facultySchema.pre("remove", async function (next) {
+  await Department.deleteMany({ faculty: this._id });
+  next();
+});
+
 export const Faculty = mongoose.model("Faculty", facultySchema);
 
 const departmentSchema = mongoose.Schema({
@@ -19,6 +24,11 @@ const departmentSchema = mongoose.Schema({
     ref: "Faculty",
     required: true,
   },
+});
+
+departmentSchema.pre("remove", async function (next) {
+  await Course.deleteMany({ department: this._id });
+  next();
 });
 
 export const Department = mongoose.model("Department", departmentSchema);

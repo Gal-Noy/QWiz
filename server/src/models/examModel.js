@@ -68,4 +68,17 @@ const examSchema = mongoose.Schema({
   ],
 });
 
+examSchema.pre("remove", async function (next) {
+  await this.model("Thread").deleteMany({ exam: this._id });
+
+  await this.model("User").updateMany(
+    { "exams_ratings.exam": this._id },
+    { $pull: { exams_ratings: { exam: this._id } } }
+  );
+
+  await this.model("User").updateMany({ favoriteExams: this._id }, { $pull: { favoriteExams: this._id } });
+
+  next();
+});
+
 export const Exam = mongoose.model("Exam", examSchema);
