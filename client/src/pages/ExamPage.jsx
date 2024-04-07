@@ -34,7 +34,7 @@ function ExamPage() {
     if (exam) {
       axiosInstance
         .get(`/exams/${examId}/presigned`)
-        .then((res) => handleResult(res, 200, () => setFilePath(res.data.url)))
+        .then((res) => handleResult(res, 200, () => setFilePath(res.data.presignedUrl)))
         .catch((err) => {
           handleError(err, () => {
             console.error(err.response.data.message);
@@ -104,6 +104,10 @@ function ExamPage() {
                   <div className="exam-details-item">
                     <a className="exam-details-item-header">דירוג קושי:</a>
                     <ExamRating difficultyRating={exam.difficultyRating} examId={examId} editMode={false} />
+                  </div>
+                  <div className="exam-details-item">
+                    <a className="exam-details-item-header">הועלה על ידי:</a>
+                    <a className="exam-details-item-text">{exam.uploadedBy.name}</a>
                   </div>
                 </div>
               </div>

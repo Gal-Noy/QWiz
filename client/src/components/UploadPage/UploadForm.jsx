@@ -61,7 +61,7 @@ function UploadForm() {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("examData", JSON.stringify(examData));
-    console.log(formData);
+
     await axiosInstance
       .post("/exams", formData, {
         headers: {

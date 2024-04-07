@@ -191,6 +191,7 @@
 
 #pdf-preview {
   min-width: 50vw;
+  margin-top: 1rem;
 }
 
 .react-pdf__Page__canvas {

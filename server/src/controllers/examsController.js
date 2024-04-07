@@ -126,6 +126,10 @@ const examsController = {
       const exam = await Exam.findById(req.params.id)
         .populate("course")
         .populate({
+          path: "uploadedBy",
+          select: "name",
+        })
+        .populate({
           path: "department",
           populate: {
             path: "faculty",

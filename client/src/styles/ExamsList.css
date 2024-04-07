@@ -206,6 +206,9 @@
   align-items: center;
   gap: 0.5rem;
 }
+#rate_exam {
+  justify-content: center;
+}
 
 .exam-rating {
   display: flex;

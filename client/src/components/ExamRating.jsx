@@ -28,7 +28,7 @@ function ExamRating(props) {
   };
 
   return (
-    <div className="table-element row rate">
+    <div className="table-element row rate" id={editMode ? "rate_exam" : ""}>
       {editMode && !rating && (
         <div className="exam-rating">
           <a className="rate-exam-header">דרג/י את הבחינה:</a>
