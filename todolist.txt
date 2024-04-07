@@ -1,3 +1,5 @@
-page and thread for each exam
+test auth expiry
+thread for each exam
 tags
 views
+forums search and through exams

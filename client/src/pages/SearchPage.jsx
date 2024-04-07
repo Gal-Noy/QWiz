@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ExamsList from "../components/ExamsList/ExamsList";
 import FilterBar from "../components/FilterBar/FilterBar";
 import PageHeader from "../components/PageHeader";
 import "../styles/SearchPage.css";
 
 function SearchPage() {
-  const [exams, setExams] = useState([]);
   const [filteredExams, setFilteredExams] = useState([]);
   const [showExams, setShowExams] = useState(false);
   const [error, setError] = useState(null);

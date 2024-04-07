@@ -41,6 +41,8 @@ function App() {
         <Route path="/upload" element={isLoggedIn ? <UploadPage /> : <Navigate to="/" replace />} />
         <Route path="/profile" element={isLoggedIn ? <ProfilePage /> : <Navigate to="/" replace />} />
         <Route path="/exam/:examId" element={isLoggedIn ? <ExamPage /> : <Navigate to="/" replace />} />
+        {/* <Route path="/exam/:examId/forum" element={isLoggedIn ? <ForumPage /> : <Navigate to="/" replace />} />
+        <Route path="/exam/:examId/forum/:threadId" element={isLoggedIn ? <ThreadPage /> : <Navigate to="/" replace />} /> */}
       </Routes>
     </Router>
   );

@@ -9,7 +9,7 @@ export const authenticateToken = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.TOKEN_KEY);
+    const decoded = jwt.verify(token, process.env.TOKEN_KEY); // if expired, throws an error
 
     const user = await User.findById(decoded.user_id);
 
@@ -21,25 +21,27 @@ export const authenticateToken = async (req, res, next) => {
       return res.status(400).json({ message: "User is not active." });
     }
 
-    const tokenExpiryThreshold = 5 * 60 * 1000; // 5 minutes left for token expiry
-    const remainingTime = decoded.exp * 1000 - Date.now();
-
-    if (remainingTime < tokenExpiryThreshold) {
-      const newToken = jwt.sign({ user_id: user._id, email: user.email }, process.env.TOKEN_KEY, {
-        expiresIn: "1h",
-      });
-
-      res.setHeader("Authorization", `Bearer ${newToken}`);
-    }
-
     user.lastActivity = Date.now();
     await user.save();
 
     const inactivityTimeout = 30 * 60 * 1000; // 30 minutes
     if (Date.now() - user.lastActivity > inactivityTimeout) {
+      // if user was inactive for more than 30 minutes, log them out
       user.isActive = false;
       await user.save();
-      return res.status(400).json({ message: "User is not active." });
+      return res.status(400).json({ message: "User logged out due to inactivity." });
+    }
+
+    const tokenExpiryThreshold = 5 * 60 * 1000; // 5 minutes
+    const remainingTime = decoded.exp * 1000 - Date.now();
+
+    if (remainingTime < tokenExpiryThreshold) {
+      // if token is about to expire, generate a new one
+      const newToken = jwt.sign({ user_id: user._id, email: user.email }, process.env.TOKEN_KEY, {
+        expiresIn: "1h",
+      });
+
+      res.setHeader("Authorization", `Bearer ${newToken}`);
     }
 
     req.user = decoded;
@@ -49,6 +51,7 @@ export const authenticateToken = async (req, res, next) => {
       const decoded = jwt.decode(token);
       const user = await User.findById(decoded.user_id);
       if (user) {
+        // log out user if token expired
         user.isActive = false;
         await user.save();
       }
