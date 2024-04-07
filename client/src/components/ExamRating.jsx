@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-
-import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import axiosInstance, { handleError, handleResult } from "../utils/axiosInstance";
 
 function ExamRating(props) {
   const { difficultyRating, examId, editMode, setExam } = props;
   const { totalRatings, averageRating } = difficultyRating;
   const user = JSON.parse(localStorage.getItem("user"));
-
   const currRating = user.exams_ratings?.find((rating) => rating.exam === examId)?.difficulty_rating;
   const [rating, setRating] = useState(currRating ? currRating : null);
 

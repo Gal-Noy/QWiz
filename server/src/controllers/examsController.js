@@ -58,8 +58,8 @@ const examsController = {
       }`;
       await uploadFile(fileContent, s3Key, fileType);
 
-      const totalRatings = difficultyRating ? 1 : 0;
-      const averageRating = difficultyRating ?? 0;
+      const totalRatings = difficultyRating > 0 ? 1 : 0;
+      const averageRating = difficultyRating;
       const exam = new Exam({
         s3Key,
         faculty,
@@ -86,8 +86,12 @@ const examsController = {
       ) {
         dbUser.phone_number = phone_number;
         dbUser.id_number = id_number;
-        await dbUser.save();
       }
+      if (difficultyRating > 0) {
+        dbUser.exams_ratings.push({ exam: exam._id, difficulty_rating: difficultyRating });
+      }
+
+      await dbUser.save();
 
       const newExam = await exam.save();
       newExam.s3Key = undefined;

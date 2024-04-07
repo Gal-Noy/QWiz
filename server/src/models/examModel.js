@@ -64,8 +64,6 @@ const examSchema = mongoose.Schema({
   /**
    * Fields to add:
    *  - forum: { type: mongoose.Schema.Types.ObjectId, ref: "Forum" }
-   *  - uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
-   *  - change ratings to an array of {user, rating}
    *
    * **/
 });

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
-import ExamRating from "./ExamRating";
+import ExamRating from "../ExamRating";
 
 function ExamRow({ exam, favorite }) {
   const [isFavorite, setIsFavorite] = useState(favorite);

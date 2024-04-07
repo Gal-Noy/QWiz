@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "../../styles/UploadForm.css";
 import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import SelectFilter from "./SelectFilter";
@@ -25,6 +24,7 @@ function UploadForm() {
     type: "test", // quiz or test
     grade: 85, // optional, 0-100
     lecturers: "", // optional
+    difficultyRating: 0, // optional, 1-5
   });
   const createExam = async () => {
     setIsPending(true);
@@ -61,7 +61,7 @@ function UploadForm() {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("examData", JSON.stringify(examData));
-
+    console.log(formData);
     await axiosInstance
       .post("/exams", formData, {
         headers: {
@@ -107,6 +107,7 @@ function UploadForm() {
       type: "test",
       grade: 85,
       lecturers: "",
+      difficultyRating: 0,
     });
     setFaculties([]);
     setDepartments([]);
@@ -114,6 +115,11 @@ function UploadForm() {
     setFile(null);
     setNumPages(null);
     setPageNumber(1);
+
+    const stars = document.querySelectorAll(".radio-input");
+    stars.forEach((star) => {
+      star.checked = false;
+    });
   };
 
   const [faculties, setFaculties] = useState([]);
@@ -332,6 +338,21 @@ function UploadForm() {
                 value={examDetails.lecturers}
                 {...(!examDetails.course ? { disabled: true } : {})}
               />
+            </div>
+            <div className="upload-form-attr">
+              <label>דירוג קושי</label>
+              <form className="star-rating">
+                {[5, 4, 3, 2, 1].map((star) => (
+                  <React.Fragment key={star}>
+                    <input className="radio-input" type="radio" id={`${star}-stars`} name="rating" value={star} />
+                    <label
+                      className={"radio-label"}
+                      htmlFor={`${star}-stars`}
+                      onClick={() => setExamDetails({ ...examDetails, difficultyRating: star })}
+                    />
+                  </React.Fragment>
+                ))}
+              </form>
             </div>
           </div>
         </div>

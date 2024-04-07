@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import axiosInstance, { handleError, handleResult } from "../utils/axiosInstance";
-import ExamRating from "../components/ExamsList/ExamRating";
+import ExamRating from "../components/ExamRating";
 import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 import "../styles/ExamPage.css";
@@ -113,7 +113,6 @@ function ExamPage() {
                     <Page pageNumber={1} renderAnnotationLayer={false} renderTextLayer={false} />
                   </Document>
                 </div>
-
                 <ExamRating
                   difficultyRating={exam.difficultyRating}
                   examId={examId}
@@ -125,16 +124,6 @@ function ExamPage() {
           </div>
         )}
       </div>
-      {/* {isPending && <div>טוען מבחן...</div>}
-      {!isPending && exam && (
-        <div>
-          <h2>{exam.title}</h2>
-          <p>{exam.description}</p>
-          <a href={`${import.meta.env.VITE_SERVER_URL}/uploads/${exam.file}`} download>
-            הורדת הבחינה
-          </a>
-        </div>
-      )} */}
     </div>
   );
 }
