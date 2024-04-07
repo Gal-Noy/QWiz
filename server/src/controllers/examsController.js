@@ -1,6 +1,7 @@
 import { Exam } from "../models/examModel.js";
 import { User } from "../models/userModel.js";
-import { Faculty, Department, Course } from "../models/infoModels.js";
+import { Course } from "../models/infoModels.js";
+import { Forum } from "../models/forumModels.js";
 import { uploadFile, getPresignedUrl } from "../utils/s3.js";
 
 const examsController = {

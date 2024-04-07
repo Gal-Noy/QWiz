@@ -186,19 +186,23 @@ function FilterBar(props) {
       (filteredExams = filteredExams.filter((exam) => exam.lecturers === advancedSearchChoices.lecturers));
     advancedSearchChoices.year &&
       (filteredExams = filteredExams.filter((exam) => exam.year === advancedSearchChoices.year));
+    const examSemesterFilter =
+      advancedSearchChoices.semester === "'א" ? 1 : advancedSearchChoices.semester === "'ב" ? 2 : 3;
     advancedSearchChoices.semester &&
-      (filteredExams = filteredExams.filter((exam) => exam.semester === advancedSearchChoices.semester));
-    advancedSearchChoices.term &&
-      (filteredExams = filteredExams.filter((exam) => exam.term === advancedSearchChoices.term));
-    advancedSearchChoices.type &&
-      (filteredExams = filteredExams.filter((exam) => exam.type === advancedSearchChoices.type));
+      (filteredExams = filteredExams.filter((exam) => exam.semester === examSemesterFilter));
+    const examTermFilter = advancedSearchChoices.term === "'א" ? 1 : advancedSearchChoices.term === "'ב" ? 2 : 3;
+    advancedSearchChoices.term && (filteredExams = filteredExams.filter((exam) => exam.term === examTermFilter));
+    const examTypeFilter = advancedSearchChoices.type === "מבחן" ? "test" : "quiz";
+    advancedSearchChoices.type && (filteredExams = filteredExams.filter((exam) => exam.type === examTypeFilter));
+    const minGradeFilter = advancedSearchChoices.minGrade ? parseInt(advancedSearchChoices.minGrade.slice(0, -1)) : 0;
     advancedSearchChoices.minGrade &&
-      (filteredExams = filteredExams.filter(
-        (exam) => Math.floor(exam.grade / 10) * 10 >= advancedSearchChoices.minGrade
-      ));
+      (filteredExams = filteredExams.filter((exam) => Math.floor(exam.grade / 10) * 10 >= minGradeFilter));
+    const difficultyRatingFilter = advancedSearchChoices.difficultyRating
+      ? parseInt(advancedSearchChoices.difficultyRating.slice(0, -1))
+      : 0;
     advancedSearchChoices.difficultyRating &&
       (filteredExams = filteredExams.filter(
-        (exam) => Math.floor(exam.difficultyRating.averageRating) >= advancedSearchChoices.difficultyRating
+        (exam) => Math.floor(exam.difficultyRating.averageRating) >= difficultyRatingFilter
       ));
 
     setFilteredExams(filteredExams);

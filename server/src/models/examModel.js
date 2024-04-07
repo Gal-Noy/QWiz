@@ -60,12 +60,10 @@ const examSchema = mongoose.Schema({
     totalRatings: { type: Number, default: 0 },
     averageRating: { type: Number, default: 0, min: 0, max: 5 },
   },
-
-  /**
-   * Fields to add:
-   *  - forum: { type: mongoose.Schema.Types.ObjectId, ref: "Forum" }
-   *
-   * **/
+  forum: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Forum",
+  },
 });
 
 export const Exam = mongoose.model("Exam", examSchema);

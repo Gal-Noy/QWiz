@@ -42,7 +42,7 @@ function ExamsList(props) {
   }, [showExams]);
 
   useEffect(() => {
-    if (showExams && exams.length > 0) {
+    if (showExams) {
       setNumPages(Math.ceil(exams.length / examsPerPage));
     }
   }, [exams]);
