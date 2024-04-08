@@ -6,6 +6,7 @@ import SearchPage from "./pages/SearchPage.jsx";
 import UploadPage from "./pages/UploadPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import ExamPage from "./pages/ExamPage.jsx";
+import NewThread from "./components/ExamForum/NewThread.jsx";
 import NavBar from "./components/NavBar.jsx";
 import "./styles/App.css";
 
@@ -41,6 +42,7 @@ function App() {
         <Route path="/upload" element={isLoggedIn ? <UploadPage /> : <Navigate to="/" replace />} />
         <Route path="/profile" element={isLoggedIn ? <ProfilePage /> : <Navigate to="/" replace />} />
         <Route path="/exam/:examId" element={isLoggedIn ? <ExamPage /> : <Navigate to="/" replace />} />
+        <Route path="/exam/:examId/new-thread" element={isLoggedIn ? <NewThread /> : <Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

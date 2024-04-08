@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import ExamDetails from "../components/ExamPage/ExamDetails";
-import ExamForum from "../components/ExamPage/ExamForum";
+import ExamForum from "../components/ExamForum/ExamForum";
 import "../styles/ExamPage.css";
 
 function ExamPage() {

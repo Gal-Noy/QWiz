@@ -74,7 +74,7 @@ function ThreadRow({ thread, favorite }) {
         {thread.comments.length > 0 && <a>{thread.comments[thread.comments.length - 1].sender.name}</a>}
         {thread.comments.length > 0 && <a>{formatDate(thread.comments[thread.comments.length - 1].createdAt)}</a>}
       </div>
-      <div className="table-element tags">{thread.tags}</div>
+      <div className="table-element tags">{thread.tags.map((t) => `#${t}`).join(" ")}</div>
     </div>
   );
 }

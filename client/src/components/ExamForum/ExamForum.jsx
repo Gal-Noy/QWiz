@@ -38,6 +38,9 @@ function ExamForum({ examId }) {
 
   return (
     <div className="exam-forum">
+      <span onClick={() => {
+        window.location.href = `/exam/${examId}/new-thread`;
+      }} className="material-symbols-outlined add-thread-button">add</span>
       <div className="threads-list">
         <label className="threads-list-count">סה"כ דיונים נמצאו: {threads.length}</label>
         {!isPending && !error && numPages > 1 && (

@@ -8,6 +8,7 @@
   background-color: var(--red2);
   border-radius: 10px;
   padding: 2rem;
+  position: relative;
 }
 
 .loading-forum,
@@ -23,7 +24,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 2.5rem;
   font-size: 1.3rem;
 }
 
@@ -93,29 +94,35 @@
   transition: background 0.3s;
 
   &:nth-child(even) {
-    background: var(--red2);
+    background: white;
+  }
+
+  &:nth-child(odd) {
+    background: var(--red4);
   }
 
   &:hover {
-    background: var(--red3);
+    background: rgb(255, 188, 188);
   }
 
   &:active {
-    background: var(--red4);
+    background: var(--red3);
   }
 }
 
 .table-element {
   overflow: hidden;
   max-height: 100%;
-  border: 1px solid red;
 }
 
 .isClosed {
   width: 6rem;
+  display: flex;
+  justify-content: center;
 }
-.title {
-  width: 20rem;
+.title,
+.tags {
+  width: 15rem;
 }
 .creator {
   width: 10rem;
@@ -135,4 +142,27 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.add-thread-button {
+  position: absolute;
+  top: 1rem;
+  left: 1.5rem;
+
+  font-size: 3.25rem;
+  color: white;
+  background-color: var(--red1);
+  border-radius: 50%;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background-color: var(--red3);
+  }
+
+  &:active {
+    background-color: var(--red4);
+  }
 }
