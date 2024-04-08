@@ -57,7 +57,10 @@ function NewThread() {
           <label className="new-thread-label" htmlFor="content">
             תוכן:
           </label>
-          <ContentArea setContent={(content) => setThreadDetails({ ...threadDetails, content })} />
+          <ContentArea
+            content={threadDetails.content}
+            setContent={(content) => setThreadDetails({ ...threadDetails, content })}
+          />
         </div>
       </div>
     </div>

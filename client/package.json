@@ -12,6 +12,8 @@
   "dependencies": {
     "axios": "^1.6.8",
     "dotenv": "^16.4.5",
+    "install": "^0.13.0",
+    "quill": "^2.0.0-rc.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-pdf": "^7.7.1",
