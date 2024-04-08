@@ -92,6 +92,7 @@
   gap: 3rem;
   border-bottom: 1px solid var(--red1);
   transition: background 0.3s;
+  cursor: pointer;
 
   &:nth-child(even) {
     background: white;

@@ -3,10 +3,17 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  padding: 20px;
-  border-radius: 10px;
-  background-color: #f8f9fa;
+  border-radius: 0.5rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 75%;
+}
+
+.content-area-toolbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 1rem;
+    border-bottom: 1px solid #e0e0e0;
 }

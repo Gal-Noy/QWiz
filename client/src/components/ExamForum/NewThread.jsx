@@ -8,9 +8,12 @@ import "../../styles/NewThread.css";
 function NewThread() {
   const { examId } = useParams();
   const [examDetailsValue, setExamDetailsValue] = useState("");
-  const [threadTitle, setThreadTitle] = useState("");
-  const [threadTags, setThreadTags] = useState([]);
-  const [threadContent, setThreadContent] = useState(""); // first comment
+  const [threadDetails, setThreadDetails] = useState({
+    title: "",
+    content: "",
+    exam: examId,
+    tags: [],
+  });
 
   useEffect(() => {
     axiosInstance
@@ -46,15 +49,15 @@ function NewThread() {
             className="new-thread-input"
             type="text"
             id="title"
-            value={threadTitle}
-            onChange={(e) => setThreadTitle(e.target.value)}
+            value={threadDetails.title}
+            onChange={(e) => setThreadDetails({ ...threadDetails, title: e.target.value })}
           />
         </div>
         <div className="new-thread-label-input-pair">
           <label className="new-thread-label" htmlFor="content">
             תוכן:
           </label>
-          <ContentArea setContent={setThreadContent} />
+          <ContentArea setContent={(content) => setThreadDetails({ ...threadDetails, content })} />
         </div>
       </div>
     </div>

@@ -68,10 +68,10 @@ const threadsController = {
 
   createThread: async (req, res) => {
     try {
-      const { title, exam, tags } = req.body;
+      const { title, content, exam, tags } = req.body;
 
-      if (!title || !exam) {
-        return res.status(400).json({ message: "Please provide title and exam" });
+      if (!title || !content || !exam) {
+        return res.status(400).json({ message: "Please provide title, content and exam" });
       }
 
       const examObj = await Exam.findById(exam);
@@ -82,6 +82,7 @@ const threadsController = {
 
       const newThread = {
         title,
+        content,
         exam,
         creator: req.user.user_id,
         tags: tags || [],
@@ -104,6 +105,38 @@ const threadsController = {
       }
 
       thread.set(req.body);
+      await thread.save();
+
+      res.json(thread);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  editThread: async (req, res) => {
+    try {
+      const thread = await Thread.findById(req.params.id).populate(threadPopulate);
+
+      if (!thread) {
+        return res.status(404).json({ message: "Thread not found" });
+      }
+      if (thread.creator.toString() !== req.user.user_id) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const { title, content } = req.body;
+
+      if (!title && !content) {
+        return res.status(400).json({ message: "Please provide title or content" });
+      }
+
+      if (title) {
+        thread.title = title;
+      }
+      if (content) {
+        thread.content = content;
+      }
+
       await thread.save();
 
       res.json(thread);
