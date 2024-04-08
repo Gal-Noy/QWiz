@@ -1,0 +1,44 @@
+.new-thread {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.new-thread-container {
+  display: flex;
+  flex-direction: column;
+  border-radius: 1rem;
+  width: 80%;
+  gap: 2rem;
+
+  border: 1px solid red;
+}
+
+.new-thread-label-input-pair {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.new-thread-label {
+  font-size: 1.5rem;
+  width: 10vw;
+  text-align: left;
+  padding: 0.5rem 0.5rem;
+}
+
+.new-thread-input {
+  width: 40vw;
+  height: 2rem;
+  border-radius: 0.5rem;
+  border: 1px solid grey;
+  padding: 0.5rem 0.5rem;
+  font-size: 1.3rem;
+
+  &:focus {
+    outline: none;
+  }
+}

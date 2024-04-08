@@ -1,8 +1,7 @@
 test auth expiry
-thread for each exam
 tags
 views
-forums search and through exams
+attachments
 favorite/followed threads
 notifications
 opened/created threads by me
