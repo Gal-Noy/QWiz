@@ -61,6 +61,8 @@ const authController = {
         user.lastActivity = Date.now();
         await user.save();
 
+        delete user.password;
+
         return res.status(200).json({
           token,
           user,

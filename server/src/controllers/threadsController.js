@@ -1,19 +1,35 @@
 import { Thread, Comment } from "../models/threadModels.js";
 import { Exam } from "../models/examModel.js";
 
-const threadPopulate = {
-  path: "comments",
-  options: { sort: { createdAt: "asc" } },
-  populate: {
+const threadPopulate = [
+  {
+    path: "creator",
+    select: "name",
+  },
+  {
+    path: "comments",
+    options: { sort: { createdAt: "asc" } },
+    populate: {
+      path: "sender",
+      select: "name",
+    },
+  },
+];
+
+const commentPopulate = [
+  {
+    path: "sender",
+    select: "name",
+  },
+  {
     path: "replies",
     options: { sort: { createdAt: "asc" } },
+    populate: {
+      path: "sender",
+      select: "name",
+    },
   },
-};
-
-const commentPopulate = {
-  path: "replies",
-  options: { sort: { createdAt: "asc" } },
-};
+];
 
 const threadsController = {
   // Threads
@@ -52,7 +68,26 @@ const threadsController = {
 
   createThread: async (req, res) => {
     try {
-      const thread = new Thread(req.body);
+      const { title, exam, tags } = req.body;
+
+      if (!title || !exam) {
+        return res.status(400).json({ message: "Please provide title and exam" });
+      }
+
+      const examObj = await Exam.findById(exam);
+
+      if (!examObj) {
+        return res.status(404).json({ message: "Exam not found" });
+      }
+
+      const newThread = {
+        title,
+        exam,
+        creator: req.user.user_id,
+        tags: tags || [],
+      };
+
+      const thread = new Thread(newThread);
       await thread.save();
       res.status(201).json(thread);
     } catch (error) {
@@ -163,7 +198,18 @@ const threadsController = {
         return res.status(403).json({ message: "Thread is closed" });
       }
 
-      const comment = new Comment(req.body);
+      const { content } = req.body;
+
+      if (!content) {
+        return res.status(400).json({ message: "Please provide content" });
+      }
+
+      const newComment = {
+        content,
+        sender: req.user.user_id,
+      };
+
+      const comment = new Comment(newComment);
       await comment.save();
 
       thread.comments.push(comment._id);
@@ -192,7 +238,18 @@ const threadsController = {
         return res.status(404).json({ message: "Comment not found" });
       }
 
-      const reply = new Comment(req.body);
+      const { content } = req.body;
+
+      if (!content) {
+        return res.status(400).json({ message: "Please provide content" });
+      }
+
+      const newReply = {
+        content,
+        sender: req.user.user_id,
+      };
+
+      const reply = new Comment(newReply);
       await reply.save();
 
       comment.replies.push(reply._id);

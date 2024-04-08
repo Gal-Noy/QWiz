@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import ExamRow from "./ExamRow";
-import ExamsListHeader from "./ExamsListHeader";
+import ListHeader from "../ListHeader";
 import "../../styles/ExamsList.css";
 
 function ExamsList(props) {
@@ -72,8 +72,8 @@ function ExamsList(props) {
         </div>
       )}
       <div className={"exams-list-container" + (isProfilePage ? " is-profile-page" : "")}>
-        <div className="headers-row">
-          <ExamsListHeader
+        <div className="exams-list-headers-row">
+          <ListHeader
             label="מועדפים"
             header="favorite"
             sortHeader={sortHeader}
@@ -84,7 +84,7 @@ function ExamsList(props) {
               )
             }
           />
-          <ExamsListHeader
+          <ListHeader
             label="מספר קורס"
             header="course-num"
             sortHeader={sortHeader}
@@ -95,7 +95,7 @@ function ExamsList(props) {
               )
             }
           />
-          <ExamsListHeader
+          <ListHeader
             label="שם הקורס"
             header="course-name"
             sortHeader={sortHeader}
@@ -111,7 +111,7 @@ function ExamsList(props) {
               )
             }
           />
-          <ExamsListHeader
+          <ListHeader
             label="מרצים"
             header="lecturers"
             sortHeader={sortHeader}
@@ -132,7 +132,7 @@ function ExamsList(props) {
               )
             }
           />
-          <ExamsListHeader
+          <ListHeader
             label="סוג בחינה"
             header="type"
             sortHeader={sortHeader}
@@ -141,7 +141,7 @@ function ExamsList(props) {
               setExams((prevExams) => prevExams.slice().sort((a, b) => (a.type > b.type ? 1 : -1) * (isAsc ? 1 : -1)))
             }
           />
-          <ExamsListHeader
+          <ListHeader
             label="שנה"
             header="year"
             sortHeader={sortHeader}
@@ -150,7 +150,7 @@ function ExamsList(props) {
               setExams((prevExams) => prevExams.slice().sort((a, b) => (a.year > b.year ? 1 : -1) * (isAsc ? 1 : -1)))
             }
           />
-          <ExamsListHeader
+          <ListHeader
             label="סמסטר"
             header="semester"
             sortHeader={sortHeader}
@@ -161,7 +161,7 @@ function ExamsList(props) {
               )
             }
           />
-          <ExamsListHeader
+          <ListHeader
             label="מועד"
             header="term"
             sortHeader={sortHeader}
@@ -170,7 +170,7 @@ function ExamsList(props) {
               setExams((prevExams) => prevExams.slice().sort((a, b) => (a.term > b.term ? 1 : -1) * (isAsc ? 1 : -1)))
             }
           />
-          <ExamsListHeader
+          <ListHeader
             label="ציון"
             header="grade"
             sortHeader={sortHeader}
@@ -179,7 +179,7 @@ function ExamsList(props) {
               setExams((prevExams) => prevExams.slice().sort((a, b) => (a.grade > b.grade ? 1 : -1) * (isAsc ? 1 : -1)))
             }
           />
-          <ExamsListHeader
+          <ListHeader
             label="דירוג קושי"
             header="rate"
             sortHeader={sortHeader}

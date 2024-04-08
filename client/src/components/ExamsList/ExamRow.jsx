@@ -40,7 +40,6 @@ function ExamRow({ exam, favorite }) {
     <div
       className="exam-row"
       onClick={() => {
-        console.log(exam._id);
         window.location.href = `/exam/${exam._id}`;
       }}
     >

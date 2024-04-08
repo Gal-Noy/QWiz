@@ -1,10 +1,138 @@
 .exam-forum {
   width: 90%;
-  min-height: 50vh;
+  min-height: 85vh;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
   background-color: var(--red2);
   border-radius: 10px;
   padding: 2rem;
+}
+
+.loading-forum,
+.error-forum {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.threads-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-size: 1.3rem;
+}
+
+.threads-list-container {
+  display: flex;
+  flex-direction: column;
+  border-radius: 2rem 2rem 0 0;
+  width: 62.5vw;
+  height: 75vh;
+  overflow: auto;
+  scrollbar-color: var(--red3) var(--red4);
+  border: 2px solid var(--red3);
+}
+
+.threads-list-pagination {
+  display: flex;
+  justify-content: space-evenly;
+  width: 50%;
+  margin: 1rem 0;
+  font-size: 1.5rem;
+}
+
+.navigation-arrow {
+  font-size: 2rem;
+  color: grey;
+
+  &.enabled {
+    color: navy;
+
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      color: var(--cyan2);
+    }
+  }
+}
+
+.threads-list-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.threads-list-headers-row {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  width: 100vw;
+  padding: 1% 2%;
+  gap: 3rem;
+  font-weight: 500;
+  background: var(--red4);
+  border-bottom: 1px solid var(--red1);
+  box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.thread-row {
+  height: 5rem;
+  display: flex;
+  align-items: center;
+  width: 100vw;
+  padding: 1% 2%;
+  gap: 3rem;
+  border-bottom: 1px solid var(--red1);
+  transition: background 0.3s;
+
+  &:nth-child(even) {
+    background: var(--red2);
+  }
+
+  &:hover {
+    background: var(--red3);
+  }
+
+  &:active {
+    background: var(--red4);
+  }
+}
+
+.table-element {
+  overflow: hidden;
+  max-height: 100%;
+  border: 1px solid red;
+}
+
+.isClosed {
+  width: 6rem;
+}
+.title {
+  width: 20rem;
+}
+.creator {
+  width: 10rem;
+}
+.createdAt {
+  width: 8rem;
+}
+.views,
+.comments {
+  width: 5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.lastComment {
+  width: 10rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

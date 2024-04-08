@@ -9,6 +9,7 @@ import "../../styles/ExamDetails.css";
 function ExamDetails({ examId }) {
   const [exam, setExam] = useState(null);
   const [isPending, setIsPending] = useState(true);
+  const [error, setError] = useState(null);
   const [filePath, setFilePath] = useState(null);
   const navigate = useNavigate();
 
@@ -22,8 +23,7 @@ function ExamDetails({ examId }) {
       .catch((err) => {
         handleError(err, () => {
           console.error(err.response.data.message);
-          alert("שגיאה בטעינת הבחינה, אנא נסה שנית.");
-          navigate("/");
+          setError("שגיאה בטעינת פרטי הבחינה, אנא נסה שנית.");
         });
       });
   }, [examId]);
@@ -48,6 +48,7 @@ function ExamDetails({ examId }) {
   return (
     <div className="exam-details">
       {isPending && <div className="loading-exam">טוען פרטי בחינה...</div>}
+      {error && <div className="error-exam">{error}</div>}
       {!isPending && exam && (
         <>
           <div className="exam-details-right-section">

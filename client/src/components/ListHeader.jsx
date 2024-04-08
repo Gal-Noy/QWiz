@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-function ExamsListHeader(props) {
+function ListHeader(props) {
   const { label, header, sortHeader, setSortHeader, sortFunc } = props;
   const [isSorter, setIsSorter] = useState(sortHeader === header);
   const [isAsc, setIsAsc] = useState(true);
@@ -35,4 +35,4 @@ function ExamsListHeader(props) {
   );
 }
 
-export default ExamsListHeader;
+export default ListHeader;

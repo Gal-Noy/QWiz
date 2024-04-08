@@ -1,6 +1,6 @@
 .exam-details {
   width: 90%;
-  min-height: 50vh;
+  min-height: 85vh;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -9,8 +9,9 @@
   padding: 2rem;
 }
 
-.loading-exam {
-  padding: 2rem;
+
+.error-exam {
+  color: red;
 }
 
 .exam-details-right-section {
