@@ -1,7 +1,6 @@
 test auth expiry
 tags
 views
-attachments
-favorite/followed threads
-notifications
+favorite threads
+followed threads, notifications
 opened/created threads by me

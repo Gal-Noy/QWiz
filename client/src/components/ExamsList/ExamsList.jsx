@@ -26,10 +26,8 @@ function ExamsList(props) {
         .get("/exams/favorites")
         .then((res) =>
           handleResult(res, 200, () => {
-            if (res.status === 200) {
-              const favoriteExamsIds = res.data.map((exam) => exam._id);
-              setFavoriteExams(favoriteExamsIds);
-            }
+            const favoriteExamsIds = res.data.map((exam) => exam._id);
+            setFavoriteExams(favoriteExamsIds);
           })
         )
         .catch((err) => {

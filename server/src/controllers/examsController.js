@@ -88,7 +88,7 @@ const examsController = {
         dbUser.id_number = id_number;
       }
       if (difficultyRating > 0) {
-        dbUser.exams_ratings.push({ exam: exam._id, difficulty_rating: difficultyRating });
+        dbUser.exams_ratings.push({ exam: exam._id, difficultyRating: difficultyRating });
       }
 
       await dbUser.save();
@@ -256,13 +256,13 @@ const examsController = {
         // User has not rated this exam before
         const newAverageRating = (averageRating * totalRatings + rating) / (totalRatings + 1);
         exam.difficultyRating = { totalRatings: totalRatings + 1, averageRating: newAverageRating };
-        dbUser.exams_ratings.push({ exam: req.params.id, difficulty_rating: rating });
+        dbUser.exams_ratings.push({ exam: req.params.id, difficultyRating: rating });
       } else {
         // User has rated this exam before
-        const oldRating = examRating.difficulty_rating;
+        const oldRating = examRating.difficultyRating;
         const newAverageRating = (averageRating * totalRatings - oldRating + rating) / totalRatings;
         exam.difficultyRating = { totalRatings, averageRating: newAverageRating };
-        examRating.difficulty_rating = rating;
+        examRating.difficultyRating = rating;
         dbUser.exams_ratings = dbUser.exams_ratings.map((rating) => {
           if (rating.exam.toString() === req.params.id) {
             return examRating;

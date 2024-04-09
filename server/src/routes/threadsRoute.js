@@ -11,11 +11,23 @@ threadsRouter.get("/", authenticateAdmin, threadsController.getAllThreads);
 // GET: get threads by exam
 threadsRouter.get("/exam/:id", threadsController.getThreadsByExam);
 
+// GET: get created threads
+threadsRouter.get("/created", threadsController.getCreatedThreads);
+
+// GET: get starred threads
+threadsRouter.get("/starred", threadsController.getStarredThreads);
+
 // GET: get thread by id
 threadsRouter.get("/:id", threadsController.getThreadById);
 
 // POST: create a new thread
 threadsRouter.post("/", threadsController.createThread);
+
+// POST: star a thread
+threadsRouter.post("/:id/star", threadsController.starThread);
+
+// DELETE: unstar a thread
+threadsRouter.delete("/:id/star", threadsController.unstarThread);
 
 // PUT: update thread by id
 threadsRouter.put("/:id", authenticateAdmin, threadsController.updateThread);

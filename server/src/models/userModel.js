@@ -32,11 +32,17 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Exam",
       },
-      difficulty_rating: {
+      difficultyRating: {
         type: Number,
         min: 0,
         max: 5,
       },
+    },
+  ],
+  starred_threads: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Thread",
     },
   ],
   isActive: {

@@ -6,7 +6,7 @@ function ExamRating(props) {
   const { difficultyRating, examId, editMode, setExam } = props;
   const { totalRatings, averageRating } = difficultyRating;
   const user = JSON.parse(localStorage.getItem("user"));
-  const currRating = user.exams_ratings?.find((rating) => rating.exam === examId)?.difficulty_rating;
+  const currRating = user.exams_ratings?.find((rating) => rating.exam === examId)?.difficultyRating;
   const [rating, setRating] = useState(currRating ? currRating : null);
 
   const rateExam = async (rating) => {

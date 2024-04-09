@@ -1,5 +1,6 @@
 import { Thread, Comment } from "../models/threadModels.js";
 import { Exam } from "../models/examModel.js";
+import { User } from "../models/userModel.js";
 
 const threadPopulate = [
   {
@@ -204,6 +205,56 @@ const threadsController = {
       await thread.save();
 
       res.json(thread);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  getCreatedThreads: async (req, res) => {
+    try {
+      const threads = await Thread.find({ creator: req.user.user_id }).populate(threadPopulate);
+      res.json(threads);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  getStarredThreads: async (req, res) => {
+    try {
+      const user = await User.findById(req.user.user_id).populate("starred_threads");
+      res.json(user.starred_threads);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  starThread: async (req, res) => {
+    try {
+      const user = await User.findById(req.user.user_id);
+      const thread = await Thread.findById(req.params.id);
+
+      if (!thread) {
+        return res.status(404).json({ message: "Thread not found" });
+      }
+
+      user.starred_threads.push(thread._id);
+      await user.save();
+
+      res.json(user.starred_threads);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  unstarThread: async (req, res) => {
+    try {
+      const user = await User.findById(req.user.user_id);
+      const threadId = req.params.id;
+
+      user.starred_threads = user.starred_threads.filter((thread) => thread._id.toString() !== threadId);
+      await user.save();
+
+      res.json(user.starred_threads);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

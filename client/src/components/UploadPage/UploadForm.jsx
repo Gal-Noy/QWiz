@@ -70,15 +70,13 @@ function UploadForm() {
       })
       .then((res) =>
         handleResult(res, 201, () => {
-          if (res.status === 201) {
-            const updatedUser = res.data.user;
-            localStorage.setItem("user", JSON.stringify(updatedUser));
-            var stayOnPage = window.confirm("המבחן נוסף בהצלחה! האם תרצה להוסיף עוד מבחן?");
-            if (!stayOnPage) {
-              navigate("/");
-            }
-            clearForm();
+          const updatedUser = res.data.user;
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+          var stayOnPage = window.confirm("המבחן נוסף בהצלחה! האם תרצה להוסיף עוד מבחן?");
+          if (!stayOnPage) {
+            navigate("/");
           }
+          clearForm();
         })
       )
       .then(() => setIsPending(false))

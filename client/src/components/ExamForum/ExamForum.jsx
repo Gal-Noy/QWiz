@@ -8,6 +8,7 @@ function ExamForum({ examId }) {
   const [threads, setThreads] = useState([]);
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState(null);
+  const [starredThreads, setStarredThreads] = useState([]);
   const [sortHeader, setSortHeader] = useState("");
   const [numPages, setNumPages] = useState(threads.length > 0 ? Math.ceil(threads.length / 10) : 0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,14 +34,36 @@ function ExamForum({ examId }) {
   }, [examId]);
 
   useEffect(() => {
+    axiosInstance
+      .get("/threads/starred")
+      .then((res) =>
+        handleResult(res, 200, () => {
+          const starredThreadsIds = res.data.map((thread) => thread._id);
+          setStarredThreads(starredThreadsIds);
+        })
+      )
+      .catch((err) =>
+        handleError(err, () => {
+          console.error(err.response.data.message);
+          alert("שגיאה בטעינת הדיונים המסומנים בכוכב, אנא נסה שנית.");
+        })
+      );
+  }, []);
+
+  useEffect(() => {
     setNumPages(Math.ceil(threads.length / threadsPerPage));
   }, [threads]);
 
   return (
     <div className="exam-forum">
-      <span onClick={() => {
-        window.location.href = `/exam/${examId}/new-thread`;
-      }} className="material-symbols-outlined add-thread-button">add</span>
+      <span
+        onClick={() => {
+          window.location.href = `/exam/${examId}/new-thread`;
+        }}
+        className="material-symbols-outlined add-thread-button"
+      >
+        add
+      </span>
       <div className="threads-list">
         <label className="threads-list-count">סה"כ דיונים נמצאו: {threads.length}</label>
         {!isPending && !error && numPages > 1 && (
@@ -66,19 +89,17 @@ function ExamForum({ examId }) {
         )}
         <div className="threads-list-container">
           <div className="threads-list-headers-row">
-            {/* <ListHeader
+            <ListHeader
               label="מסומן בכוכב"
               header="starred"
               sortHeader={sortHeader}
               setSortHeader={setSortHeader}
               sortFunc={(isAsc) =>
                 setThreads((prevThreads) =>
-                  prevThreads
-                    .slice()
-                    .sort((a, b) => (a.isClosed === b.isClosed ? 0 : a.isClosed ? (isAsc ? 1 : -1) : isAsc ? -1 : 1))
+                  prevThreads.slice().sort((a, b) => (starredThreads.includes(a._id) ? -1 : 1) * (isAsc ? 1 : -1))
                 )
               }
-            /> */}
+            />
             <ListHeader
               label="סטטוס"
               header="isClosed"
@@ -114,7 +135,11 @@ function ExamForum({ examId }) {
                 setThreads((prevThreads) =>
                   prevThreads
                     .slice()
-                    .sort((a, b) => (isAsc ? a.creator.localeCompare(b.creator) : b.creator.localeCompare(a.creator)))
+                    .sort((a, b) =>
+                      isAsc
+                        ? a.creator.name.localeCompare(b.creator.name)
+                        : b.creator.name.localeCompare(a.creator.name)
+                    )
                 )
               }
             />
@@ -165,7 +190,13 @@ function ExamForum({ examId }) {
                   prevThreads
                     .slice()
                     .sort((a, b) =>
-                      isAsc
+                      !a.comments.length && !b.comments.length
+                        ? 0
+                        : a.comments.length === 0
+                        ? 1
+                        : b.comments.length === 0
+                        ? -1
+                        : isAsc
                         ? a.comments[a.comments.length - 1].createdAt - b.comments[b.comments.length - 1].createdAt
                         : b.comments[b.comments.length - 1].createdAt - a.comments[a.comments.length - 1].createdAt
                     )
@@ -201,7 +232,12 @@ function ExamForum({ examId }) {
           {!isPending && !error && (
             <div className="threads-list-rows">
               {currentThreads.map((thread) => (
-                <ThreadRow key={thread._id} thread={thread} /> // favorite={favoriteThreads.includes(thread._id)}
+                <ThreadRow
+                  key={thread._id}
+                  thread={thread}
+                  starred={starredThreads.includes(thread._id)}
+                  setStarredThreads={setStarredThreads}
+                />
               ))}
             </div>
           )}

@@ -26,12 +26,10 @@ function Login({ onLogin }) {
       .post("/auth/login", loginData)
       .then((res) =>
         handleResult(res, 200, () => {
-          if (res.status === 200) {
-            localStorage.setItem("token", res.data.token);
-            localStorage.setItem("user", JSON.stringify(res.data.user));
-            onLogin();
-            navigate("/");
-          }
+          localStorage.setItem("token", res.data.token);
+          localStorage.setItem("user", JSON.stringify(res.data.user));
+          onLogin();
+          navigate("/");
         })
       )
       .then(() => setIsPending(false))

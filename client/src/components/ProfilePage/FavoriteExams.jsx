@@ -13,11 +13,9 @@ function FavoriteExams() {
       .get("/exams/favorites", {})
       .then((res) =>
         handleResult(res, 200, () => {
-          if (res.status === 200) {
-            const fetchedExams = res.data;
-            const sortedExams = fetchedExams.sort((a, b) => (a.course > b.course ? 1 : -1));
-            setFavoriteExams(sortedExams);
-          }
+          const fetchedExams = res.data;
+          const sortedExams = fetchedExams.sort((a, b) => (a.course > b.course ? 1 : -1));
+          setFavoriteExams(sortedExams);
         })
       )
       .then(() => setIsPending(false))

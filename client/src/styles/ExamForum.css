@@ -118,18 +118,26 @@
 
 .isClosed {
   width: 6rem;
-  display: flex;
-  justify-content: center;
+  &.row {
+    display: flex;
+    justify-content: center;
+  }
+}
+.starred {
+  width: 12rem;
+
+  &.row {
+    display: flex;
+    justify-content: center;
+  }
 }
 .title,
 .tags {
   width: 15rem;
 }
-.creator {
-  width: 10rem;
-}
+.creator,
 .createdAt {
-  width: 8rem;
+  width: 11rem;
 }
 .views,
 .comments {
@@ -139,10 +147,13 @@
   gap: 0.5rem;
 }
 .lastComment {
-  width: 10rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  width: 12rem;
+
+  &.row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 .add-thread-button {
@@ -166,4 +177,36 @@
   &:active {
     background-color: var(--red4);
   }
+}
+
+.starred-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.starred-checkbox {
+  display: block;
+  position: relative;
+  cursor: pointer;
+}
+
+.starred-checkbox svg {
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 50px;
+  width: 50px;
+  transition: all 0.3s;
+  fill: #666;
+}
+
+.starred-checkbox svg:hover {
+  transform: scale(1.1);
+}
+
+.starred-checkbox input:checked ~ svg {
+  fill: var(--red1);
 }

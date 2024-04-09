@@ -51,6 +51,8 @@ const threadSchema = new mongoose.Schema({
 });
 
 threadSchema.pre("remove", async function (next) {
+  await this.model("User").updateMany({ starred_threads: this._id }, { $pull: { starred_threads: this._id } });
+
   await Comment.deleteMany({ _id: { $in: this.comments } });
   next();
 });

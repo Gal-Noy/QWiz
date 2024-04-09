@@ -1,42 +1,47 @@
 import React, { useState, useEffect } from "react";
-import axiosInstance, { handleError } from "../../utils/axiosInstance";
+import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import { formatDate } from "../../utils/generalUtils";
-// import ExamRating from "../ExamRating";
 
-function ThreadRow({ thread, favorite }) {
-  //   const [isFavorite, setIsFavorite] = useState(favorite);
+function ThreadRow({ thread, starred, setStarredThreads }) {
+  const [isStarred, setIsStarred] = useState(starred);
 
-  //   const addToFavorites = async () => {
-  //     await axiosInstance.post("/threads/favorites", { thread }).catch((err) => {
-  //       handleError(err, () => {
-  //         console.error(err.response.data.message);
-  //         alert("שגיאה בהוספת הבחינה למועדפים, אנא נסה שנית.");
-  //       });
-  //     });
-  //   };
+  const starThread = async () => {
+    await axiosInstance
+      .post(`threads/${thread._id}/star`)
+      .then((res) => handleResult(res, 200, () => setStarredThreads(res.data)))
+      .catch((err) => {
+        handleError(err, () => {
+          console.error(err.response.message);
+          alert("שגיאה בהוספת הדיון למסומן בכוכב, אנא נסה שנית.");
+        });
+      });
+  };
 
-  //   const removeFromFavorites = async () => {
-  //     await axios.delete(`/threads/favorites/${thread._id}`).catch((err) => {
-  //       handleError(err, () => {
-  //         console.error(err.response.data.message);
-  //         alert("שגיאה בהסרת הבחינה מהמועדפים, אנא נסה שנית.");
-  //       });
-  //     });
-  //   };
+  const unstarThread = async () => {
+    await axiosInstance
+      .delete(`threads/${thread._id}/star`)
+      .then((res) => handleResult(res, 200, () => setStarredThreads(res.data)))
+      .catch((err) => {
+        handleError(err, () => {
+          console.error(err.response.data.message);
+          alert("שגיאה בהסרת הדיון מהמסומן בכוכב, אנא נסה שנית.");
+        });
+      });
+  };
 
-  //   const handleFavoritesChange = (e) => {
-  //     setIsFavorite(!isFavorite);
-  //     if (e.target.checked) {
-  //       addToFavorites();
-  //     } else {
-  //       removeFromFavorites();
-  //     }
-  //   };
-  //
-  //   useEffect(() => {
-  //     setIsFavorite(favorite);
-  //   }, [favorite]);
-  console.log(thread);
+  const handleStarredChange = (e) => {
+    setIsStarred(!isStarred);
+    if (e.target.checked) {
+      starThread();
+    } else {
+      unstarThread();
+    }
+  };
+
+  useEffect(() => {
+    setIsStarred(starred);
+  }, [starred]);
+
   return (
     <div
       className="thread-row"
@@ -44,15 +49,15 @@ function ThreadRow({ thread, favorite }) {
         window.location.href = `/thread/${thread._id}`;
       }}
     >
-      {/* <div className="table-element favorite">
-        <div className="checkbox-wrapper-22">
-          <label className="switch" htmlFor={`checkbox-${thread._id}`} onClick={(e) => e.stopPropagation()}>
-            <input type="checkbox" id={`checkbox-${thread._id}`} onChange={handleFavoritesChange} checked={isFavorite} />
-            <div className="slider round"></div>
-          </label>
-        </div>
-      </div> */}
-      <div className="table-element isClosed">
+      <div className="table-element starred row">
+        <label className="starred-checkbox" onClick={(e) => e.stopPropagation()}>
+          <input type="checkbox" onChange={handleStarredChange} checked={isStarred} />
+          <svg height="24px" viewBox="0 0 24 24" width="24px">
+            <path d="M9.362,9.158c0,0-3.16,0.35-5.268,0.584c-0.19,0.023-0.358,0.15-0.421,0.343s0,0.394,0.14,0.521    c1.566,1.429,3.919,3.569,3.919,3.569c-0.002,0-0.646,3.113-1.074,5.19c-0.036,0.188,0.032,0.387,0.196,0.506    c0.163,0.119,0.373,0.121,0.538,0.028c1.844-1.048,4.606-2.624,4.606-2.624s2.763,1.576,4.604,2.625    c0.168,0.092,0.378,0.09,0.541-0.029c0.164-0.119,0.232-0.318,0.195-0.505c-0.428-2.078-1.071-5.191-1.071-5.191    s2.353-2.14,3.919-3.566c0.14-0.131,0.202-0.332,0.14-0.524s-0.23-0.319-0.42-0.341c-2.108-0.236-5.269-0.586-5.269-0.586    s-1.31-2.898-2.183-4.83c-0.082-0.173-0.254-0.294-0.456-0.294s-0.375,0.122-0.453,0.294C10.671,6.26,9.362,9.158,9.362,9.158z"></path>
+          </svg>
+        </label>
+      </div>
+      <div className="table-element isClosed row">
         {thread.isClosed ? (
           <span className="material-symbols-outlined">lock</span>
         ) : (
@@ -70,7 +75,7 @@ function ThreadRow({ thread, favorite }) {
         <span className="material-symbols-outlined">chat_bubble_outline</span>
         {thread.comments.length}
       </div>
-      <div className="table-element lastComment">
+      <div className="table-element lastComment row">
         {thread.comments.length > 0 && <a>{thread.comments[thread.comments.length - 1].sender.name}</a>}
         {thread.comments.length > 0 && <a>{formatDate(thread.comments[thread.comments.length - 1].createdAt)}</a>}
       </div>

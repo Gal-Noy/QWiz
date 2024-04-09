@@ -22,16 +22,14 @@ function PersonalDetails() {
       .put(`/users/${user._id}`, editedUser)
       .then((res) =>
         handleResult(200, () => {
-          if (res.status === 200) {
-            localStorage.setItem("user", JSON.stringify(res.data));
-            setEditedUser({
-              ...res.data,
-              password: "",
-              phone_number: res.data.phone_number || "",
-              id_number: res.data.id_number || "",
-            });
-            alert("הפרטים עודכנו בהצלחה");
-          }
+          localStorage.setItem("user", JSON.stringify(res.data));
+          setEditedUser({
+            ...res.data,
+            password: "",
+            phone_number: res.data.phone_number || "",
+            id_number: res.data.id_number || "",
+          });
+          alert("הפרטים עודכנו בהצלחה");
         })
       )
       .then(() => setEditMode(false))

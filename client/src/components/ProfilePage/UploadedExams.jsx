@@ -13,11 +13,9 @@ function UploadedExams() {
       .get("/exams/uploaded")
       .then((res) =>
         handleResult(res, 200, () => {
-          if (res.status === 200) {
-            const fetchedExams = res.data;
-            const sortedExams = fetchedExams.sort((a, b) => (a.course > b.course ? 1 : -1));
-            setUploadedExams(sortedExams);
-          }
+          const fetchedExams = res.data;
+          const sortedExams = fetchedExams.sort((a, b) => (a.course > b.course ? 1 : -1));
+          setUploadedExams(sortedExams);
         })
       )
       .then(() => setIsPending(false))
