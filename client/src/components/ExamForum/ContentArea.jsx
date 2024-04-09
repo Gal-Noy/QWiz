@@ -2,21 +2,15 @@ import React, { useRef, useEffect } from "react";
 import Quill from "quill";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
-import "../../styles/ContentArea.css";
 
 function ContentArea({ content, setContent }) {
   const editorRef = useRef(null);
 
-  const fontSizeArr = ["8px", "9px", "10px", "12px", "14px", "16px", "20px", "24px", "32px"];
-  var Size = Quill.import("attributors/style/size");
-  Size.whitelist = fontSizeArr;
-  Quill.register(Size, true);
-
   const toolbarOptions = [
-    [{ header: [1, 2, 3, false] }, { size: fontSizeArr }],
+    [{ size: ["small", false, "large", "huge"] }],
     ["bold", "italic", "underline", "strike"],
     [{ color: [] }, { background: [] }],
-    [{ direction: "rtl" }, { align: [] }],
+    [{ align: "justify" }, { align: "" }, { align: "center" }, { align: "right" }, { direction: "rtl" }],
     [{ indent: "-1" }, { indent: "+1" }],
     [{ list: "ordered" }, { list: "bullet" }],
     [{ script: "sub" }, { script: "super" }],
@@ -30,8 +24,15 @@ function ContentArea({ content, setContent }) {
       modules: {
         toolbar: toolbarOptions,
       },
-      placeholder: "תוכן הדיון...",
     });
+
+    const activateRTLandRightAlign = () => {
+      editor.format("direction", "rtl");
+      editor.format("align", "right");
+      editorRef.current.removeEventListener("click", activateRTLandRightAlign);
+    };
+
+    editorRef.current.addEventListener("click", activateRTLandRightAlign);
 
     editor.on("text-change", () => {
       setContent(editor.root.innerHTML);

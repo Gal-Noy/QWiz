@@ -60,12 +60,6 @@ const examSchema = mongoose.Schema({
     totalRatings: { type: Number, default: 0 },
     averageRating: { type: Number, default: 0, min: 0, max: 5 },
   },
-  threads: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Thread",
-    },
-  ],
 });
 
 examSchema.pre("remove", async function (next) {

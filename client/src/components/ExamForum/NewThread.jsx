@@ -31,6 +31,27 @@ function NewThread() {
       .catch((err) => handleError(err, () => console.log("Failed to fetch exam details")));
   }, [examId]);
 
+  const createNewThread = () => {
+    if (!threadDetails.title || !threadDetails.content) {
+      alert("אנא מלא/י כותרת ותוכן");
+      return;
+    }
+
+    axiosInstance
+      .post("/threads", { ...threadDetails, tags: [...new Set(threadDetails.tags)] })
+      .then((res) =>
+        handleResult(res, 201, () => {
+          alert("הדיון נוצר בהצלחה");
+          // window.location.href = `/exams/${examId}`;
+        })
+      )
+      .catch((err) => handleError(err, () => alert("יצירת הדיון נכשלה")));
+  };
+
+  const cancelNewThread = () => {
+    window.location.href = `/exam/${examId}`;
+  };
+
   return (
     <div className="new-thread">
       <PageHeader title="הוסף דיון" />
@@ -61,6 +82,27 @@ function NewThread() {
             content={threadDetails.content}
             setContent={(content) => setThreadDetails({ ...threadDetails, content })}
           />
+        </div>
+        <div className="new-thread-label-input-pair">
+          <label className="new-thread-label" htmlFor="title">
+            תגיות:
+          </label>
+          <input
+            className="new-thread-input"
+            type="text"
+            id="title"
+            placeholder="הכנס תגיות מופרדות בפסיק ללא רווחים"
+            value={threadDetails.tags.join(",")}
+            onChange={(e) => setThreadDetails({ ...threadDetails, tags: e.target.value.split(",") })}
+          />
+        </div>
+        <div className="new-thread-buttons">
+          <button className="new-thread-button" onClick={createNewThread}>
+            שלח
+          </button>
+          <button className="new-thread-button" onClick={cancelNewThread}>
+            בטל
+          </button>
         </div>
       </div>
     </div>
