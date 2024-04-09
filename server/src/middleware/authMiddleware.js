@@ -16,23 +16,23 @@ export const authenticateToken = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
-
     if (!user.isActive) {
       return res.status(400).json({ message: "User is not active." });
+    }
+
+    const inactivityTimeoutThreshold = 30 * 60 * 1000; // 30 minutes of inactivity
+    const userInactivityTime = Date.now() - user.lastActivity;
+    if (userInactivityTime > inactivityTimeoutThreshold) {
+      // if user was inactive for more than 30 minutes, log them out
+      user.isActive = false;
+      await user.save();
+      return res.status(401).json({ message: "User logged out due to inactivity." });
     }
 
     user.lastActivity = Date.now();
     await user.save();
 
-    const inactivityTimeout = 30 * 60 * 1000; // 30 minutes
-    if (Date.now() - user.lastActivity > inactivityTimeout) {
-      // if user was inactive for more than 30 minutes, log them out
-      user.isActive = false;
-      await user.save();
-      return res.status(400).json({ message: "User logged out due to inactivity." });
-    }
-
-    const tokenExpiryThreshold = 5 * 60 * 1000; // 5 minutes
+    const tokenExpiryThreshold = 60 * 1000; // 1 minute before expiry
     const remainingTime = decoded.exp * 1000 - Date.now();
 
     if (remainingTime < tokenExpiryThreshold) {
@@ -41,6 +41,7 @@ export const authenticateToken = async (req, res, next) => {
         expiresIn: "1h",
       });
 
+      res.setHeader("Access-Control-Expose-Headers", "Authorization");
       res.setHeader("Authorization", `Bearer ${newToken}`);
     }
 
@@ -57,7 +58,7 @@ export const authenticateToken = async (req, res, next) => {
       }
       return res.status(401).json({ message: "Token expired." });
     } else {
-      return res.status(403).json({ message: "Invalid token." });
+      return res.status(401).json({ message: "Invalid token." });
     }
   }
 };

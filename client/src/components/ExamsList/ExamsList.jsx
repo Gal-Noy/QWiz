@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import ExamRow from "./ExamRow";
-import ListHeader from "../ListHeader";
+import ListHeader from "../ListHeader/ListHeader";
 import "./ExamsList.css";
 
 function ExamsList(props) {

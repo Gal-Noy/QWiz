@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import AuthPage from "./pages/AuthPage/AuthPage.jsx";
+import NavBar from "./components/NavBar/NavBar.jsx";
 import HomePage from "./pages/HomePage/HomePage.jsx";
 import SearchPage from "./pages/SearchPage/SearchPage.jsx";
 import UploadPage from "./pages/UploadPage/UploadPage.jsx";
 import ProfilePage from "./pages/ProfilePage/ProfilePage.jsx";
 import ExamPage from "./pages/ExamPage/ExamPage.jsx";
 import NewThreadPage from "./pages/NewThreadPage/NewThreadPage.jsx";
-import NavBar from "./components/NavBar/NavBar.jsx";
+import ThreadPage from "./pages/ThreadPage/ThreadPage.jsx";
 import "./App.css";
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
         <Route path="/profile" element={isLoggedIn ? <ProfilePage /> : <Navigate to="/" replace />} />
         <Route path="/exam/:examId" element={isLoggedIn ? <ExamPage /> : <Navigate to="/" replace />} />
         <Route path="/exam/:examId/new-thread" element={isLoggedIn ? <NewThreadPage /> : <Navigate to="/" replace />} />
+        <Route path="/thread/:threadId" element={isLoggedIn ? <ThreadPage /> : <Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

@@ -14,7 +14,7 @@ function StarredThreads() {
         handleResult(res, 200, () => {
           const fetchedThreads = res.data;
           console.log(fetchedThreads);
-          const sortedThreads = fetchedThreads.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+          const sortedThreads = fetchedThreads.sort((a, b) => (new Date(a.createdAt) < new Date(b.createdAt) ? 1 : -1));
           setStarredThreads(sortedThreads);
         })
       )

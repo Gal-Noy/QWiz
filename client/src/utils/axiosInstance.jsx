@@ -19,6 +19,7 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (response) => {
+    console.log(response.headers);
     const newToken = response.headers.authorization;
     if (newToken) {
       localStorage.setItem("token", newToken.split(" ")[1]);

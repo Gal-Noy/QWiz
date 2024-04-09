@@ -175,8 +175,10 @@ function ThreadsList(props) {
                       : b.comments.length === 0
                       ? -1
                       : isAsc
-                      ? a.comments[a.comments.length - 1].createdAt - b.comments[b.comments.length - 1].createdAt
-                      : b.comments[b.comments.length - 1].createdAt - a.comments[a.comments.length - 1].createdAt
+                      ? new Date(a.comments[a.comments.length - 1].createdAt) -
+                        new Date(b.comments[b.comments.length - 1].createdAt)
+                      : new Date(b.comments[b.comments.length - 1].createdAt) -
+                        new Date(a.comments[a.comments.length - 1].createdAt)
                   )
               )
             }
