@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
-import ListHeader from "../ListHeader";
+import ListHeader from "../ListHeader/ListHeader";
 import ThreadRow from "./ThreadRow";
-import "../../styles/ThreadsList.css";
+import "./ThreadsList.css";
 
 function ThreadsList(props) {
   const { threads, setThreads, isProfilePage, isPending, error } = props;

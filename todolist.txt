@@ -1,7 +1,7 @@
 test auth expiry
+thread page
 tags
 views
 followed threads, notifications
 
-favorite threads
-opened/created threads by me
+created at compares

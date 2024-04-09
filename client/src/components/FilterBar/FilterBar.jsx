@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import FilterDropdown from "./FilterDropdown";
-import "../../styles/FilterBar.css";
+import "./FilterBar.css";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 
 function FilterBar(props) {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import ExamRow from "./ExamRow";
 import ListHeader from "../ListHeader";
-import "../../styles/ExamsList.css";
+import "./ExamsList.css";
 
 function ExamsList(props) {
   const { exams, setExams, showExams, isProfilePage, isPending, error } = props;
