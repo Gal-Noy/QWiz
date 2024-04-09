@@ -221,7 +221,10 @@ const threadsController = {
 
   getStarredThreads: async (req, res) => {
     try {
-      const user = await User.findById(req.user.user_id).populate("starred_threads");
+      const user = await User.findById(req.user.user_id).populate({
+        path: "starred_threads",
+        populate: threadPopulate,
+      });
       res.json(user.starred_threads);
     } catch (error) {
       res.status(500).json({ message: error.message });

@@ -54,7 +54,7 @@
 }
 
 #forum-tab {
-  background-color: var(--red2);
+  background-color: var(--red4);
   color: var(--red1);
 
   &:hover {

@@ -206,12 +206,15 @@ const examsController = {
   addFavoriteExam: async (req, res) => {
     try {
       const user = await User.findById(req.user.user_id);
-      const exam = await Exam.findById(req.body.exam).populate("course").select("-s3Key");
+      const exam = await Exam.findById(req.params.id);
+
       if (!exam) {
         return res.status(404).json({ message: "Exam not found" });
       }
+
       user.favorite_exams.push(exam._id);
       await user.save();
+
       res.json(user.favorite_exams);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -222,8 +225,10 @@ const examsController = {
     try {
       const user = await User.findById(req.user.user_id);
       const examId = req.params.id;
+
       user.favorite_exams = user.favorite_exams.filter((exam) => exam._id.toString() !== examId);
       await user.save();
+
       res.json(user.favorite_exams);
     } catch (error) {
       res.status(500).json({ message: error.message });

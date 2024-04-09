@@ -35,16 +35,16 @@ examsRouter.get("/:id", examsController.getExamById);
 examsRouter.get("/:id/presigned", examsController.getPresignedUrl);
 
 // POST: add exam to favorites
-examsRouter.post("/favorites", examsController.addFavoriteExam);
+examsRouter.post("/favorites/:id", examsController.addFavoriteExam);
+
+// DELETE: remove exam from favorites
+examsRouter.delete("/favorites/:id", examsController.removeFavoriteExam);
 
 // POST: rate exam by id
 examsRouter.post("/:id/rate", examsController.rateExam);
 
 // PUT: update exam by id
 examsRouter.put("/:id", authenticateAdmin, examsController.updateExam);
-
-// DELETE: remove exam from favorites
-examsRouter.delete("/favorites/:id", examsController.removeFavoriteExam);
 
 // DELETE: delete exam by id
 examsRouter.delete("/:id", authenticateAdmin, examsController.deleteExam);

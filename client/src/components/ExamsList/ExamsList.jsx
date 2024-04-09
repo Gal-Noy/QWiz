@@ -204,7 +204,12 @@ function ExamsList(props) {
         {!isPending && !error && (
           <div className="exams-list-rows">
             {currentExams.map((exam) => (
-              <ExamRow key={exam._id} exam={exam} favorite={favoriteExams.includes(exam._id)} />
+              <ExamRow
+                key={exam._id}
+                exam={exam}
+                favorite={favoriteExams.includes(exam._id)}
+                setFavoriteExams={setFavoriteExams}
+              />
             ))}
           </div>
         )}

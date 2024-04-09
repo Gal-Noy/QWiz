@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
-import ExamsList from "../ExamsList/ExamsList";
+import ThreadsList from "../ThreadsList/ThreadsList";
 
-function UploadedExams() {
-  const [uploadedExams, setUploadedExams] = useState([]);
+function StarredThreads() {
+  const [starredThreads, setStarredThreads] = useState([]);
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     axiosInstance
-      .get("/exams/uploaded")
+      .get("/threads/starred")
       .then((res) =>
         handleResult(res, 200, () => {
-          const fetchedExams = res.data;
-          const sortedExams = fetchedExams.sort((a, b) => (a.course > b.course ? 1 : -1));
-          setUploadedExams(sortedExams);
+          const fetchedThreads = res.data;
+          console.log(fetchedThreads);
+          const sortedThreads = fetchedThreads.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+          setStarredThreads(sortedThreads);
         })
       )
       .then(() => setIsPending(false))
@@ -28,10 +29,10 @@ function UploadedExams() {
   }, []);
 
   return (
-    <ExamsList
-      exams={uploadedExams}
-      setExams={setUploadedExams}
-      showExams={true}
+    <ThreadsList
+      threads={starredThreads}
+      setThreads={setStarredThreads}
+      showThreads={true}
       isProfilePage={true}
       isPending={isPending}
       error={error}
@@ -39,4 +40,4 @@ function UploadedExams() {
   );
 }
 
-export default UploadedExams;
+export default StarredThreads;
