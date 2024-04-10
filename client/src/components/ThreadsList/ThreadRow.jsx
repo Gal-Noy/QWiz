@@ -65,11 +65,15 @@ function ThreadRow({ thread, starred, setStarredThreads, exam }) {
         )}
       </div>
       {exam && (
-        <div className="table-element exam">{`${exam.course.name} - ${exam.year}\n${
-          exam.type === "test" ? "מבחן" : "בוחן"
-        } - ${exam.semester === 1 ? "א'" : exam.semester === 2 ? "ב'" : "ג'"} - ${
-          exam.term === 1 ? "א'" : exam.term === 2 ? "ב'" : "ג'"
-        }`}</div>
+        <div className="table-element exam row">
+          <a>
+            {exam.course.name} - {exam.year}
+          </a>
+          <a>
+            {exam.type === "test" ? "מבחן" : "בוחן"} - {exam.semester === 1 ? "א'" : exam.semester === 2 ? "ב'" : "ג'"}{" "}
+            - {exam.term === 1 ? "א'" : exam.term === 2 ? "ב'" : "ג'"}
+          </a>
+        </div>
       )}
       <div className="table-element title">{thread.title}</div>
       <div className="table-element creator">{thread.creator.name}</div>

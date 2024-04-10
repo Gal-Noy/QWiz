@@ -41,7 +41,7 @@ export const handleResult = (res, status, callback) => {
 };
 
 export const handleError = (error, callback) => {
-  if (error.response.status === 401) {
+  if (error.response?.status === 401) {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     alert("תוקף ההתחברות פג, אנא התחבר מחדש");

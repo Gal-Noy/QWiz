@@ -1,104 +1,99 @@
 .content-area {
-    direction: initial;
-    text-align: initial;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
-    text-align: initial;
-    direction: initial;
-  }
-  
-  .ql-toolbar {
-    border-radius: 10px 10px 0px 0px;
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: space-between;
-    gap: 0.3rem;
-    padding: 0.5rem;
-    position: relative;
-  }
-  .ql-toolbar.ql-snow {
-    font-family: "Noto Sans Hebrew", "Noto Sans", sans-serif;
-  }
-  .ql-container {
-    border-radius: 0px 0px 10px 10px;
-    background-color: white;
-    box-sizing: border-box;
-    font-size: 1rem;
-    position: relative;
-    height: auto;
-  }
-  .ql-editor {
-    min-height: 25vh;
-    max-height: 75vh;
-    max-width: 60vw;
-    overflow: auto;
-  }
-  .ql-toolbar.ql-snow .ql-formats {
-    margin: 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  .ql-snow .ql-picker-label {
-    height: auto;
-    padding: 0 0.5rem 0 0.25rem;
-  }
-  
-  .ql-snow .ql-picker-label::before {
-    line-height: normal;
-  }
-  .ql-snow .ql-picker.ql-size {
-    width: 8vw;
-  }
-  .ql-picker.ql-size .ql-picker-label {
-    display: inline-flex;
-    flex-direction: row-reverse;
-    align-items: center;
-    justify-content: space-between;
-    background-color: white;
-    border: 1px solid #ccc;
-    min-height: 4vh;
-  }
-  .ql-size.ql-picker {
-    height: auto;
-  }
-  .ql-snow .ql-picker:not(.ql-color-picker):not(.ql-icon-picker) svg {
-    position: relative;
-    top: 0;
-    margin-top: 0;
-  }
-  
-  .ql-editor .ql-size-small {
-    font-size: 0.75em;
-  }
-  .ql-editor .ql-size-large {
-    font-size: 1.5em;
-  }
-  .ql-editor .ql-size-huge {
-    font-size: 2.5em;
-  }
-  
-  .ql-snow .ql-picker.ql-size .ql-picker-label::before,
-  .ql-snow .ql-picker.ql-size .ql-picker-item::before {
-    content: "רגיל";
-  }
-  
-  .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="small"]::before,
-  .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="small"]::before {
-    content: "קטן";
-    font-size: 0.75rem;
-  }
-  
-  .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="large"]::before,
-  .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="large"]::before {
-    content: "גדול";
-    font-size: 1.5rem;
-  }
-  
-  .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="huge"]::before,
-  .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="huge"]::before {
-    content: "ענק";
-    font-size: 2.5rem;
-  }
-  
+  direction: initial;
+  text-align: initial;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+  text-align: initial;
+  direction: initial;
+}
+
+.ql-toolbar {
+  border-radius: 10px 10px 0px 0px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  gap: 0.3rem;
+  padding: 0.5rem;
+  position: relative;
+}
+.ql-toolbar.ql-snow {
+  font-family: "Noto Sans Hebrew", "Noto Sans", sans-serif;
+}
+.ql-container {
+  border-radius: 0px 0px 10px 10px;
+  background-color: white;
+  box-sizing: border-box;
+  font-size: 1rem;
+  position: relative;
+  height: auto;
+}
+.ql-editor {
+  min-height: 25vh;
+  max-height: 75vh;
+  max-width: 60vw;
+  overflow: auto;
+}
+.ql-toolbar.ql-snow .ql-formats {
+  margin: 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.ql-snow .ql-picker-label {
+  height: auto;
+  padding: 0 0.5rem 0 0.25rem;
+}
+
+.ql-snow .ql-picker-label::before {
+  line-height: normal;
+}
+.ql-snow .ql-picker.ql-header {
+  width: 8vw;
+}
+.ql-picker.ql-header .ql-picker-label {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+  min-height: 4vh;
+}
+.ql-header.ql-picker {
+  height: auto;
+}
+.ql-snow .ql-picker:not(.ql-color-picker):not(.ql-icon-picker) svg {
+  position: relative;
+  top: 0;
+  margin-top: 0;
+}
+
+.ql-editor .ql-header-small {
+  font-size: 0.75em;
+}
+.ql-editor .ql-header-large {
+  font-size: 1.5em;
+}
+.ql-editor .ql-header-huge {
+  font-size: 2.5em;
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item::before {
+  content: "רגיל";
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="1"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
+  content: "כותרת 1";
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="2"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
+  content: "כותרת 2";
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="3"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
+  content: "כותרת 3";
+}

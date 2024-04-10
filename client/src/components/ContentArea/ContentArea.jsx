@@ -1,13 +1,14 @@
-import React, { useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import "./ContentArea.css";
 
 function ContentArea({ content, setContent }) {
   const editorRef = useRef(null);
+  const [editor, setEditor] = useState(null);
 
   const toolbarOptions = [
-    [{ size: ["small", false, "large", "huge"] }],
+    [{ header: [false, 1, 2, 3] }],
     ["bold", "italic", "underline", "strike"],
     [{ color: [] }, { background: [] }],
     [{ align: "justify" }, { align: "" }, { align: "center" }, { align: "right" }, { direction: "rtl" }],
@@ -19,26 +20,29 @@ function ContentArea({ content, setContent }) {
   ];
 
   useEffect(() => {
-    const editor = new Quill(editorRef.current, {
-      theme: "snow",
-      modules: {
-        toolbar: toolbarOptions,
-      },
-    });
+    if (!editor) {
+      const newEditor = new Quill(editorRef.current, {
+        theme: "snow",
+        modules: {
+          toolbar: toolbarOptions,
+        },
+      });
 
-    const activateRTLandRightAlign = () => {
-      editor.format("direction", "rtl");
-      editor.format("align", "right");
-      editorRef.current.removeEventListener("click", activateRTLandRightAlign);
-    };
+      newEditor.on("text-change", () => {
+        setContent(newEditor.root.innerHTML);
+      });
 
-    editorRef.current.addEventListener("click", activateRTLandRightAlign);
+      const activateRTLandRightAlign = () => {
+        newEditor.format("direction", "rtl");
+        newEditor.format("align", "right");
+        editorRef.current.removeEventListener("click", activateRTLandRightAlign);
+      };
+      editorRef.current.addEventListener("click", activateRTLandRightAlign);
 
-    editor.on("text-change", () => {
-      setContent(editor.root.innerHTML);
-    });
-
-    editor.root.innerHTML = content;
+      setEditor(newEditor);
+    } else {
+      editor.root.innerHTML = content;
+    }
   }, []);
 
   return (

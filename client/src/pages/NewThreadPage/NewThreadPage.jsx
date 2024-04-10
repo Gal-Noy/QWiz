@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import PageHeader from "../../components/PageHeader/PageHeader";
 import ContentArea from "../../components/ContentArea/ContentArea";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import { examToString } from "../../utils/generalUtils";
 import "./NewThreadPage.css";
 
 function NewThread() {
@@ -10,39 +11,37 @@ function NewThread() {
   const [examDetailsValue, setExamDetailsValue] = useState("");
   const [threadDetails, setThreadDetails] = useState({
     title: "",
-    content: "",
     exam: examId,
     tags: [],
   });
+  const [threadContent, setThreadContent] = useState("");
 
   useEffect(() => {
     axiosInstance
       .get(`/exams/${examId}`)
-      .then((res) =>
-        handleResult(res, 200, () => {
-          const { course, type, year, semester, term } = res.data;
-          setExamDetailsValue(
-            `${course.name} - ${type === "test" ? "מבחן" : "בוחן"} - ${year} - סמסטר ${
-              semester === 1 ? "א'" : semester === 2 ? "ב'" : "ג'"
-            } - מועד ${term === 1 ? "א'" : term === 2 ? "ב'" : "ג'"}`
-          );
-        })
-      )
+      .then((res) => handleResult(res, 200, () => setExamDetailsValue(examToString(res.data))))
       .catch((err) => handleError(err, () => console.log("Failed to fetch exam details")));
   }, [examId]);
 
   const createNewThread = () => {
-    if (!threadDetails.title || !threadDetails.content) {
+    if (!threadDetails.title || !threadContent) {
       alert("אנא מלא/י כותרת ותוכן");
       return;
     }
 
+    const newThread = {
+      title: threadDetails.title,
+      content: threadContent,
+      exam: examId,
+      tags: [...new Set(threadDetails.tags)],
+    };
+
     axiosInstance
-      .post("/threads", { ...threadDetails, tags: [...new Set(threadDetails.tags)] })
+      .post("/threads", newThread)
       .then((res) =>
         handleResult(res, 201, () => {
           alert("הדיון נוצר בהצלחה");
-          // window.location.href = `/exams/${examId}`;
+          window.location.href = `/thread/${res.data._id}`;
         })
       )
       .catch((err) => handleError(err, () => alert("יצירת הדיון נכשלה")));
@@ -78,10 +77,7 @@ function NewThread() {
           <label className="new-thread-label" htmlFor="content">
             תוכן:
           </label>
-          <ContentArea
-            content={threadDetails.content}
-            setContent={(content) => setThreadDetails({ ...threadDetails, content })}
-          />
+          <ContentArea content={threadContent} setContent={setThreadContent} />
         </div>
         <div className="new-thread-label-input-pair">
           <label className="new-thread-label" htmlFor="title">

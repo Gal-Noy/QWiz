@@ -10,10 +10,6 @@ const threadSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  content: {
-    type: String,
-    required: true,
-  },
   exam: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Exam",
@@ -57,9 +53,32 @@ threadSchema.pre("remove", async function (next) {
   next();
 });
 
+const populateThread = function (next) {
+  this.populate("creator", "name");
+  this.populate({
+    path: "exam",
+    populate: {
+      path: "course",
+      select: "name",
+    },
+  });
+  this.populate({
+    path: "comments",
+    options: { sort: { createdAt: "asc" } },
+  });
+  next();
+};
+
+threadSchema.pre("findOne", populateThread);
+threadSchema.pre("find", populateThread);
+
 export const Thread = mongoose.model("Thread", threadSchema);
 
 const commentSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+  },
   content: {
     type: String,
     required: true,
@@ -91,5 +110,17 @@ commentSchema.pre("remove", async function (next) {
   await Comment.deleteMany({ _id: { $in: this.replies } });
   next();
 });
+
+const populateComment = function (next) {
+  this.populate("sender", "name");
+  this.populate({
+    path: "replies",
+    options: { sort: { createdAt: "asc" } },
+  });
+  next();
+};
+
+commentSchema.pre("findOne", populateComment);
+commentSchema.pre("find", populateComment);
 
 export const Comment = mongoose.model("Comment", commentSchema);

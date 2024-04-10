@@ -32,7 +32,7 @@ threadsRouter.delete("/:id/star", threadsController.unstarThread);
 // PUT: update thread by id
 threadsRouter.put("/:id", authenticateAdmin, threadsController.updateThread);
 
-// PUT: edit title or content of a thread
+// PUT: edit title of a thread
 threadsRouter.put("/:id/edit", threadsController.editThread);
 
 // DELETE: delete thread by id

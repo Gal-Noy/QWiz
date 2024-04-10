@@ -145,6 +145,12 @@
 }
 .exam {
   width: 20rem;
+
+  &.row {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 }
 
 .add-thread-button {

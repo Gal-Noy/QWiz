@@ -20,10 +20,10 @@ export const authenticateToken = async (req, res, next) => {
       return res.status(400).json({ message: "User is not active." });
     }
 
-    const inactivityTimeoutThreshold = 30 * 60 * 1000; // 30 minutes of inactivity
+    const inactivityTimeoutThreshold = 60 * 60 * 1000; // 1 hour of inactivity
     const userInactivityTime = Date.now() - user.lastActivity;
     if (userInactivityTime > inactivityTimeoutThreshold) {
-      // if user was inactive for more than 30 minutes, log them out
+      // if user was inactive for more than 1 hour, log them out
       user.isActive = false;
       await user.save();
       return res.status(401).json({ message: "User logged out due to inactivity." });
@@ -32,7 +32,7 @@ export const authenticateToken = async (req, res, next) => {
     user.lastActivity = Date.now();
     await user.save();
 
-    const tokenExpiryThreshold = 60 * 1000; // 1 minute before expiry
+    const tokenExpiryThreshold = 10 * 60 * 1000; // 10 minute before expiry
     const remainingTime = decoded.exp * 1000 - Date.now();
 
     if (remainingTime < tokenExpiryThreshold) {

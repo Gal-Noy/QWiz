@@ -2,49 +2,12 @@ import { Thread, Comment } from "../models/threadModels.js";
 import { Exam } from "../models/examModel.js";
 import { User } from "../models/userModel.js";
 
-const threadPopulate = [
-  {
-    path: "creator",
-    select: "name",
-  },
-  {
-    path: "exam",
-    populate: {
-      path: "course",
-      select: "name",
-    },
-  },
-  {
-    path: "comments",
-    options: { sort: { createdAt: "asc" } },
-    populate: {
-      path: "sender",
-      select: "name",
-    },
-  },
-];
-
-const commentPopulate = [
-  {
-    path: "sender",
-    select: "name",
-  },
-  {
-    path: "replies",
-    options: { sort: { createdAt: "asc" } },
-    populate: {
-      path: "sender",
-      select: "name",
-    },
-  },
-];
-
 const threadsController = {
   // Threads
 
   getAllThreads: async (req, res) => {
     try {
-      const threads = await Thread.find().populate(threadPopulate);
+      const threads = await Thread.find();
       res.json(threads);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -53,7 +16,7 @@ const threadsController = {
 
   getThreadsByExam: async (req, res) => {
     try {
-      const threads = await Thread.find({ exam: req.params.id }).populate(threadPopulate);
+      const threads = await Thread.find({ exam: req.params.id });
       res.json(threads);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -62,7 +25,7 @@ const threadsController = {
 
   getThreadById: async (req, res) => {
     try {
-      const thread = await Thread.findById(req.params.id).populate(threadPopulate);
+      const thread = await Thread.findById(req.params.id);
 
       if (!thread) {
         return res.status(404).json({ message: "Thread not found" });
@@ -90,14 +53,25 @@ const threadsController = {
 
       const newThread = {
         title,
-        content,
         exam,
         creator: req.user.user_id,
         tags: tags || [],
       };
 
       const thread = new Thread(newThread);
+
+      const mainComment = {
+        title: title,
+        content,
+        sender: req.user.user_id,
+      };
+
+      const comment = new Comment(mainComment);
+      await comment.save();
+
+      thread.comments.push(comment._id);
       await thread.save();
+
       res.status(201).json(thread);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -106,7 +80,7 @@ const threadsController = {
 
   updateThread: async (req, res) => {
     try {
-      const thread = await Thread.findById(req.params.id).populate(threadPopulate);
+      const thread = await Thread.findById(req.params.id);
 
       if (!thread) {
         return res.status(404).json({ message: "Thread not found" });
@@ -123,7 +97,7 @@ const threadsController = {
 
   editThread: async (req, res) => {
     try {
-      const thread = await Thread.findById(req.params.id).populate(threadPopulate);
+      const thread = await Thread.findById(req.params.id);
 
       if (!thread) {
         return res.status(404).json({ message: "Thread not found" });
@@ -132,19 +106,13 @@ const threadsController = {
         return res.status(403).json({ message: "Access denied" });
       }
 
-      const { title, content } = req.body;
+      const { title } = req.body;
 
-      if (!title && !content) {
-        return res.status(400).json({ message: "Please provide title or content" });
+      if (!title) {
+        return res.status(400).json({ message: "Please provide title" });
       }
 
-      if (title) {
-        thread.title = title;
-      }
-      if (content) {
-        thread.content = content;
-      }
-
+      thread.title = title;
       await thread.save();
 
       res.json(thread);
@@ -171,7 +139,7 @@ const threadsController = {
 
   getThreadsByUserId: async (req, res) => {
     try {
-      const threads = await Thread.find({ creator: req.params.id }).populate(threadPopulate);
+      const threads = await Thread.find({ creator: req.params.id });
       res.json(threads);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -180,7 +148,7 @@ const threadsController = {
 
   getThreadsByUser: async (req, res) => {
     try {
-      const threads = await Thread.find({ creator: req.user.user_id }).populate(threadPopulate);
+      const threads = await Thread.find({ creator: req.user.user_id });
       res.json(threads);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -189,7 +157,7 @@ const threadsController = {
 
   getThreadsByTags: async (req, res) => {
     try {
-      const threads = await Thread.find({ tags: { $in: [req.params.tag] } }).populate(threadPopulate);
+      const threads = await Thread.find({ tags: { $in: [req.params.tag] } });
       res.json(threads);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -198,7 +166,7 @@ const threadsController = {
 
   toggleThreadClosed: async (req, res) => {
     try {
-      const thread = await Thread.findById(req.params.id).populate(threadPopulate);
+      const thread = await Thread.findById(req.params.id);
 
       if (!thread) {
         return res.status(404).json({ message: "Thread not found" });
@@ -219,7 +187,7 @@ const threadsController = {
 
   getCreatedThreads: async (req, res) => {
     try {
-      const threads = await Thread.find({ creator: req.user.user_id }).populate(threadPopulate);
+      const threads = await Thread.find({ creator: req.user.user_id });
       res.json(threads);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -230,7 +198,6 @@ const threadsController = {
     try {
       const user = await User.findById(req.user.user_id).populate({
         path: "starred_threads",
-        populate: threadPopulate,
       });
       res.json(user.starred_threads);
     } catch (error) {
@@ -274,7 +241,7 @@ const threadsController = {
 
   getCommentById: async (req, res) => {
     try {
-      const comment = await Comment.findById(req.params.id).populate(commentPopulate);
+      const comment = await Comment.findById(req.params.id);
       res.json(comment);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -283,7 +250,7 @@ const threadsController = {
 
   addCommentToThread: async (req, res) => {
     try {
-      const thread = await Thread.findById(req.params.id).populate(threadPopulate);
+      const thread = await Thread.findById(req.params.id);
 
       if (!thread) {
         return res.status(404).json({ message: "Thread not found" });
@@ -299,6 +266,7 @@ const threadsController = {
       }
 
       const newComment = {
+        title: `תגובה לדיון: ${thread.title}`,
         content,
         sender: req.user.user_id,
       };
@@ -309,7 +277,7 @@ const threadsController = {
       thread.comments.push(comment._id);
       await thread.save();
 
-      res.json(thread);
+      res.status(201).json(thread);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -317,7 +285,7 @@ const threadsController = {
 
   addReplyToComment: async (req, res) => {
     try {
-      const thread = await Thread.findById(req.params.threadId).populate(threadPopulate);
+      const thread = await Thread.findById(req.params.threadId);
 
       if (!thread) {
         return res.status(404).json({ message: "Thread not found" });
@@ -326,7 +294,7 @@ const threadsController = {
         return res.status(403).json({ message: "Thread is closed" });
       }
 
-      const comment = await Comment.findById(req.params.commentId).populate(commentPopulate);
+      const comment = await Comment.findById(req.params.commentId);
 
       if (!comment) {
         return res.status(404).json({ message: "Comment not found" });
@@ -339,6 +307,7 @@ const threadsController = {
       }
 
       const newReply = {
+        title: `תגובה ל: ${comment.sender.name}`,
         content,
         sender: req.user.user_id,
       };
@@ -349,7 +318,7 @@ const threadsController = {
       comment.replies.push(reply._id);
       await comment.save();
 
-      res.json(comment);
+      res.status(201).json(comment);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -357,7 +326,7 @@ const threadsController = {
 
   updateCommentInThread: async (req, res) => {
     try {
-      const thread = await Thread.findById(req.params.threadId).populate(threadPopulate);
+      const thread = await Thread.findById(req.params.threadId);
 
       if (!thread) {
         return res.status(404).json({ message: "Thread not found" });
@@ -386,7 +355,7 @@ const threadsController = {
 
   updateReplyInComment: async (req, res) => {
     try {
-      const thread = await Thread.findById(req.params.threadId).populate(threadPopulate);
+      const thread = await Thread.findById(req.params.threadId);
 
       if (!thread) {
         return res.status(404).json({ message: "Thread not found" });
@@ -395,7 +364,7 @@ const threadsController = {
         return res.status(403).json({ message: "Thread is closed" });
       }
 
-      const comment = await Comment.findById(req.params.commentId).populate(commentPopulate);
+      const comment = await Comment.findById(req.params.commentId);
 
       if (!comment) {
         return res.status(404).json({ message: "Comment not found" });
@@ -421,7 +390,7 @@ const threadsController = {
 
   toggleLikeOnComment: async (req, res) => {
     try {
-      const comment = await Comment.findById(req.params.id).populate(commentPopulate);
+      const comment = await Comment.findById(req.params.id);
 
       if (!comment) {
         return res.status(404).json({ message: "Comment not found" });
