@@ -1,7 +1,6 @@
-test auth expiry
 thread page
 tags
 views
 followed threads, notifications
 
-double re render
+double re render, other hooks

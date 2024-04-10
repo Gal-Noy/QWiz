@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import { formatDate } from "../../utils/generalUtils";
 
-function ThreadRow({ thread, starred, setStarredThreads }) {
+function ThreadRow({ thread, starred, setStarredThreads, exam }) {
   const [isStarred, setIsStarred] = useState(starred);
 
   const starThread = async () => {
@@ -64,6 +64,13 @@ function ThreadRow({ thread, starred, setStarredThreads }) {
           <span className="material-symbols-outlined">lock_open</span>
         )}
       </div>
+      {exam && (
+        <div className="table-element exam">{`${exam.course.name} - ${exam.year}\n${
+          exam.type === "test" ? "מבחן" : "בוחן"
+        } - ${exam.semester === 1 ? "א'" : exam.semester === 2 ? "ב'" : "ג'"} - ${
+          exam.term === 1 ? "א'" : exam.term === 2 ? "ב'" : "ג'"
+        }`}</div>
+      )}
       <div className="table-element title">{thread.title}</div>
       <div className="table-element creator">{thread.creator.name}</div>
       <div className="table-element createdAt">{formatDate(thread.createdAt)}</div>

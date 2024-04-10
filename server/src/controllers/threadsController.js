@@ -8,6 +8,13 @@ const threadPopulate = [
     select: "name",
   },
   {
+    path: "exam",
+    populate: {
+      path: "course",
+      select: "name",
+    },
+  },
+  {
     path: "comments",
     options: { sort: { createdAt: "asc" } },
     populate: {

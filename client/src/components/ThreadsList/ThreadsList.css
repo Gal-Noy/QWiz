@@ -61,7 +61,7 @@
   top: 0;
   display: flex;
   align-items: center;
-  width: 110vw;
+  width: 140vw;
   padding: 1% 2%;
   gap: 3rem;
   font-weight: 500;
@@ -75,7 +75,7 @@
   height: 5rem;
   display: flex;
   align-items: center;
-  width: 110vw;
+  width: 140vw;
   padding: 1% 2%;
   gap: 3rem;
   border-bottom: 1px solid var(--red5);
@@ -112,7 +112,7 @@
   }
 }
 .starred {
-  width: 12rem;
+  width: 10rem;
 
   &.row {
     display: flex;
@@ -142,6 +142,9 @@
     flex-direction: column;
     align-items: center;
   }
+}
+.exam {
+  width: 20rem;
 }
 
 .add-thread-button {

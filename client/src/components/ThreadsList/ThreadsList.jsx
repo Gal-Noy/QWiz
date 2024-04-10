@@ -87,6 +87,25 @@ function ThreadsList(props) {
               )
             }
           />
+          {isProfilePage && (
+            <ListHeader
+              label="פרטי בחינה"
+              header="exam"
+              sortHeader={sortHeader}
+              setSortHeader={setSortHeader}
+              sortFunc={(isAsc) =>
+                setThreads((prevThreads) =>
+                  prevThreads
+                    .slice() // TODO
+                    .sort((a, b) =>
+                      isAsc
+                        ? a.exam.course.name.localeCompare(b.exam.course.name)
+                        : b.exam.course.name.localeCompare(a.exam.course.name)
+                    )
+                )
+              }
+            />
+          )}
           <ListHeader
             label="נושא"
             header="title"
@@ -217,6 +236,7 @@ function ThreadsList(props) {
                 thread={thread}
                 starred={starredThreads.includes(thread._id)}
                 setStarredThreads={setStarredThreads}
+                exam={isProfilePage ? thread.exam : null}
               />
             ))}
           </div>
