@@ -1,5 +1,5 @@
-thread page
 expand and shrink comments
+like mechanism
 loading spinners
 
 tags - free search

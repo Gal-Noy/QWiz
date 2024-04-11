@@ -47,6 +47,20 @@
   font-size: 1rem;
   font-weight: bold;
 }
+.comment-header-left-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.comment-expand-button {
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: var(--cyan2);
+  }
+}
+
 .comment-content {
   padding: 0 1.5rem;
 }

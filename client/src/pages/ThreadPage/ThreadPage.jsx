@@ -13,6 +13,7 @@ function ThreadPage() {
   const [error, setError] = useState(null);
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
+  const [expandAll, setExpandAll] = useState(true);
 
   useEffect(() => {
     if (!threadId) return;
@@ -84,6 +85,16 @@ function ThreadPage() {
             <button className="go-to-exam-button" onClick={() => (window.location.href = `/exam/${thread.exam._id}`)}>
               לעמוד המבחן
             </button>
+            <div className="thread-page-tags">
+              {thread.tags
+                .map((t) => `#${t}`)
+                .map((tag) => (
+                  <span className="thread-page-tag">{tag}</span>
+                ))}
+            </div>
+            <button className="expand-collapse-all-button" onClick={() => setExpandAll(!expandAll)}>
+              {expandAll ? "כווץ הכל" : "הרחב הכל"}
+            </button>
           </div>
 
           <div className="thread-comment-list">
@@ -97,6 +108,7 @@ function ThreadPage() {
                 setNewComment={setNewComment}
                 addComment={addComment}
                 nest={0}
+                expand={expandAll}
               />
             ))}
 

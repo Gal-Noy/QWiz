@@ -68,12 +68,28 @@
   }
 }
 
+.thread-page-tags {
+  display: flex;
+  gap: 0.25rem;
+  font-size: 1rem;
+  flex-wrap: wrap;
+}
+
+.expand-collapse-all-button {
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  align-self: end;
+}
+
 .thread-comment-list {
   display: flex;
   flex-direction: column;
   align-items: end;
   gap: 1rem;
   width: 60vw;
+  padding-left: 2rem;
 }
 
 .new-comment {
@@ -81,7 +97,7 @@
   flex-direction: column;
   background-color: var(--grey2);
   box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.1);
-  width: 100%;
+  width: calc(100% - 2rem);
 }
 .new-comment-title {
   font-size: 1rem;
