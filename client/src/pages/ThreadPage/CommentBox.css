@@ -1,17 +1,18 @@
 .comment-box-container {
   display: flex;
   flex-direction: column;
+  align-items: end;
   gap: 1rem;
-  padding-right: 2rem;
+  width: calc(100% - 2rem);
 }
 
 .comment-box {
   display: flex;
   flex-direction: column;
-  width: 50vw;
   gap: 0.5rem;
   background-color: white;
-  border-radius: 1rem;
+  width: 100%;
+  box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.1);
 }
 
 .comment-box-header {
@@ -19,9 +20,16 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  background-color: var(--grey2);
+  background-color: var(--grey1);
   padding: 0.5rem 1rem;
-  border-radius: 1rem 1rem 0 0;
+
+  &.first-nest {
+    background-color: var(--grey2);
+  }
+
+  &.second-nest {
+    background-color: var(--grey3);
+  }
 }
 
 .comment-sender {
@@ -48,9 +56,16 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  background-color: var(--grey2);
+  background-color: var(--grey1);
   padding: 0.5rem 1rem;
-  border-radius: 0 0 1rem 1rem;
+
+  &.first-nest {
+    background-color: var(--grey2);
+  }
+
+  &.second-nest {
+    background-color: var(--grey3);
+  }
 }
 .comment-likes,
 .comment-replies {
@@ -58,10 +73,13 @@
   align-items: center;
   gap: 0.5rem;
 }
-
+.comment-reply-section {
+  display: flex;
+  gap: 1rem;
+}
 .add-comment-reply-button {
   font-size: 1rem;
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 0.5rem;
   border: none;
   border-radius: 1rem;
   cursor: pointer;
@@ -69,10 +87,10 @@
   transition: all 0.3s ease;
 
   &:hover {
-    background-color: var(--grey1);
+    background-color: var(--red2);
   }
 
   &:active {
-    background-color: var(--grey3);
+    background-color: var(--red3);
   }
 }

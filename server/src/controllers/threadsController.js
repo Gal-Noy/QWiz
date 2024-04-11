@@ -31,6 +31,9 @@ const threadsController = {
         return res.status(404).json({ message: "Thread not found" });
       }
 
+      thread.views++;
+      await thread.save();
+
       res.json(thread);
     } catch (error) {
       res.status(500).json({ message: error.message });

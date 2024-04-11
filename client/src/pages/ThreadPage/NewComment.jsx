@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import ContentArea from "../../components/ContentArea/ContentArea";
 
 function NewComment(props) {
   const { replyingTo, setReplyingTo, newComment, setNewComment, addComment } = props;
+  const [isPending, setIsPending] = useState(false);
+
+  const addNewComment = async () => {
+    if (isPending) return;
+    setIsPending(true);
+    await addComment();
+    setIsPending(false);
+  };
 
   return (
     <div className="new-comment">
@@ -15,11 +23,9 @@ function NewComment(props) {
         )}
       </a>
       <ContentArea content={newComment} setContent={setNewComment} />
-      <div className="new-comment-buttons">
-        <button className="new-comment-button" onClick={addComment}>
-          שלח
-        </button>
-      </div>
+      <button className="new-comment-button" onClick={addNewComment}>
+        {!isPending ? <span className="material-symbols-outlined">reply</span> : <div className="lds-dual-ring"></div>}
+      </button>
     </div>
   );
 }

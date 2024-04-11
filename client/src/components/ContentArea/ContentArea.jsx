@@ -12,7 +12,6 @@ function ContentArea({ content, setContent }) {
     ["bold", "italic", "underline", "strike"],
     [{ color: [] }, { background: [] }],
     [{ align: "justify" }, { align: "" }, { align: "center" }, { align: "right" }, { direction: "rtl" }],
-    [{ indent: "-1" }, { indent: "+1" }],
     [{ list: "ordered" }, { list: "bullet" }],
     [{ script: "sub" }, { script: "super" }],
     ["link", "image"],
@@ -31,13 +30,6 @@ function ContentArea({ content, setContent }) {
       newEditor.on("text-change", () => {
         setContent(newEditor.root.innerHTML);
       });
-
-      const activateRTLandRightAlign = () => {
-        newEditor.format("direction", "rtl");
-        newEditor.format("align", "right");
-        editorRef.current.removeEventListener("click", activateRTLandRightAlign);
-      };
-      editorRef.current.addEventListener("click", activateRTLandRightAlign);
 
       setEditor(newEditor);
     } else {

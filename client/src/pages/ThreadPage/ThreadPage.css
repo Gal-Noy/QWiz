@@ -2,6 +2,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 1rem;
+  padding: 1rem;
 }
 
 .thread-page-loading,
@@ -15,6 +17,23 @@
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+}
+
+.thread-page-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 30vw;
+  border: 1px solid var(--grey1);
+  border-radius: 1rem;
+  padding: 1rem;
+  background-color: var(--grey3);
+  box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.1);
+}
+
+.thread-page-exam-details {
+  font-size: 1.2rem;
 }
 
 .thread-page-views-and-comments {
@@ -52,52 +71,45 @@
 .thread-comment-list {
   display: flex;
   flex-direction: column;
+  align-items: end;
   gap: 1rem;
-  width: 100%;
+  width: 60vw;
 }
-
 
 .new-comment {
   display: flex;
   flex-direction: column;
   background-color: var(--grey2);
-  border-radius: 1rem;
   box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 .new-comment-title {
-  font-size: 1.2rem;
-  padding: 0.5rem;
+  font-size: 1rem;
+  padding: 0.25rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 
   .close-btn {
-    margin-top: 0.25rem;
     cursor: pointer;
   }
 }
-.new-comment-buttons {
-  display: flex;
-  justify-content: end;
-  gap: 1rem;
-  padding: 0.5rem;
-}
 .new-comment-button {
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
+  font-size: 0.5rem;
   border: none;
   border-radius: 1rem;
   cursor: pointer;
   box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  background-color: rgb(0, 0, 0);
-  color: white;
+  margin-top: 0.25rem;
+  align-self: center;
+  width: 25%;
 
   &:hover {
-    background-color: #333;
+    background-color: var(--red2);
   }
 
   &:active {
-    background-color: #666;
+    background-color: var(--red3);
   }
 }

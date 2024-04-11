@@ -1,8 +1,10 @@
 thread page
-tags
-views
+expand and shrink comments
+loading spinners
+
+tags - free search
 followed threads, notifications
 
-double re render, other hooks
+double re render, other hooks (context etc)
+fix center html
 
-expand and shrink comments

@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
-import PageHeader from "../../components/PageHeader/PageHeader";
 import CommentBox from "./CommentBox";
 import NewComment from "./NewComment";
-import ContentArea from "../../components/ContentArea/ContentArea";
-import { examToString } from "../../utils/generalUtils";
+import { examToString, sumComments } from "../../utils/generalUtils";
 import "./ThreadPage.css";
 
 function ThreadPage() {
@@ -17,6 +15,7 @@ function ThreadPage() {
   const [replyingTo, setReplyingTo] = useState(null);
 
   useEffect(() => {
+    if (!threadId) return;
     setIsPending(true);
     axiosInstance
       .get(`/threads/${threadId}`)
@@ -64,7 +63,7 @@ function ThreadPage() {
         .catch((err) => handleError(err, () => alert("הוספת התגובה נכשלה")));
     }
   };
-  console.log(thread);
+
   return (
     <div className="thread-page">
       {isPending && <div className="thread-page-loading">טוען דיון...</div>}
@@ -72,18 +71,21 @@ function ThreadPage() {
 
       {!isPending && !error && thread && (
         <div className="thread-page-content">
-          <PageHeader title={thread.title} paragraphs={[examToString(thread.exam)]} />
-          <div className="thread-page-views-and-comments">
-            <div className="thread-page-views">
-              {thread.views} <span className="material-symbols-outlined">visibility</span>
+          <div className="thread-page-header">
+            <div className="thread-page-exam-details">{examToString(thread.exam)}</div>
+            <div className="thread-page-views-and-comments">
+              <div className="thread-page-views">
+                {thread.views} <span className="material-symbols-outlined">visibility</span>
+              </div>
+              <div className="thread-page-comments">
+                {sumComments(thread.comments)} <span className="material-symbols-outlined">chat_bubble_outline</span>
+              </div>
             </div>
-            <div className="thread-page-comments">
-              {thread.comments.length} <span className="material-symbols-outlined">chat_bubble_outline</span>
-            </div>
+            <button className="go-to-exam-button" onClick={() => (window.location.href = `/exam/${thread.exam._id}`)}>
+              לעמוד המבחן
+            </button>
           </div>
-          <button className="go-to-exam-button" onClick={() => (window.location.href = `/exam/${thread.exam._id}`)}>
-            לעמוד המבחן
-          </button>
+
           <div className="thread-comment-list">
             {thread.comments.map((comment) => (
               <CommentBox
@@ -94,6 +96,7 @@ function ThreadPage() {
                 newComment={newComment}
                 setNewComment={setNewComment}
                 addComment={addComment}
+                nest={0}
               />
             ))}
 
