@@ -391,7 +391,7 @@ const threadsController = {
     }
   },
 
-  toggleLikeOnComment: async (req, res) => {
+  toggleLikeComment: async (req, res) => {
     try {
       const comment = await Comment.findById(req.params.id);
 

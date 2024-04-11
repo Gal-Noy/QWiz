@@ -66,7 +66,7 @@ threadsRouter.put("/:threadId/comment/:commentId", threadsController.updateComme
 threadsRouter.put("/:threadId/comment/:commentId/reply/:replyId", threadsController.updateReplyInComment);
 
 // PUT: toggle like on a comment
-threadsRouter.put("/comment/:id/like", threadsController.toggleLikeOnComment);
+threadsRouter.put("/comment/:id/like", threadsController.toggleLikeComment);
 
 // DELETE: delete a comment
 threadsRouter.delete("/comment/:id", authenticateAdmin, threadsController.deleteComment);
