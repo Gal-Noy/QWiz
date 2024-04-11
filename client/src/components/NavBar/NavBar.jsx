@@ -45,7 +45,7 @@ function NavBar({ onLogout }) {
       <div className="navbar-free-search-div">
         <input
           className="navbar-free-search-input"
-          placeholder="חיפוש חופשי - למשל: מבני נתונים 2023 מועד א'"
+          placeholder="חיפוש חופשי - למשל: מבני נתונים 2023 מועד א"
           value={freeSearchValue}
           onChange={(e) => setFreeSearchValue(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && freeSearch()}

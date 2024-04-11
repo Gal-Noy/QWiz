@@ -86,11 +86,11 @@ function ThreadPage() {
               לעמוד המבחן
             </button>
             <div className="thread-page-tags">
-              {thread.tags
-                .map((t) => `#${t}`)
-                .map((tag) => (
-                  <span className="thread-page-tag">{tag}</span>
-                ))}
+              {thread.tags.map((tag) => (
+                <span className="thread-page-tag">
+                  #<a href={`/search/${tag}`}>{tag}</a>
+                </span>
+              ))}
             </div>
             <button className="expand-collapse-all-button" onClick={() => setExpandAll(!expandAll)}>
               {expandAll ? "כווץ הכל" : "הרחב הכל"}

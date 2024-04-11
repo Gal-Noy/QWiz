@@ -15,6 +15,7 @@ function NewThread() {
     tags: [],
   });
   const [threadContent, setThreadContent] = useState("");
+  const [isPending, setIsPending] = useState(false);
 
   useEffect(() => {
     axiosInstance
@@ -23,7 +24,7 @@ function NewThread() {
       .catch((err) => handleError(err, () => console.log("Failed to fetch exam details")));
   }, [examId]);
 
-  const createNewThread = () => {
+  const createNewThread = async () => {
     if (!threadDetails.title || !threadContent) {
       alert("אנא מלא/י כותרת ותוכן");
       return;
@@ -35,6 +36,8 @@ function NewThread() {
       }
     }
 
+    setIsPending(true);
+
     const newThread = {
       title: threadDetails.title,
       content: threadContent,
@@ -42,7 +45,7 @@ function NewThread() {
       tags: [...new Set(threadDetails.tags)],
     };
 
-    axiosInstance
+    await axiosInstance
       .post("/threads", newThread)
       .then((res) =>
         handleResult(res, 201, () => {
@@ -50,6 +53,7 @@ function NewThread() {
           window.location.href = `/thread/${res.data._id}`;
         })
       )
+      .then(() => setIsPending(false))
       .catch((err) => handleError(err, () => alert("יצירת הדיון נכשלה")));
   };
 
@@ -100,7 +104,7 @@ function NewThread() {
         </div>
         <div className="new-thread-buttons">
           <button className="new-thread-button" onClick={createNewThread}>
-            שלח
+            {isPending ? <div className="lds-dual-ring"/> : "צור דיון"}
           </button>
           <button className="new-thread-button" onClick={cancelNewThread}>
             בטל

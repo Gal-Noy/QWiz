@@ -4,7 +4,7 @@ import { examToStringVerbose } from "../../utils/generalUtils";
 
 function FreeSearchExamBlock({ exam }) {
   return (
-    <li className="free-search-list-item" key={exam._id} onClick={() => (window.location.href = `/exams/${exam._id}`)}>
+    <li className="free-search-list-item" key={exam._id} onClick={() => (window.location.href = `/exam/${exam._id}`)}>
       <div className="free-search-list-item-main-details">
         <a>{examToStringVerbose(exam)}</a>
       </div>

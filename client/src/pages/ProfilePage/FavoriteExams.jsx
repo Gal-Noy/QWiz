@@ -4,10 +4,11 @@ import ExamsList from "../../components/ExamsList/ExamsList";
 
 function FavoriteExams() {
   const [favoriteExams, setFavoriteExams] = useState([]);
-  const [isPending, setIsPending] = useState(true);
+  const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    setIsPending(true);
     axiosInstance
       .get("/exams/favorites", {})
       .then((res) =>

@@ -1,7 +1,8 @@
 import React from "react";
+import "./NotFound.css";
 
 function NotFound() {
-  return <h1>404 Not Found</h1>;
+  return <div className="not-found">העמוד לא נמצא (404)</div>;
 }
 
 export default NotFound;

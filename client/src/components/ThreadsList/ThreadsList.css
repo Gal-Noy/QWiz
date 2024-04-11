@@ -72,7 +72,7 @@
 }
 
 .thread-row {
-  height: 5rem;
+  height: 6rem;
   display: flex;
   align-items: center;
   width: 140vw;
@@ -208,14 +208,16 @@
   fill: var(--red1);
 }
 
-.exams-list-loading {
-  display: flex;
-  justify-content: center;
-  align-items: start;
-  padding: 2rem;
+#threads-loading:after {
+  margin-top: 2rem;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 3px solid var(--red1);
+  border-color: var(--red1) transparent var(--red1) transparent;
 }
 
-.exams-list-error {
+.threads-list-error {
   display: flex;
   justify-content: center;
   align-items: start;
@@ -237,7 +239,7 @@
   }
 }
 
-.exams-list-pagination {
+.threads-list-pagination {
   display: flex;
   justify-content: space-evenly;
   width: 50%;

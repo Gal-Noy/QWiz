@@ -177,9 +177,6 @@ const examsController = {
       const user = await User.findById(req.user.user_id)
         .populate({
           path: "favorite_exams",
-          populate: {
-            path: "course",
-          },
         })
         .select("-s3Key");
       res.json(user.favorite_exams);
@@ -223,8 +220,7 @@ const examsController = {
   rateExam: async (req, res) => {
     try {
       const { rating } = req.body;
-      const exam = await Exam.findById(req.params.id)
-        .select("-s3Key");
+      const exam = await Exam.findById(req.params.id).select("-s3Key");
 
       if (!exam) {
         return res.status(404).json({ message: "Exam not found" });

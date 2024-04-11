@@ -6,6 +6,7 @@ import axiosInstance, { handleError, handleResult } from "../../utils/axiosInsta
 function FilterBar(props) {
   const { setFilteredExams, setShowExams, setError } = props;
   const [courseExams, setCourseExams] = useState([]);
+  const [isPending, setIsPending] = useState(false);
 
   // Mandatory filters
   const [categoriesLists, setCategoriesLists] = useState({
@@ -77,16 +78,19 @@ function FilterBar(props) {
       )
       .catch((err) => handleError(err, () => console.log(err.response.data.message)));
 
-  const fetchCourseExams = async (courseId) =>
+  const fetchCourseExams = async (courseId) => {
+    setIsPending(true);
     await axiosInstance
       .get(`/exams/course/${courseId}`)
       .then((res) => handleResult(res, 200, () => setCourseExams(res.data)))
+      .then(() => setIsPending(false))
       .catch((err) =>
         handleError(err, () => {
           console.log(err.response.data.message);
           setError(err.response.data.message);
         })
       );
+  };
 
   const updateAdvancedSearchLists = () => {
     let updatedAdvancedSearchLists = { ...advancedSearchLists };
@@ -161,6 +165,7 @@ function FilterBar(props) {
   };
 
   const filterAndSearchExams = () => {
+    if (isPending) return;
     // Exams are already filtered by faculty, department, and course
     if (!chosenCategories.faculty || !chosenCategories.department || !chosenCategories.course) {
       alert("יש לבחור פקולטה, מחלקה וקורס לפני החיפוש");
@@ -358,8 +363,12 @@ function FilterBar(props) {
             value={freeText}
             onChange={(e) => setFreeText(e.target.value)}
           />
-          <div className="filter-bar-button" id="filter-bar-search-button" onClick={filterAndSearchExams}>
-            חפש מבחנים
+          <div
+            className={"filter-bar-button" + (isPending ? " pending" : "")}
+            id="filter-bar-search-button"
+            onClick={filterAndSearchExams}
+          >
+            {isPending ? <div className="lds-dual-ring"></div> : "חיפוש מבחנים"}
           </div>
         </div>
       </div>

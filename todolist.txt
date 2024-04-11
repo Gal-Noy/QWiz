@@ -1,18 +1,14 @@
 loading spinners
 
-isclosed
+isclosed, edit comment
 
-tags - free search
 followed threads, notifications
 
 double re render, other hooks (context etc)
 fix center html
 
-notfound
 
-exam population
 fix upload file button
-rating in exams list
-exams list row height
-tags fix (unique without spaces)
-clickable tags
+star color change
+
+check create thread (text) and create exam again

@@ -6,7 +6,7 @@ function FreeSearchThreadBlock({ thread }) {
     <li
       className="free-search-list-item"
       key={thread._id}
-      onClick={() => (window.location.href = `/threads/${thread._id}`)}
+      onClick={() => (window.location.href = `/thread/${thread._id}`)}
     >
       <div className="free-search-list-item-main-details">
         <a>{thread.title}</a>

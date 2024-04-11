@@ -31,6 +31,13 @@ function ContentArea({ content, setContent }) {
         setContent(newEditor.root.innerHTML);
       });
 
+      const rightAlignDirection = () => {
+        newEditor.format("direction", "rtl");
+        newEditor.format("align", "right");
+        editorRef.current.removeEventListener("click", rightAlignDirection);
+      };
+      editorRef.current.addEventListener("click", rightAlignDirection);
+
       setEditor(newEditor);
     } else {
       editor.root.innerHTML = content;

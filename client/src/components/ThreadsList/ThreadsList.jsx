@@ -226,7 +226,7 @@ function ThreadsList(props) {
             }
           />
         </div>
-        {isPending && <div className="loading-forum">טוען דיונים...</div>}
+        {isPending && !error && <div className="lds-dual-ring" id="threads-loading"></div>}
         {error && <div className="error-forum">{error}</div>}
         {!isPending && !error && (
           <div className="threads-list-rows">

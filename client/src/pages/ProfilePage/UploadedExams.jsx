@@ -4,10 +4,11 @@ import ExamsList from "../../components/ExamsList/ExamsList";
 
 function UploadedExams() {
   const [uploadedExams, setUploadedExams] = useState([]);
-  const [isPending, setIsPending] = useState(true);
+  const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    setIsPending(true);
     axiosInstance
       .get("/exams/uploaded")
       .then((res) =>

@@ -204,4 +204,10 @@
 
 #filter-bar-search-button {
   font-weight: 700;
+
+  &.pending {
+    background-color: var(--orange1);
+    color: grey;
+    cursor: default;
+  }
 }

@@ -8,10 +8,11 @@ import "./FreeSearchPage.css";
 function FreeSearchPage() {
   const { query } = useParams();
   const [searchResults, setSearchResults] = useState({ exams: [], threads: [] });
-  const [isPending, setIsPending] = useState(true);
+  const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    setIsPending(true);
     axiosInstance
       .get(`/search/${query}`)
       .then((res) => handleResult(res, 200, () => setSearchResults(res.data)))
@@ -24,7 +25,7 @@ function FreeSearchPage() {
         })
       );
   }, [query]);
-  console.log(searchResults);
+
   return (
     <div className="free-search-page">
       {isPending && <div className="free-search-page-loading">טוען תוצאות...</div>}
@@ -51,10 +52,10 @@ function FreeSearchPage() {
               </ul>
             </div>
           )}
+          {searchResults.exams.length === 0 && searchResults.threads.length === 0 && (
+            <div className="free-search-page-no-results">לא נמצאו תוצאות</div>
+          )}
         </div>
-      )}
-      {!isPending && !error && searchResults.exams.length === 0 && searchResults.threads.length === 0 && (
-        <div className="free-search-page-no-results">לא נמצאו תוצאות</div>
       )}
     </div>
   );
