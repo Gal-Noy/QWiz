@@ -9,7 +9,7 @@ function CreatedThreads() {
 
   useEffect(() => {
     axiosInstance
-      .get("/threads/created")
+      .get("/threads/user")
       .then((res) =>
         handleResult(res, 200, () => {
           const fetchedThreads = res.data;
@@ -19,8 +19,8 @@ function CreatedThreads() {
       .then(() => setIsPending(false))
       .catch((err) =>
         handleError(err, () => {
-          console.error(err.response.data.message);
-          setError(err.response.data.message);
+          console.error(err.response);
+          setError("שגיאה בטעינת הדיונים שנוצרו, אנא נסה שנית.");
           setIsPending(false);
         })
       );

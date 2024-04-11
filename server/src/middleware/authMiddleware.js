@@ -32,7 +32,10 @@ export const authenticateToken = async (req, res, next) => {
     user.lastActivity = Date.now();
     await user.save();
 
-    const tokenExpiryThreshold = 10 * 60 * 1000; // 10 minute before expiry
+    res.removeHeader("Access-Control-Expose-Headers");
+    res.removeHeader("Authorization");
+
+    const tokenExpiryThreshold = 10 * 60 * 1000; // 10 minutes before expiry
     const remainingTime = decoded.exp * 1000 - Date.now();
 
     if (remainingTime < tokenExpiryThreshold) {

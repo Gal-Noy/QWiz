@@ -27,7 +27,7 @@ function ThreadsList(props) {
       )
       .catch((err) =>
         handleError(err, () => {
-          console.error(err.response.data.message);
+          console.error(err.response);
           alert("שגיאה בטעינת הדיונים המסומנים בכוכב, אנא נסה שנית.");
         })
       );

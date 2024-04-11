@@ -11,8 +11,8 @@ threadsRouter.get("/", authenticateAdmin, threadsController.getAllThreads);
 // GET: get threads by exam
 threadsRouter.get("/exam/:id", threadsController.getThreadsByExam);
 
-// GET: get created threads
-threadsRouter.get("/created", threadsController.getCreatedThreads);
+// GET: get threads by user (my threads)
+threadsRouter.get("/user", threadsController.getThreadsByUser);
 
 // GET: get starred threads
 threadsRouter.get("/starred", threadsController.getStarredThreads);
@@ -40,9 +40,6 @@ threadsRouter.delete("/:id", authenticateAdmin, threadsController.deleteThread);
 
 // GET: get threads by user id
 threadsRouter.get("/user/:id", authenticateAdmin, threadsController.getThreadsByUserId);
-
-// GET: get threads by user (my threads)
-threadsRouter.get("/user", threadsController.getThreadsByUser);
 
 // GET: get threads by tags
 threadsRouter.get("/tags/:tags", threadsController.getThreadsByTags);

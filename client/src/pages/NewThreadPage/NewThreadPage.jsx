@@ -28,9 +28,11 @@ function NewThread() {
       alert("אנא מלא/י כותרת ותוכן");
       return;
     }
-    if (threadDetails.tags.indexOf(" ") !== -1) {
-      alert("אנא הכנס/י תגיות מופרדות בפסיק ללא רווחים");
-      return;
+    for (const tag of threadDetails.tags) {
+      if (tag.includes(" ")) {
+        alert("אנא הכנס/י תגיות מופרדות בפסיק ללא רווחים");
+        return;
+      }
     }
 
     const newThread = {

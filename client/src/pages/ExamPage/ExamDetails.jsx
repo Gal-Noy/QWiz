@@ -63,11 +63,11 @@ function ExamDetails({ examId }) {
               </div>
               <div className="exam-details-item">
                 <a className="exam-details-item-header">מחלקה:</a>
-                <a className="exam-details-item-text">{exam.department.name}</a>
+                <a className="exam-details-item-text">{exam.course.department.name}</a>
               </div>
               <div className="exam-details-item">
                 <a className="exam-details-item-header">פקולטה:</a>
-                <a className="exam-details-item-text">{exam.department.faculty.name}</a>
+                <a className="exam-details-item-text">{exam.course.department.faculty.name}</a>
               </div>
               <div className="exam-details-item">
                 <a className="exam-details-item-header">ציון:</a>

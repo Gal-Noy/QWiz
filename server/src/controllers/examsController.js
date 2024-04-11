@@ -6,7 +6,7 @@ import { uploadFile, getPresignedUrl, deleteFile } from "../utils/s3.js";
 const examsController = {
   getAllExams: async (req, res) => {
     try {
-      const exams = await Exam.find().populate("course").select("-s3Key");
+      const exams = await Exam.find().select("-s3Key");
       res.json(exams);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -62,8 +62,6 @@ const examsController = {
       const averageRating = difficultyRating;
       const exam = new Exam({
         s3Key,
-        faculty,
-        department,
         course,
         year,
         semester,
@@ -113,7 +111,7 @@ const examsController = {
       if (!course) {
         return res.status(404).json({ message: "Course not found" });
       }
-      const exams = await Exam.find({ course: course._id }).populate("course").select("-s3Key");
+      const exams = await Exam.find({ course: course._id }).select("-s3Key");
       res.json(exams);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -122,20 +120,7 @@ const examsController = {
 
   getExamById: async (req, res) => {
     try {
-      const exam = await Exam.findById(req.params.id)
-        .populate("course")
-        .populate({
-          path: "uploadedBy",
-          select: "name",
-        })
-        .populate({
-          path: "department",
-          populate: {
-            path: "faculty",
-            select: "name",
-          },
-        })
-        .select("-s3Key");
+      const exam = await Exam.findById(req.params.id).select("-s3Key");
 
       if (!exam) {
         return res.status(404).json({ message: "Exam not found" });
@@ -180,7 +165,7 @@ const examsController = {
 
   getUploadedExams: async (req, res) => {
     try {
-      const exams = await Exam.find({ uploadedBy: req.user.user_id }).populate("course").select("-s3Key");
+      const exams = await Exam.find({ uploadedBy: req.user.user_id }).select("-s3Key");
       res.json(exams);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -239,14 +224,6 @@ const examsController = {
     try {
       const { rating } = req.body;
       const exam = await Exam.findById(req.params.id)
-        .populate("course")
-        .populate({
-          path: "department",
-          populate: {
-            path: "faculty",
-            select: "name",
-          },
-        })
         .select("-s3Key");
 
       if (!exam) {

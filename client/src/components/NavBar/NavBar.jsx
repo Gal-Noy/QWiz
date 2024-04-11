@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import defaultAvatar from "../../assets/default-avatar.jpg";
 import "./NavBar.css";
 
 function NavBar({ onLogout }) {
   const user = JSON.parse(localStorage.getItem("user"));
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [freeSearchValue, setFreeSearchValue] = useState("");
   const navigate = useNavigate();
 
   const handleLogout = async () =>
@@ -23,6 +24,13 @@ function NavBar({ onLogout }) {
       )
       .catch((err) => handleError(err, () => console.error(err.response.data.message)));
 
+  const freeSearch = () => {
+    if (!freeSearchValue) return;
+    setShowUserMenu(false);
+    setFreeSearchValue("");
+    navigate(`/search/${freeSearchValue}`);
+  };
+
   return (
     <div className="navbar-container">
       <div
@@ -33,6 +41,18 @@ function NavBar({ onLogout }) {
         }}
       >
         QWiz
+      </div>
+      <div className="navbar-free-search-div">
+        <input
+          className="navbar-free-search-input"
+          placeholder="חיפוש חופשי - למשל: מבני נתונים 2023 מועד א'"
+          value={freeSearchValue}
+          onChange={(e) => setFreeSearchValue(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && freeSearch()}
+        />
+        <span className="navbar-free-search-button material-symbols-outlined" onClick={freeSearch}>
+          search
+        </span>
       </div>
       <div className="navbar-profile">
         <img

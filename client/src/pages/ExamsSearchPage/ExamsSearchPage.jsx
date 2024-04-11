@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import ExamsList from "../../components/ExamsList/ExamsList";
 import FilterBar from "../../components/FilterBar/FilterBar";
 import PageHeader from "../../components/PageHeader/PageHeader";
-import "./SearchPage.css";
+import "./ExamsSearchPage.css";
 
-function SearchPage() {
+function ExamsSearchPage() {
   const [filteredExams, setFilteredExams] = useState([]);
   const [showExams, setShowExams] = useState(false);
   const [error, setError] = useState(null);
@@ -31,4 +31,4 @@ function SearchPage() {
   );
 }
 
-export default SearchPage;
+export default ExamsSearchPage;

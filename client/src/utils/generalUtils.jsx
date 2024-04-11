@@ -14,6 +14,12 @@ const examToString = (exam) => {
   } - ${exam.term === 1 ? "א'" : exam.term === 2 ? "ב'" : "ג'"}`;
 };
 
+const examToStringVerbose = (exam) => {
+  return `${exam.course.name} - ${exam.year} - ${exam.type === "test" ? "מבחן" : "בוחן"} - ${
+    exam.semester === 1 ? "סמסטר א" : exam.semester === 2 ? "סמסטר ב" : "סמסטר קיץ"
+  } - ${exam.term === 1 ? "מועד א" : exam.term === 2 ? "מועד ב" : "מועד ג"}`;
+};
+
 const sumComments = (comments) => {
   let sum = comments.length;
   comments.forEach((comment) => {
@@ -22,4 +28,4 @@ const sumComments = (comments) => {
   return sum;
 };
 
-export { formatDate, formatDateAndTime, examToString, sumComments };
+export { formatDate, formatDateAndTime, examToString, examToStringVerbose, sumComments };

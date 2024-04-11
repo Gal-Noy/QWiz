@@ -5,16 +5,6 @@ const examSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  faculty: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Faculty",
-    required: true,
-  },
-  department: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Department",
-    required: true,
-  },
   course: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Course",
@@ -74,5 +64,28 @@ examSchema.pre("remove", async function (next) {
 
   next();
 });
+
+const populateExam = function (next) {
+  this.populate({
+    path: "course",
+    select: "name code",
+    populate: {
+      path: "department",
+      select: "name",
+      populate: {
+        path: "faculty",
+        select: "name",
+      },
+    },
+  });
+  this.populate({
+    path: "uploadedBy",
+    select: "name",
+  });
+  next();
+};
+
+examSchema.pre("findOne", populateExam);
+examSchema.pre("find", populateExam);
 
 export const Exam = mongoose.model("Exam", examSchema);
