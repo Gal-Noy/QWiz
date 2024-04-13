@@ -38,6 +38,8 @@ function ContentArea({ content, setContent }) {
       };
       editorRef.current.addEventListener("click", rightAlignDirection);
 
+      newEditor.container.firstChild.innerHTML = content;
+
       setEditor(newEditor);
     } else {
       editor.root.innerHTML = content;

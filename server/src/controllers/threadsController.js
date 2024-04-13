@@ -327,18 +327,9 @@ const threadsController = {
     }
   },
 
-  updateCommentInThread: async (req, res) => {
+  updateComment: async (req, res) => {
     try {
-      const thread = await Thread.findById(req.params.threadId);
-
-      if (!thread) {
-        return res.status(404).json({ message: "Thread not found" });
-      }
-      if (thread.isClosed) {
-        return res.status(403).json({ message: "Thread is closed" });
-      }
-
-      const comment = thread.comments.find((comment) => comment._id.toString() === req.params.commentId);
+      const comment = await Comment.findById(req.params.id);
 
       if (!comment) {
         return res.status(404).json({ message: "Comment not found" });
@@ -352,44 +343,6 @@ const threadsController = {
       if (content) comment.content = content;
 
       await comment.save();
-
-      res.json(thread);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
-
-  updateReplyInComment: async (req, res) => {
-    try {
-      const thread = await Thread.findById(req.params.threadId);
-
-      if (!thread) {
-        return res.status(404).json({ message: "Thread not found" });
-      }
-      if (thread.isClosed) {
-        return res.status(403).json({ message: "Thread is closed" });
-      }
-
-      const comment = await Comment.findById(req.params.commentId);
-
-      if (!comment) {
-        return res.status(404).json({ message: "Comment not found" });
-      }
-
-      const reply = comment.replies.find((reply) => reply._id.toString() === req.params.replyId);
-
-      if (!reply) {
-        return res.status(404).json({ message: "Reply not found" });
-      }
-      if (reply.sender._id.toString() !== req.user.user_id) {
-        return res.status(403).json({ message: "Access denied" });
-      }
-
-      const { title, content } = req.body;
-      if (title) reply.title = title;
-      if (content) reply.content = content;
-
-      await reply.save();
 
       res.json(comment);
     } catch (error) {

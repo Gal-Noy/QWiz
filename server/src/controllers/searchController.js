@@ -104,15 +104,16 @@ const filterExams = async (foundExams, subQuery) => {
 };
 
 const searchThreads = async (subQuery) => {
+  const subQueryWords = subQuery.split(" ").map((word) => new RegExp(word.trim(), "i"));
+
+  const titleQuery = {
+    $or: subQueryWords.map((word) => ({
+      title: { $regex: word.source, $options: "i" },
+    })),
+  };
+
   const threads = await Thread.find({
-    $or: [
-      {
-        title: { $regex: subQuery, $options: "i" },
-      },
-      {
-        tags: { $all: subQuery.split(" ") },
-      },
-    ],
+    $or: [titleQuery, { tags: { $in: subQueryWords } }],
   });
 
   return threads;
@@ -131,6 +132,7 @@ const searchController = {
         threads: [],
       };
       let examsFound = false;
+      let threadsFound = false;
 
       for (const subQuery of subQueries) {
         if (!examsFound) {
@@ -144,10 +146,13 @@ const searchController = {
           }
         }
 
-        const foundThreads = await searchThreads(subQuery);
-        if (foundThreads.length > 0) {
-          for (const thread of foundThreads) {
-            if (!searchResults.threads.includes(thread)) searchResults.threads.push(thread);
+        if (!threadsFound) {
+          const foundThreads = await searchThreads(subQuery);
+          if (foundThreads.length > 0) {
+            for (const thread of foundThreads) {
+              if (!searchResults.threads.includes(thread)) searchResults.threads.push(thread);
+            }
+            threadsFound = true;
           }
         }
       }

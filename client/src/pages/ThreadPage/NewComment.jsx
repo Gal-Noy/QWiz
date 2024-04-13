@@ -24,7 +24,7 @@ function NewComment(props) {
       </a>
       <ContentArea content={newComment} setContent={setNewComment} />
       <button className="new-comment-button" onClick={addNewComment}>
-        {!isPending ? <span className="material-symbols-outlined">reply</span> : <div className="lds-dual-ring"></div>}
+        {!isPending ? <span className="material-symbols-outlined">reply</span> : <div className="lds-dual-ring">aaa</div>}
       </button>
     </div>
   );

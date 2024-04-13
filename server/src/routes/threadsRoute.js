@@ -56,11 +56,8 @@ threadsRouter.post("/:id/comment", threadsController.addCommentToThread);
 // POST: add a new reply to a comment
 threadsRouter.post("/:threadId/comment/:commentId/reply", threadsController.addReplyToComment);
 
-// PUT: update comment in a thread
-threadsRouter.put("/:threadId/comment/:commentId", threadsController.updateCommentInThread);
-
-// PUT: update reply in a comment
-threadsRouter.put("/:threadId/comment/:commentId/reply/:replyId", threadsController.updateReplyInComment);
+// PUT: update comment
+threadsRouter.put("/comment/:id", threadsController.updateComment);
 
 // PUT: toggle like on a comment
 threadsRouter.put("/comment/:id/like", threadsController.toggleLikeComment);

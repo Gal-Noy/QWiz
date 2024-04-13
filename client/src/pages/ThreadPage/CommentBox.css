@@ -47,6 +47,19 @@
   font-size: 1rem;
   font-weight: bold;
 }
+.edit-comment-title-input {
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  width: 20vw;
+
+  &:focus {
+    outline: none;
+  }
+}
 .comment-header-left-section {
   display: flex;
   align-items: center;
@@ -91,17 +104,21 @@
     color: var(--red3);
   }
 }
+#like-loading:after {
+  border: 2px solid black;
+  border-color: black transparent black transparent;
+}
 .comment-likes,
 .comment-replies {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
-.comment-reply-section {
+.comment-buttons {
   display: flex;
   gap: 1rem;
 }
-.add-comment-reply-button {
+.comment-button {
   font-size: 1rem;
   padding: 0.25rem 0.5rem;
   border: none;
