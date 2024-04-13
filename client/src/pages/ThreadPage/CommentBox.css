@@ -63,6 +63,8 @@
 
 .comment-content {
   padding: 0 1.5rem;
+  direction: ltr;
+  text-align: left;
 }
 
 .comment-footer {
@@ -115,4 +117,20 @@
   &:active {
     background-color: var(--red3);
   }
+}
+
+.ql-align-left {
+  text-align: left;
+}
+.ql-align-center {
+  text-align: center;
+}
+.ql-align-right {
+  text-align: right;
+}
+.ql-align-justify {
+  text-align: justify;
+}
+.ql-direction-rtl {
+  direction: rtl;
 }

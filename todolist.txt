@@ -1,4 +1,3 @@
 edit comment
 
 double re render, other hooks (context etc)
-fix center html
