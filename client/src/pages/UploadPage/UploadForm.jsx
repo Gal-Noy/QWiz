@@ -109,9 +109,7 @@ function UploadForm() {
     });
     setDepartments([]);
     setCourses([]);
-    setFile(null);
-    setNumPages(null);
-    setPageNumber(1);
+    cancelFile();
 
     const stars = document.querySelectorAll(".radio-input");
     stars.forEach((star) => {
