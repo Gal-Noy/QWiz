@@ -62,7 +62,7 @@ function ThreadsList(props) {
         </div>
       )}
       <div className={"threads-list-container" + (isProfilePage ? " is-profile-page" : "")}>
-        <div className="threads-list-headers-row">
+        <div className={"threads-list-headers-row" + (isProfilePage ? " is-profile-page" : "")}>
           <ListHeader
             label="מסומן בכוכב"
             header="starred"
@@ -237,6 +237,7 @@ function ThreadsList(props) {
                 starred={starredThreads.includes(thread._id)}
                 setStarredThreads={setStarredThreads}
                 exam={isProfilePage ? thread.exam : null}
+                isProfilePage={isProfilePage}
               />
             ))}
           </div>

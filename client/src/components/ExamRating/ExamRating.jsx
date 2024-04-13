@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import "./ExamRating.css";
 
@@ -43,7 +43,6 @@ function ExamRating(props) {
           </form>
         </div>
       )}
-
       {editMode && rating && (
         <div className="exam-rating">
           <a className="rate-exam-header">הדירוג שלך:</a>

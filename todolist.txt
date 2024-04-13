@@ -1,12 +1,9 @@
-loading spinners
-
 isclosed, edit comment
 
 followed threads, notifications
 
 double re render, other hooks (context etc)
 fix center html
-
 
 fix upload file button
 star color change

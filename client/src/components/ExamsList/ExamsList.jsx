@@ -198,7 +198,7 @@ function ExamsList(props) {
             }
           />
         </div>
-        {isPending && !error && <div className="exams-list-loading">טוען מבחנים...</div>}
+        {isPending && !error && <div className="lds-dual-ring" id="exams-loading"></div>}
         {error && <div className="exams-list-error">{error}</div>}
 
         {!isPending && !error && (

@@ -148,11 +148,25 @@
   border-radius: 50%;
 }
 
-.exams-list-loading {
-  display: flex;
-  justify-content: center;
-  align-items: start;
-  padding: 2rem;
+#exams-loading:after {
+  margin-top: 2rem;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 3px solid var(--orange3);
+  border-color: var(--orange3) transparent var(--orange3) transparent;
+}
+#loading-favorite {
+  width: auto;
+  height: auto;
+}
+#loading-favorite:after {
+  margin-right: 1rem;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 3px solid var(--orange3);
+  border-color: var(--orange3) transparent var(--orange3) transparent;
 }
 
 .exams-list-error {

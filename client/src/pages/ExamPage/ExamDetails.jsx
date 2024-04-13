@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
@@ -11,7 +10,6 @@ function ExamDetails({ examId }) {
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState(null);
   const [filePath, setFilePath] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     axiosInstance
@@ -47,9 +45,9 @@ function ExamDetails({ examId }) {
 
   return (
     <div className="exam-details">
-      {isPending && <div className="loading-exam">טוען פרטי בחינה...</div>}
-      {error && <div className="error-exam">{error}</div>}
-      {!isPending && exam && (
+      {isPending && <div className="lds-dual-ring" id="loading-exam"></div>}
+      {!isPending && error && <div className="error-exam">{error}</div>}
+      {!isPending && !error && exam && (
         <>
           <div className="exam-details-right-section">
             <div className="exam-details-items">
