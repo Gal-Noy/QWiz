@@ -14,6 +14,10 @@ function ThreadPage() {
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
   const [expandAll, setExpandAll] = useState(true);
+  const [isClosed, setIsClosed] = useState(false);
+  const [isClosedPending, setIsClosedPending] = useState(false);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const isAdmin = user && thread?.creator._id === user._id;
 
   useEffect(() => {
     if (!threadId) return;
@@ -37,6 +41,11 @@ function ThreadPage() {
   }, [threadId]);
 
   const addComment = () => {
+    if (isClosed) {
+      alert("הדיון נעול ולא ניתן להוסיף תגובות");
+      return;
+    }
+
     if (!newComment) {
       alert("אנא הכנס/י תוכן לתגובה");
       return;
@@ -65,6 +74,20 @@ function ThreadPage() {
     }
   };
 
+  const toggleThreadClosed = () => {
+    if (isClosedPending) return;
+    setIsClosedPending(true);
+    axiosInstance
+      .post(`/threads/${threadId}/toggle`)
+      .then((res) => handleResult(res, 200, () => setThread(res.data)))
+      .then(() => setIsClosedPending(false))
+      .catch((err) => handleError(err, () => alert("שינוי סטטוס הדיון נכשל")));
+  };
+
+  useEffect(() => {
+    if (thread) setIsClosed(thread.isClosed);
+  }, [thread]);
+
   return (
     <div className="thread-page">
       {isPending && <div className="thread-page-loading">טוען דיון...</div>}
@@ -73,7 +96,10 @@ function ThreadPage() {
       {!isPending && !error && thread && (
         <div className="thread-page-content">
           <div className="thread-page-header">
-            <div className="thread-page-exam-details">{examToString(thread.exam)}</div>
+            <div className="thread-page-exam-details">
+              {isClosed ? <span className="material-symbols-outlined">lock</span> : ""}
+              {examToString(thread.exam)}
+            </div>
             <div className="thread-page-views-and-comments">
               <div className="thread-page-views">
                 {thread.views} <span className="material-symbols-outlined">visibility</span>
@@ -86,15 +112,23 @@ function ThreadPage() {
               לעמוד המבחן
             </button>
             <div className="thread-page-tags">
-              {thread.tags.map((tag) => (
-                <span className="thread-page-tag">
+              {thread.tags.map((tag, index) => (
+                <span className="thread-page-tag" key={index}>
                   #<a href={`/search/${tag}`}>{tag}</a>
                 </span>
               ))}
             </div>
-            <button className="expand-collapse-all-button" onClick={() => setExpandAll(!expandAll)}>
-              {expandAll ? "כווץ הכל" : "הרחב הכל"}
-            </button>
+            <div className="thread-header-bottom-buttons">
+              <button className="thread-header-bottom-button" onClick={() => setExpandAll(!expandAll)}>
+                {expandAll ? "כווץ הכל" : "הרחב הכל"}
+              </button>
+              {isAdmin && (
+                <button className="thread-header-bottom-button" onClick={toggleThreadClosed}>
+                  {isClosedPending && <div className="lds-dual-ring" id="isClosed-loading"></div>}
+                  {!isClosedPending && (isClosed ? "פתח דיון" : "נעל דיון")}
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="thread-comment-list">
@@ -109,10 +143,11 @@ function ThreadPage() {
                 addComment={addComment}
                 nest={0}
                 expand={expandAll}
+                isClosed={isClosed}
               />
             ))}
 
-            {!replyingTo && (
+            {!isClosed && !replyingTo && (
               <NewComment
                 replyingTo={null}
                 setReplyingTo={setReplyingTo}

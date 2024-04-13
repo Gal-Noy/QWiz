@@ -6,7 +6,7 @@ import NewComment from "./NewComment";
 import "./CommentBox.css";
 
 function CommentBox(props) {
-  const { comment, replyingTo, setReplyingTo, newComment, setNewComment, addComment, nest, expand } = props;
+  const { comment, replyingTo, setReplyingTo, newComment, setNewComment, addComment, nest, expand, isClosed } = props;
   const { _id, title, content, sender, createdAt, likes, replies } = comment;
   const [isExpanded, setIsExpanded] = useState(expand);
   const [likesCount, setLikesCount] = useState(likes.length);
@@ -26,6 +26,15 @@ function CommentBox(props) {
         })
       )
       .catch((err) => handleError(err, () => alert("אירעה שגיאה בעת עדכון הלייק")));
+  };
+
+  const allowReply = () => {
+    if (isClosed) {
+      alert("הדיון נעול ולא ניתן להוסיף תגובות");
+      return;
+    }
+
+    setReplyingTo(_id);
   };
 
   return (
@@ -62,7 +71,7 @@ function CommentBox(props) {
                 </span>
               </a>
               <div className="comment-reply-section">
-                <button className="add-comment-reply-button" onClick={() => setReplyingTo(_id)}>
+                <button className="add-comment-reply-button" onClick={allowReply}>
                   הגב
                 </button>
                 <a className="comment-replies">
@@ -74,7 +83,7 @@ function CommentBox(props) {
           </>
         )}
       </div>
-      {replyingTo === _id && (
+      {!isClosed && replyingTo === _id && (
         <NewComment
           replyingTo={replyingTo}
           setReplyingTo={setReplyingTo}
@@ -94,6 +103,7 @@ function CommentBox(props) {
           addComment={addComment}
           nest={nest + 1}
           expand={expand}
+          isClosed={isClosed}
         />
       ))}
     </div>

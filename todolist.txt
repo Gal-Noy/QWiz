@@ -1,11 +1,4 @@
-isclosed, edit comment
-
-followed threads, notifications
+edit comment
 
 double re render, other hooks (context etc)
 fix center html
-
-fix upload file button
-star color change
-
-check create thread (text) and create exam again

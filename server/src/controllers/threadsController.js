@@ -105,7 +105,7 @@ const threadsController = {
       if (!thread) {
         return res.status(404).json({ message: "Thread not found" });
       }
-      if (thread.creator.toString() !== req.user.user_id) {
+      if (thread.creator._id.toString() !== req.user.user_id) {
         return res.status(403).json({ message: "Access denied" });
       }
 
@@ -175,7 +175,7 @@ const threadsController = {
         return res.status(404).json({ message: "Thread not found" });
       }
 
-      if (thread.creator.toString() !== req.user.user_id) {
+      if (thread.creator._id.toString() !== req.user.user_id) {
         return res.status(403).json({ message: "Access denied" });
       }
 
@@ -343,11 +343,14 @@ const threadsController = {
       if (!comment) {
         return res.status(404).json({ message: "Comment not found" });
       }
-      if (comment.sender.toString() !== req.user.user_id) {
+      if (comment.sender._id.toString() !== req.user.user_id) {
         return res.status(403).json({ message: "Access denied" });
       }
 
-      comment.set(req.body);
+      const { title, content } = req.body;
+      if (title) comment.title = title;
+      if (content) comment.content = content;
+
       await comment.save();
 
       res.json(thread);
@@ -378,11 +381,14 @@ const threadsController = {
       if (!reply) {
         return res.status(404).json({ message: "Reply not found" });
       }
-      if (reply.sender.toString() !== req.user.user_id) {
+      if (reply.sender._id.toString() !== req.user.user_id) {
         return res.status(403).json({ message: "Access denied" });
       }
 
-      reply.set(req.body);
+      const { title, content } = req.body;
+      if (title) reply.title = title;
+      if (content) reply.content = content;
+
       await reply.save();
 
       res.json(comment);

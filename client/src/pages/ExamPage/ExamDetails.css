@@ -63,6 +63,17 @@
   gap: 1rem;
   padding: 1rem;
 }
+.pdf-not-loaded {
+  visibility: hidden;
+}
+#loading-pdf:after {
+  visibility: visible;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid var(--cyan3);
+  border-color: var(--cyan3) transparent var(--cyan3) transparent;
+}
 
 .react-pdf__Page__canvas {
   margin: 0 auto;

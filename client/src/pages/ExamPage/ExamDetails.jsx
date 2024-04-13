@@ -10,6 +10,7 @@ function ExamDetails({ examId }) {
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState(null);
   const [filePath, setFilePath] = useState(null);
+  const [pdfLoaded, setPdfLoaded] = useState(false);
 
   useEffect(() => {
     axiosInstance
@@ -40,6 +41,7 @@ function ExamDetails({ examId }) {
   }, [exam]);
 
   const goToPdf = () => {
+    if (!pdfLoaded) return;
     window.open(filePath, "_blank");
   };
 
@@ -106,10 +108,11 @@ function ExamDetails({ examId }) {
             </div>
           </div>
           <div className="exam-details-left-section">
-            <div className="exam-details-pdf" onClick={goToPdf}>
-              <Document file={filePath}>
+            <div className={"exam-details-pdf" + (!pdfLoaded ? " pdf-not-loaded" : "")} onClick={goToPdf}>
+              <Document file={filePath} onLoadSuccess={() => setPdfLoaded(true)}>
                 <Page pageNumber={1} renderAnnotationLayer={false} renderTextLayer={false} />
               </Document>
+              {!pdfLoaded && <div className="lds-dual-ring" id="loading-pdf"></div>}
             </div>
             <ExamRating difficultyRating={exam.difficultyRating} examId={exam._id} editMode={true} setExam={setExam} />
           </div>

@@ -107,7 +107,6 @@ function UploadForm() {
       lecturers: "",
       difficultyRating: 0,
     });
-    setFaculties([]);
     setDepartments([]);
     setCourses([]);
     setFile(null);
@@ -194,6 +193,7 @@ function UploadForm() {
     setFile(null);
     setNumPages(null);
     setPageNumber(1);
+    document.getElementById("upload-exam-file-input").value = null;
   };
 
   return (

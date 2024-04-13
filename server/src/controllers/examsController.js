@@ -1,6 +1,6 @@
 import { Exam } from "../models/examModel.js";
 import { User } from "../models/userModel.js";
-import { Course } from "../models/infoModels.js";
+import { Faculty, Department, Course } from "../models/infoModels.js";
 import { uploadFile, getPresignedUrl, deleteFile } from "../utils/s3.js";
 
 const examsController = {
@@ -46,6 +46,18 @@ const examsController = {
         });
       }
 
+      const existingFaculty = await Faculty.findById(faculty._id);
+      if (!existingFaculty) {
+        return res.status(404).json({ message: "Faculty not found" });
+      }
+      const existingDepartment = await Department.findOne({ name: department.name, faculty: faculty._id });
+      if (!existingDepartment) {
+        return res.status(404).json({ message: "Department not found" });
+      }
+      const existingCourse = await Course.findOne({ name: course.name, department: department._id });
+      if (!existingCourse) {
+        return res.status(404).json({ message: "Course not found" });
+      }
       const existingExam = await Exam.findOne({ course, year, semester, term });
       if (existingExam) {
         return res.status(400).json({ message: "Exam already exists" });

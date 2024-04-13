@@ -33,6 +33,10 @@
 }
 
 .thread-page-exam-details {
+  display: flex;
+  align-items: center;
+
+  gap: 0.5rem;
   font-size: 1.2rem;
 }
 
@@ -75,12 +79,18 @@
   flex-wrap: wrap;
 }
 
-.expand-collapse-all-button {
+.thread-header-bottom-buttons {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.thread-header-bottom-button {
   font-size: 1rem;
   border: none;
   cursor: pointer;
   text-decoration: underline;
-  align-self: end;
 }
 
 .thread-comment-list {
@@ -128,4 +138,9 @@
   &:active {
     background-color: var(--red3);
   }
+}
+
+#isClosed-loading:after {
+  border: 2px solid black;
+  border-color: black transparent black transparent;
 }
