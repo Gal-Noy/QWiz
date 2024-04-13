@@ -40,40 +40,6 @@ function ThreadPage() {
       );
   }, [threadId]);
 
-  const addComment = () => {
-    if (isClosed) {
-      alert("הדיון נעול ולא ניתן להוסיף תגובות");
-      return;
-    }
-
-    if (!newComment) {
-      alert("אנא הכנס/י תוכן לתגובה");
-      return;
-    }
-
-    if (!replyingTo) {
-      axiosInstance
-        .post(`/threads/${threadId}/comment`, { content: newComment })
-        .then((res) =>
-          handleResult(res, 201, () => {
-            alert("התגובה נוספה בהצלחה");
-            window.location.reload();
-          })
-        )
-        .catch((err) => handleError(err, () => alert("הוספת התגובה נכשלה")));
-    } else {
-      axiosInstance
-        .post(`/threads/${threadId}/comment/${replyingTo}/reply`, { content: newComment })
-        .then((res) =>
-          handleResult(res, 201, () => {
-            alert("התגובה נוספה בהצלחה");
-            window.location.reload();
-          })
-        )
-        .catch((err) => handleError(err, () => alert("הוספת התגובה נכשלה")));
-    }
-  };
-
   const toggleThreadClosed = () => {
     if (isClosedPending) return;
     setIsClosedPending(true);
@@ -87,6 +53,43 @@ function ThreadPage() {
   useEffect(() => {
     if (thread) setIsClosed(thread.isClosed);
   }, [thread]);
+
+  const addComment = (setIsPending) => {
+    if (isClosed) {
+      alert("הדיון נעול ולא ניתן להוסיף תגובות");
+      return;
+    }
+
+    if (!newComment) {
+      alert("אנא הכנס/י תוכן לתגובה");
+      return;
+    }
+
+    setIsPending(true);
+    if (!replyingTo) {
+      axiosInstance
+        .post(`/threads/${threadId}/comment`, { content: newComment })
+        .then((res) =>
+          handleResult(res, 201, () => {
+            alert("התגובה נוספה בהצלחה");
+            window.location.reload();
+          })
+        )
+        .then(() => setIsPending(false))
+        .catch((err) => handleError(err, () => alert("הוספת התגובה נכשלה")));
+    } else {
+      axiosInstance
+        .post(`/threads/${threadId}/comment/${replyingTo}/reply`, { content: newComment })
+        .then((res) =>
+          handleResult(res, 201, () => {
+            alert("התגובה נוספה בהצלחה");
+            window.location.reload();
+          })
+        )
+        .then(() => setIsPending(false))
+        .catch((err) => handleError(err, () => alert("הוספת התגובה נכשלה")));
+    }
+  };
 
   return (
     <div className="thread-page">

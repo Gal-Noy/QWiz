@@ -104,7 +104,10 @@ const filterExams = async (foundExams, subQuery) => {
 };
 
 const searchThreads = async (subQuery) => {
-  const subQueryWords = subQuery.split(" ").map((word) => new RegExp(word.trim(), "i"));
+  const subQueryWords = subQuery
+    .split(" ")
+    .filter((word) => word.trim().length >= 3)
+    .map((word) => new RegExp(word.trim(), "i"));
 
   const titleQuery = {
     $or: subQueryWords.map((word) => ({

@@ -130,6 +130,7 @@
   margin-top: 0.25rem;
   align-self: center;
   width: 25%;
+  min-height: 1.5rem;
 
   &:hover {
     background-color: var(--red2);
@@ -141,6 +142,11 @@
 }
 
 #isClosed-loading:after {
+  border: 2px solid black;
+  border-color: black transparent black transparent;
+}
+
+#new-comment-loading:after {
   border: 2px solid black;
   border-color: black transparent black transparent;
 }

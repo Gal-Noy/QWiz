@@ -7,9 +7,7 @@ function NewComment(props) {
 
   const addNewComment = async () => {
     if (isPending) return;
-    setIsPending(true);
-    await addComment();
-    setIsPending(false);
+    await addComment(setIsPending);
   };
 
   return (
@@ -24,7 +22,11 @@ function NewComment(props) {
       </a>
       <ContentArea content={newComment} setContent={setNewComment} />
       <button className="new-comment-button" onClick={addNewComment}>
-        {!isPending ? <span className="material-symbols-outlined">reply</span> : <div className="lds-dual-ring">aaa</div>}
+        {!isPending ? (
+          <span className="material-symbols-outlined">reply</span>
+        ) : (
+          <div className="lds-dual-ring" id="new-comment-loading"></div>
+        )}
       </button>
     </div>
   );

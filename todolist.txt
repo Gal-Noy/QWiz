@@ -1,5 +1,0 @@
-double re render, other hooks (context etc)
-
-loading spinner to new comment
-
-try different users
