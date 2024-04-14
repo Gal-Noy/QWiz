@@ -1,5 +1,9 @@
 import fs from "fs";
 
+// This script is used to add faculty and department elements to the courses.txt file, and remove the date element.
+// Usage: node processTxt.js <fileName> <faculty> <department>
+// Example: node processTxt.js coursesCS.txt "Faculty of Engineering" "Computer Science"
+
 const init = async () => {
   const args = process.argv.slice(2);
 

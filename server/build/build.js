@@ -3,6 +3,9 @@ import { Faculty, Department, Course } from "../src/models/infoModels.js";
 import dotenv from "dotenv";
 import fs from "fs";
 
+// This script is used to insert data from courses.json into the database
+// Usage: node build.js
+
 dotenv.config({ path: "../.env" });
 
 const init = async () => {
