@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { User } from "./userModel.js";
 
 // Each exam has a a list of threads
 // Threads are the main posts, and they are designed as a tree structure
@@ -46,12 +47,39 @@ const threadSchema = new mongoose.Schema({
   ],
 });
 
-threadSchema.pre("remove", async function (next) {
-  await this.model("User").updateMany({ starred_threads: this._id }, { $pull: { starred_threads: this._id } });
+const deleteThread = async function (next) {
+  const threadToDelete = await this.model.findOne(this.getQuery());
+  const { _id: threadId } = threadToDelete;
 
-  await Comment.deleteMany({ _id: { $in: this.comments } });
-  next();
-});
+  try {
+    await Comment.deleteMany({ _id: { $in: threadToDelete.comments } });
+
+    await User.updateMany({ starred_threads: threadId }, { $pull: { starred_threads: threadId } });
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteThreads = async function (next) {
+  const threadsToDelete = await this.model.find(this.getQuery());
+  const threadIds = threadsToDelete.map((thread) => thread._id);
+
+  try {
+    await Comment.deleteMany({ _id: { $in: threadsToDelete.flatMap((thread) => thread.comments) } });
+
+    await User.updateMany({ starred_threads: { $in: threadIds } }, { $pull: { starred_threads: { $in: threadIds } } });
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+threadSchema.pre("findOneAndDelete", deleteThread);
+threadSchema.pre("deleteOne", deleteThread);
+threadSchema.pre("deleteMany", deleteThreads);
 
 const populateThread = function (next) {
   this.populate("creator", "name");
@@ -106,10 +134,38 @@ const commentSchema = new mongoose.Schema({
   ],
 });
 
-commentSchema.pre("remove", async function (next) {
-  await Comment.deleteMany({ _id: { $in: this.replies } });
-  next();
-});
+const deleteComment = async function (next) {
+  const commentToDelete = await this.model.findOne(this.getQuery());
+
+  try {
+    if (commentToDelete.replies.length > 0) {
+      await Comment.deleteMany({ _id: { $in: commentToDelete.replies } });
+    }
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteComments = async function (next) {
+  const commentsToDelete = await this.model.find(this.getQuery());
+  const allReplies = commentsToDelete.flatMap((comment) => comment.replies);
+
+  try {
+    if (allReplies.length > 0) {
+      await Comment.deleteMany({ _id: { $in: allReplies } });
+    }
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+commentSchema.pre("findOneAndDelete", deleteComment);
+commentSchema.pre("deleteOne", deleteComment);
+commentSchema.pre("deleteMany", deleteComments);
 
 const populateComment = function (next) {
   this.populate("sender", "name");

@@ -171,13 +171,11 @@ const examsController = {
 
   deleteExam: async (req, res) => {
     try {
-      const exam = await Exam.findById(req.params.id);
+      const exam = await Exam.findByIdAndDelete(req.params.id);
 
       if (!exam) {
         return res.status(404).json({ type: "ExamNotFoundError", message: "Exam not found" });
       }
-
-      await exam.remove();
 
       return res.json({ message: "Exam deleted successfully" });
     } catch (error) {

@@ -50,8 +50,8 @@ export const authenticateToken = async (req, res, next) => {
 
     req.user = decoded;
     next();
-  } catch (err) {
-    if (err.name === "TokenExpiredError") {
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
       const decoded = jwt.decode(token);
       const user = await User.findById(decoded.user_id);
       if (user) {

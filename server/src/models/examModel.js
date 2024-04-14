@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import { deleteFile } from "../utils/s3.js";
+import { Thread } from "./threadModels.js";
+import { User } from "./userModel.js";
 
 const examSchema = mongoose.Schema({
   s3Key: {
@@ -53,20 +55,45 @@ const examSchema = mongoose.Schema({
   },
 });
 
-examSchema.pre("remove", async function (next) {
-  await this.model("Thread").deleteMany({ exam: this._id });
+const deleteExam = async function (next) {
+  const examToDelete = await this.model.findOne(this.getQuery());
+  const { _id: examId, s3Key } = examToDelete;
 
-  await this.model("User").updateMany(
-    { "exams_ratings.exam": this._id },
-    { $pull: { exams_ratings: { exam: this._id } } }
-  );
+  try {
+    await deleteFile(s3Key);
 
-  await this.model("User").updateMany({ favoriteExams: this._id }, { $pull: { favoriteExams: this._id } });
+    await Thread.deleteMany({ exam: examId });
 
-  await deleteFile(this.s3Key);
+    await User.updateMany({ "exams_ratings.exam": examId }, { $pull: { exams_ratings: { exam: examId } } });
 
-  next();
-});
+    await User.updateMany({ favorite_exams: examId }, { $pull: { favorite_exams: examId } });
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteExams = async function (next) {
+  const examsToDelete = await this.model.find(this.getQuery());
+  const examIds = examsToDelete.map((exam) => exam._id);
+
+  try {
+    await Thread.deleteMany({ exam: { $in: examIds } });
+
+    await User.updateMany({ "exams_ratings.exam": { $in: examIds } }, { $pull: { exams_ratings: { exam: { $in: examIds } } } });
+
+    await User.updateMany({ favorite_exams: { $in: examIds } }, { $pull: { favorite_exams: { $in: examIds } } });
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+examSchema.pre("findOneAndDelete", deleteExam);
+examSchema.pre("deleteOne", deleteExam);
+examSchema.pre("deleteMany", deleteExams);
 
 const populateExam = function (next) {
   this.populate({

@@ -7,10 +7,34 @@ const facultySchema = mongoose.Schema({
   },
 });
 
-facultySchema.pre("remove", async function (next) {
-  await Department.deleteMany({ faculty: this._id });
-  next();
-});
+const deleteFaculty = async function (next) {
+  const facultyId = this._conditions._id;
+
+  try {
+    await Department.deleteMany({ faculty: facultyId });
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteFaculties = async function (next) {
+  const facultiesToDelete = await this.model.find(this.getQuery());
+  const facultyIds = facultiesToDelete.map((faculty) => faculty._id);
+
+  try {
+    await Department.deleteMany({ faculty: { $in: facultyIds } });
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+facultySchema.pre("findOneAndDelete", deleteFaculty);
+facultySchema.pre("deleteOne", deleteFaculty);
+facultySchema.pre("deleteMany", deleteFaculties);
 
 export const Faculty = mongoose.model("Faculty", facultySchema);
 
@@ -26,10 +50,34 @@ const departmentSchema = mongoose.Schema({
   },
 });
 
-departmentSchema.pre("remove", async function (next) {
-  await Course.deleteMany({ department: this._id });
-  next();
-});
+const deleteDepartment = async function (next) {
+  const departmentId = this._conditions._id;
+
+  try {
+    await Course.deleteMany({ department: departmentId });
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteDepartments = async function (next) {
+  const departmentsToDelete = await this.model.find(this.getQuery());
+  const departmentIds = departmentsToDelete.map((department) => department._id);
+
+  try {
+    await Course.deleteMany({ department: { $in: departmentIds } });
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+departmentSchema.pre("findOneAndDelete", deleteDepartment);
+departmentSchema.pre("deleteOne", deleteDepartment);
+departmentSchema.pre("deleteMany", deleteDepartments);
 
 const populateDepartment = function (next) {
   this.populate("faculty", "name");
@@ -57,10 +105,34 @@ const courseSchema = mongoose.Schema({
   },
 });
 
-courseSchema.pre("remove", async function (next) {
-  await Exam.deleteMany({ course: this._id });
-  next();
-});
+const deleteCourse = async function (next) {
+  const courseId = this._conditions._id;
+
+  try {
+    await Exam.deleteMany({ course: courseId });
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteCourses = async function (next) {
+  const coursesToDelete = await this.model.find(this.getQuery());
+  const courseIds = coursesToDelete.map((course) => course._id);
+
+  try {
+    await Exam.deleteMany({ course: { $in: courseIds } });
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+courseSchema.pre("findOneAndDelete", deleteCourse);
+courseSchema.pre("deleteOne", deleteCourse);
+courseSchema.pre("deleteMany", deleteCourses);
 
 const populateCourse = function (next) {
   this.populate("department", "name");

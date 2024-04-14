@@ -22,7 +22,7 @@ app.use("/", router);
 mongoose
   .connect(process.env.DB_URI)
   .then(() => console.log("MongoDB Connected"))
-  .catch((error) => console.log(error));
+  .catch((error) => console.error(error));
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is listening on port ${process.env.PORT}`);

@@ -128,13 +128,11 @@ const threadsController = {
 
   deleteThread: async (req, res) => {
     try {
-      const thread = await Thread.findById(req.params.id);
+      const thread = await Thread.findByIdAndDelete(req.params.id);
 
       if (!thread) {
         return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
       }
-
-      await thread.remove();
 
       return res.json({ message: "Thread deleted" });
     } catch (error) {
@@ -377,13 +375,11 @@ const threadsController = {
 
   deleteComment: async (req, res) => {
     try {
-      const comment = await Comment.findById(req.body.commentId);
+      const comment = await Comment.findByIdAndDelete(req.body.commentId);
 
       if (!comment) {
         return res.status(404).json({ type: "CommentNotFoundError", message: "Comment not found" });
       }
-
-      await comment.remove();
 
       return res.json({ message: "Comment deleted" });
     } catch (error) {

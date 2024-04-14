@@ -57,13 +57,11 @@ const infoController = {
 
   deleteFaculty: async (req, res) => {
     try {
-      const faculty = await Faculty.findById(req.params.id);
+      const faculty = await Faculty.findByIdAndDelete(req.params.id);
 
       if (!faculty) {
         return res.status(404).json({ type: "FacultyNotFoundError", message: "Faculty not found" });
       }
-
-      await faculty.remove();
 
       return res.json({ message: "Faculty deleted" });
     } catch (error) {
@@ -128,13 +126,11 @@ const infoController = {
 
   deleteDepartment: async (req, res) => {
     try {
-      const department = await Department.findById(req.params.id);
+      const department = await Department.findByIdAndDelete(req.params.id);
 
       if (!department) {
         return res.status(404).json({ type: "DepartmentNotFoundError", message: "Department not found" });
       }
-
-      await department.remove();
 
       return res.json({ message: "Department deleted" });
     } catch (error) {
@@ -199,13 +195,12 @@ const infoController = {
 
   deleteCourse: async (req, res) => {
     try {
-      const course = await Course.findById(req.params.id);
+      const course = await Course.findByIdAndDelete(req.params.id);
 
       if (!course) {
         return res.status(404).json({ type: "CourseNotFoundError", message: "Course not found" });
       }
 
-      await course.remove();
       return res.json({ message: "Course deleted" });
     } catch (error) {
       return res.status(500).json({ message: error.message });

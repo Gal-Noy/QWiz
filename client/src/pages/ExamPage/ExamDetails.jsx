@@ -19,9 +19,7 @@ function ExamDetails({ examId }) {
       .then(() => {
         setIsPending(false);
       })
-      .catch((err) =>
-        handleError(err, "שגיאה בטעינת פרטי הבחינה, אנא נסה שנית.", () => setError(err.response?.data.message))
-      );
+      .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת פרטי הבחינה, אנא נסה שנית.")));
   }, [examId]);
 
   useEffect(() => {

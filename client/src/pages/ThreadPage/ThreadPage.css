@@ -130,7 +130,7 @@
   margin-top: 0.25rem;
   align-self: center;
   width: 25%;
-  min-height: 1.5rem;
+  min-height: 1.75rem;
 
   &:hover {
     background-color: var(--red2);
