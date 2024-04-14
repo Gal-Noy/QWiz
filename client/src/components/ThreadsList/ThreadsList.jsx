@@ -25,12 +25,7 @@ function ThreadsList(props) {
           setStarredThreads(starredThreadsIds);
         })
       )
-      .catch((err) =>
-        handleError(err, () => {
-          console.error(err.response);
-          alert("שגיאה בטעינת הדיונים המסומנים בכוכב, אנא נסה שנית.");
-        })
-      );
+      .catch((err) => handleError(err, "שגיאה בטעינת הדיונים המסומנים בכוכב, אנא נסה שנית."));
   }, []);
 
   useEffect(() => {
@@ -234,7 +229,7 @@ function ThreadsList(props) {
               <ThreadRow
                 key={thread._id}
                 thread={thread}
-                starred={starredThreads.includes(thread._id)}
+                starredThreads={starredThreads}
                 setStarredThreads={setStarredThreads}
                 exam={isProfilePage ? thread.exam : null}
                 isProfilePage={isProfilePage}

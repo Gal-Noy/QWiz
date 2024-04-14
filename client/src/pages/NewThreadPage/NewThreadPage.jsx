@@ -21,7 +21,7 @@ function NewThread() {
     axiosInstance
       .get(`/exams/${examId}`)
       .then((res) => handleResult(res, 200, () => setExamDetailsValue(examToString(res.data))))
-      .catch((err) => handleError(err, () => console.log("Failed to fetch exam details")));
+      .catch((err) => handleError(err, "שגיאה בטעינת פרטי הבחינה, אנא נסה שנית."));
   }, [examId]);
 
   const createNewThread = async () => {
@@ -53,8 +53,8 @@ function NewThread() {
           window.location.href = `/thread/${res.data._id}`;
         })
       )
-      .then(() => setIsPending(false))
-      .catch((err) => handleError(err, () => alert("יצירת הדיון נכשלה")));
+      .catch((err) => handleError(err, "יצירת הדיון נכשלה"))
+      .finally(() => setIsPending(false));
   };
 
   const cancelNewThread = () => {
@@ -104,7 +104,7 @@ function NewThread() {
         </div>
         <div className="new-thread-buttons">
           <button className="new-thread-button" onClick={createNewThread}>
-            {isPending ? <div className="lds-dual-ring"/> : "צור דיון"}
+            {isPending ? <div className="lds-dual-ring" /> : "צור דיון"}
           </button>
           <button className="new-thread-button" onClick={cancelNewThread}>
             בטל

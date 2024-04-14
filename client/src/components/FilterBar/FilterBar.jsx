@@ -52,7 +52,7 @@ function FilterBar(props) {
           setCategoriesLists({ faculties: sortedFaculties, departments: [], courses: [] });
         })
       )
-      .catch((err) => handleError(err, () => console.log(err.response.data.message)));
+      .catch((err) => handleError(err));
 
   const fetchDepartmentsByFaculty = async (facultyId) =>
     await axiosInstance
@@ -64,7 +64,7 @@ function FilterBar(props) {
           setCategoriesLists({ ...categoriesLists, departments: sortedDepartments, courses: [] });
         })
       )
-      .catch((err) => handleError(err, () => console.log(err.response.data.message)));
+      .catch((err) => handleError(err));
 
   const fetchCoursesByDepartment = async (departmentId) =>
     await axiosInstance
@@ -76,20 +76,15 @@ function FilterBar(props) {
           setCategoriesLists({ ...categoriesLists, courses: sortedCourses });
         })
       )
-      .catch((err) => handleError(err, () => console.log(err.response.data.message)));
+      .catch((err) => handleError(err));
 
   const fetchCourseExams = async (courseId) => {
     setIsPending(true);
     await axiosInstance
       .get(`/exams/course/${courseId}`)
       .then((res) => handleResult(res, 200, () => setCourseExams(res.data)))
-      .then(() => setIsPending(false))
-      .catch((err) =>
-        handleError(err, () => {
-          console.log(err.response.data.message);
-          setError(err.response.data.message);
-        })
-      );
+      .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת המבחנים, אנא נסה שנית.")))
+      .finally(() => setIsPending(false));
   };
 
   const updateAdvancedSearchLists = () => {

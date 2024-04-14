@@ -13,14 +13,8 @@ function ExamForum({ examId }) {
     axiosInstance
       .get(`threads/exam/${examId}`)
       .then((res) => handleResult(res, 200, () => setThreads(res.data)))
-      .then(() => setIsPending(false))
-      .catch((err) =>
-        handleError(err, () => {
-          console.error(err.response.data.message);
-          setError("שגיאה בטעינת הדיונים, אנא נסה שנית.");
-          setIsPending(false);
-        })
-      );
+      .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת הדיונים, אנא נסה שנית.")))
+      .finally(() => setIsPending(false));
   }, [examId]);
 
   return (

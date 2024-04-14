@@ -32,11 +32,7 @@ function PersonalDetails() {
         })
       )
       .then(() => setEditMode(false))
-      .catch((err) =>
-        handleError(err, () => {
-          alert("שגיאה בעדכון הפרטים, אנא נסה שנית");
-        })
-      );
+      .catch((err) => handleError(err, "שגיאה בעדכון הפרטים, אנא נסה שנית"));
   };
 
   return (

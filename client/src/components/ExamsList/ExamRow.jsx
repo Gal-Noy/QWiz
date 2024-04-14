@@ -2,41 +2,29 @@ import React, { useState, useEffect } from "react";
 import axiosInstance, { handleResult, handleError } from "../../utils/axiosInstance";
 import ExamRating from "../ExamRating/ExamRating";
 
-function ExamRow({ exam, favorite, setFavoriteExams }) {
-  const [isFavorite, setIsFavorite] = useState(favorite);
+function ExamRow({ exam, favoriteExams, setFavoriteExams }) {
+  const [isFavorite, setIsFavorite] = useState(favoriteExams.includes(exam._id));
   const [isFavoritePending, setIsFavoritePending] = useState(false);
 
-  const addToFavorites = async () => {
-    setIsFavoritePending(true);
+  const addToFavorites = async () =>
     await axiosInstance
       .post(`/exams/favorites/${exam._id}`)
       .then((res) => handleResult(res, 200, () => setFavoriteExams(res.data)))
-      .then(() => setIsFavoritePending(false))
-      .catch((err) => {
-        handleError(err, () => {
-          console.error(err.response.data.message);
-          alert("שגיאה בהוספת הבחינה למועדפים, אנא נסה שנית.");
-        });
-      });
-  };
+      .catch((err) => handleError(err, "שגיאה בהוספת הבחינה למועדפים, אנא נסה שנית."))
+      .finally(() => setIsFavoritePending(false));
 
-  const removeFromFavorites = async () => {
-    setIsFavoritePending(true);
+  const removeFromFavorites = async () =>
     await axiosInstance
       .delete(`/exams/favorites/${exam._id}`)
       .then((res) => handleResult(res, 200, () => setFavoriteExams(res.data)))
-      .then(() => setIsFavoritePending(false))
-      .catch((err) => {
-        handleError(err, () => {
-          console.error(err.response.data.message);
-          alert("שגיאה בהסרת הבחינה מהמועדפים, אנא נסה שנית.");
-        });
-      });
-  };
+      .catch((err) => handleError(err, "שגיאה בהסרת הבחינה מהמועדפים, אנא נסה שנית."))
+      .finally(() => setIsFavoritePending(false));
 
   const handleFavoritesChange = (e) => {
     if (isFavoritePending) return;
-    setIsFavorite(!isFavorite);
+
+    setIsFavoritePending(true);
+
     if (e.target.checked) {
       addToFavorites();
     } else {
@@ -45,8 +33,8 @@ function ExamRow({ exam, favorite, setFavoriteExams }) {
   };
 
   useEffect(() => {
-    setIsFavorite(favorite);
-  }, [favorite]);
+    setIsFavorite(favoriteExams.includes(exam._id));
+  }, [favoriteExams]);
 
   return (
     <div
@@ -60,7 +48,7 @@ function ExamRow({ exam, favorite, setFavoriteExams }) {
           <div className="lds-dual-ring" id="loading-favorite"></div>
         ) : (
           <div className="checkbox-wrapper-22">
-            <label className="switch" htmlFor={`checkbox-${exam._id}`} >
+            <label className="switch" htmlFor={`checkbox-${exam._id}`}>
               <input
                 type="checkbox"
                 id={`checkbox-${exam._id}`}

@@ -16,14 +16,8 @@ function CreatedThreads() {
           setCreatedThreads(fetchedThreads);
         })
       )
-      .then(() => setIsPending(false))
-      .catch((err) =>
-        handleError(err, () => {
-          console.error(err.response);
-          setError("שגיאה בטעינת הדיונים שנוצרו, אנא נסה שנית.");
-          setIsPending(false);
-        })
-      );
+      .catch((err) => handleError(err, "שגיאה בטעינת הדיונים שנוצרו, אנא נסה שנית."))
+      .finally(() => setIsPending(false));
   }, []);
 
   return (

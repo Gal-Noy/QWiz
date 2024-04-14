@@ -16,14 +16,8 @@ function FreeSearchPage() {
     axiosInstance
       .get(`/search/${query}`)
       .then((res) => handleResult(res, 200, () => setSearchResults(res.data)))
-      .then(() => setIsPending(false))
-      .catch((err) =>
-        handleError(err, () => {
-          console.log(err.response);
-          setError("שגיאה בטעינת התוצאות");
-          setIsPending(false);
-        })
-      );
+      .catch((err) => handleError(err, null, () => setError("שגיאה בחיפוש, אנא נסה שנית.")))
+      .finally(() => setIsPending(false));
   }, [query]);
 
   return (

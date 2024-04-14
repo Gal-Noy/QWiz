@@ -31,8 +31,8 @@ function CommentBox(props) {
           setIsLiked(!isLiked);
         })
       )
-      .then(() => setLikePending(false))
-      .catch((err) => handleError(err, () => alert("אירעה שגיאה בעת עדכון הלייק")));
+      .catch((err) => handleError(err, "שגיאה בעדכון הלייק"))
+      .finally(() => setLikePending(false));
   };
 
   const allowReply = () => {
@@ -67,7 +67,7 @@ function CommentBox(props) {
           window.location.reload();
         })
       )
-      .catch((err) => handleError(err, () => alert("אירעה שגיאה בעת עדכון התגובה")));
+      .catch((err) => handleError(err, "אירעה שגיאה בעת עדכון התגובה"));
   };
 
   return (

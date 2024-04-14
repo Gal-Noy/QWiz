@@ -19,12 +19,9 @@ function ExamDetails({ examId }) {
       .then(() => {
         setIsPending(false);
       })
-      .catch((err) => {
-        handleError(err, () => {
-          console.error(err.response.data.message);
-          setError("שגיאה בטעינת פרטי הבחינה, אנא נסה שנית.");
-        });
-      });
+      .catch((err) =>
+        handleError(err, "שגיאה בטעינת פרטי הבחינה, אנא נסה שנית.", () => setError(err.response?.data.message))
+      );
   }, [examId]);
 
   useEffect(() => {
@@ -32,11 +29,7 @@ function ExamDetails({ examId }) {
       axiosInstance
         .get(`/exams/${exam._id}/presigned`)
         .then((res) => handleResult(res, 200, () => setFilePath(res.data.presignedUrl)))
-        .catch((err) => {
-          handleError(err, () => {
-            console.error(err.response.data.message);
-          });
-        });
+        .catch((err) => handleError(err));
     }
   }, [exam]);
 

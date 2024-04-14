@@ -21,7 +21,7 @@ function ThreadPage() {
 
   useEffect(() => {
     if (!threadId) return;
-    setIsPending(true);
+
     axiosInstance
       .get(`/threads/${threadId}`)
       .then((res) =>
@@ -29,32 +29,27 @@ function ThreadPage() {
           const fetchedThread = res.data;
           setThread(fetchedThread);
           setReplyingTo(null);
-          setIsPending(false);
         })
       )
-      .catch((err) =>
-        handleError(err, () => {
-          setError("אירעה שגיאה בעת טעינת הדיון");
-          setIsPending(false);
-        })
-      );
+      .catch((err) => handleError(err, null, () => setError("אירעה שגיאה בעת טעינת הדיון")))
+      .finally(() => setIsPending(false));
   }, [threadId]);
 
-  const toggleThreadClosed = () => {
+  const toggleThreadClosed = async () => {
     if (isClosedPending) return;
     setIsClosedPending(true);
-    axiosInstance
+    await axiosInstance
       .post(`/threads/${threadId}/toggle`)
       .then((res) => handleResult(res, 200, () => setThread(res.data)))
-      .then(() => setIsClosedPending(false))
-      .catch((err) => handleError(err, () => alert("שינוי סטטוס הדיון נכשל")));
+      .catch((err) => handleError(err, "שגיאה בשינוי סטטוס הדיון"))
+      .finally(() => setIsClosedPending(false));
   };
 
   useEffect(() => {
     if (thread) setIsClosed(thread.isClosed);
   }, [thread]);
 
-  const addComment = (setIsPending) => {
+  const addComment = async (setIsPending) => {
     if (isClosed) {
       alert("הדיון נעול ולא ניתן להוסיף תגובות");
       return;
@@ -66,8 +61,9 @@ function ThreadPage() {
     }
 
     setIsPending(true);
+
     if (!replyingTo) {
-      axiosInstance
+      await axiosInstance
         .post(`/threads/${threadId}/comment`, { content: newComment })
         .then((res) =>
           handleResult(res, 201, () => {
@@ -75,10 +71,10 @@ function ThreadPage() {
             window.location.reload();
           })
         )
-        .then(() => setIsPending(false))
-        .catch((err) => handleError(err, () => alert("הוספת התגובה נכשלה")));
+        .catch((err) => handleError(err, "הוספת התגובה נכשלה"))
+        .finally(() => setIsPending(false));
     } else {
-      axiosInstance
+      await axiosInstance
         .post(`/threads/${threadId}/comment/${replyingTo}/reply`, { content: newComment })
         .then((res) =>
           handleResult(res, 201, () => {
@@ -86,8 +82,8 @@ function ThreadPage() {
             window.location.reload();
           })
         )
-        .then(() => setIsPending(false))
-        .catch((err) => handleError(err, () => alert("הוספת התגובה נכשלה")));
+        .catch((err) => handleError(err, "הוספת התגובה נכשלה"))
+        .finally(() => setIsPending(false));
     }
   };
 

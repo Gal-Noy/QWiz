@@ -2,41 +2,29 @@ import React, { useState, useEffect } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import { formatDate } from "../../utils/generalUtils";
 
-function ThreadRow({ thread, starred, setStarredThreads, exam, isProfilePage }) {
-  const [isStarred, setIsStarred] = useState(starred);
+function ThreadRow({ thread, starredThreads, setStarredThreads, exam, isProfilePage }) {
+  const [isStarred, setIsStarred] = useState(starredThreads.includes(thread._id));
   const [isStarredPending, setIsStarredPending] = useState(false);
 
-  const starThread = async () => {
-    setIsStarredPending(true);
+  const starThread = async () =>
     await axiosInstance
       .post(`threads/${thread._id}/star`)
       .then((res) => handleResult(res, 200, () => setStarredThreads(res.data)))
-      .then(() => setIsStarredPending(false))
-      .catch((err) => {
-        handleError(err, () => {
-          console.error(err.response.message);
-          alert("שגיאה בהוספת הדיון למסומן בכוכב, אנא נסה שנית.");
-        });
-      });
-  };
+      .catch((err) => handleError(err, "שגיאה בהוספת הדיון למסומן בכוכב, אנא נסה שנית."))
+      .finally(() => setIsStarredPending(false));
 
-  const unstarThread = async () => {
-    setIsStarredPending(true);
+  const unstarThread = async () =>
     await axiosInstance
       .delete(`threads/${thread._id}/star`)
       .then((res) => handleResult(res, 200, () => setStarredThreads(res.data)))
-      .then(() => setIsStarredPending(false))
-      .catch((err) => {
-        handleError(err, () => {
-          console.error(err.response.data.message);
-          alert("שגיאה בהסרת הדיון מהמסומן בכוכב, אנא נסה שנית.");
-        });
-      });
-  };
+      .catch((err) => handleError(err, "שגיאה בהסרת הדיון מהמסומן בכוכב, אנא נסה שנית."))
+      .finally(() => setIsStarredPending(false));
 
   const handleStarredChange = (e) => {
     if (isStarredPending) return;
-    setIsStarred(!isStarred);
+
+    setIsStarredPending(true);
+
     if (e.target.checked) {
       starThread();
     } else {
@@ -45,8 +33,8 @@ function ThreadRow({ thread, starred, setStarredThreads, exam, isProfilePage }) 
   };
 
   useEffect(() => {
-    setIsStarred(starred);
-  }, [starred]);
+    setIsStarred(starredThreads.includes(thread._id));
+  }, [starredThreads]);
 
   return (
     <div

@@ -17,14 +17,8 @@ function StarredThreads() {
           setStarredThreads(sortedThreads);
         })
       )
-      .then(() => setIsPending(false))
-      .catch((err) =>
-        handleError(err, () => {
-          console.error(err.response.data.message);
-          setError(err.response.data.message);
-          setIsPending(false);
-        })
-      );
+      .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת הדיונים המסומנים בכוכב, אנא נסה שנית.")))
+      .finally(() => setIsPending(false));
   }, []);
 
   return (

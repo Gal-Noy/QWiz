@@ -18,14 +18,8 @@ function FavoriteExams() {
           setFavoriteExams(sortedExams);
         })
       )
-      .then(() => setIsPending(false))
-      .catch((err) =>
-        handleError(err, () => {
-          console.error(err.response.data.message);
-          setError(err.response.data.message);
-          setIsPending(false);
-        })
-      );
+      .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת הבחינות המועדפות, אנא נסה שנית.")))
+      .finally(() => setIsPending(false));
   }, []);
 
   return (

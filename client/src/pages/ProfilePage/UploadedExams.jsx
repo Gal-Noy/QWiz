@@ -18,14 +18,8 @@ function UploadedExams() {
           setUploadedExams(sortedExams);
         })
       )
-      .then(() => setIsPending(false))
-      .catch((err) =>
-        handleError(err, () => {
-          console.error(err.response.data.message);
-          setError(err.response.data.message);
-          setIsPending(false);
-        })
-      );
+      .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת הבחינות שהועלו, אנא נסה שנית.")))
+      .finally(() => setIsPending(false));
   }, []);
 
   return (

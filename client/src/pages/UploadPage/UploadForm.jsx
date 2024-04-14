@@ -26,8 +26,12 @@ function UploadForm() {
     lecturers: "", // optional
     difficultyRating: 0, // optional, 1-5
   });
+  const [isPending, setIsPending] = useState(false);
+  const navigate = useNavigate();
+
   const createExam = async () => {
     setIsPending(true);
+
     if (
       !studentDetails.name ||
       !studentDetails.email ||
@@ -65,7 +69,7 @@ function UploadForm() {
     await axiosInstance
       .post("/exams", formData, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "multipart/form-data",
         },
       })
       .then((res) =>
@@ -79,13 +83,8 @@ function UploadForm() {
           clearForm();
         })
       )
-      .then(() => setIsPending(false))
-      .catch((err) =>
-        handleError(err, () => {
-          alert(err.response.data.message);
-          setIsPending(false);
-        })
-      );
+      .catch((err) => handleError(err, "שגיאה בהוספת המבחן, אנא נסה שנית."))
+      .finally(() => setIsPending(false));
   };
 
   const clearForm = () => {
@@ -130,7 +129,7 @@ function UploadForm() {
           setFaculties(sortedFaculties);
         })
       )
-      .catch((err) => handleError(err, () => console.log(err.response.data.message)));
+      .catch((err) => handleError(err, "שגיאה בטעינת הפקולטות, אנא נסה שנית."));
 
   const fetchDepartmentsByFaculty = async (facultyId) =>
     await axiosInstance
@@ -141,7 +140,8 @@ function UploadForm() {
           setDepartments(sortedDepartments);
         })
       )
-      .catch((err) => handleError(err, () => console.log(err.response.data.message)));
+      .catch((err) => handleError(err, "שגיאה בטעינת המחלקות, אנא נסה שנית."));
+
 
   const fetchCoursesByDepartment = async (departmentId) =>
     await axiosInstance
@@ -152,7 +152,7 @@ function UploadForm() {
           setCourses(sortedCourses);
         })
       )
-      .catch((err) => handleError(err, () => console.log(err.response.data.message)));
+      .catch((err) => handleError(err, "שגיאה בטעינת הקורסים, אנא נסה שנית."));
 
   useEffect(() => {
     fetchFaculties();
@@ -171,8 +171,6 @@ function UploadForm() {
   const [file, setFile] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [numPages, setNumPages] = useState(null);
-  const [isPending, setIsPending] = useState(false);
-  const navigate = useNavigate();
 
   const handleFileChange = async (e) => {
     if (e.target.files && e.target.files.length > 0) {

@@ -38,13 +38,8 @@ function Signup() {
           navigate("/login");
         });
       })
-      .then(() => setIsPending(false))
-      .catch((err) =>
-        handleError(err, () => {
-          alert(err.response.data.message);
-          setIsPending(false);
-        })
-      );
+      .catch((err) => handleError(err))
+      .finally(() => setIsPending(false));
   };
 
   return (

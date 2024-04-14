@@ -22,7 +22,7 @@ function NavBar({ onLogout }) {
           navigate("/login");
         })
       )
-      .catch((err) => handleError(err, () => console.error(err.response.data.message)));
+      .catch((err) => handleError(err));
 
   const freeSearch = () => {
     if (!freeSearchValue) return;

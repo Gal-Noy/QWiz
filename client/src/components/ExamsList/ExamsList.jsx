@@ -30,12 +30,7 @@ function ExamsList(props) {
             setFavoriteExams(favoriteExamsIds);
           })
         )
-        .catch((err) => {
-          handleError(err, () => {
-            console.error(err.response.data.message);
-            alert("שגיאה בטעינת הבחינות המועדפות, אנא נסה שנית.");
-          });
-        });
+        .catch((err) => handleError(err, "שגיאה בטעינת הבחינות המועדפות."));
     }
   }, [showExams]);
 
@@ -204,12 +199,7 @@ function ExamsList(props) {
         {!isPending && !error && (
           <div className="exams-list-rows">
             {currentExams.map((exam) => (
-              <ExamRow
-                key={exam._id}
-                exam={exam}
-                favorite={favoriteExams.includes(exam._id)}
-                setFavoriteExams={setFavoriteExams}
-              />
+              <ExamRow key={exam._id} exam={exam} favoriteExams={favoriteExams} setFavoriteExams={setFavoriteExams} />
             ))}
           </div>
         )}

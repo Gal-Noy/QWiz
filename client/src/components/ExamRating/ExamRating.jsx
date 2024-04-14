@@ -20,12 +20,7 @@ function ExamRating(props) {
           setRating(rating);
         })
       )
-      .catch((err) =>
-        handleError(err, () => {
-          console.error(err.response.data.message);
-          alert("שגיאה בדירוג הבחינה, אנא נסה שנית.");
-        })
-      );
+      .catch((err) => handleError(err, "שגיאה בדירוג הבחינה, אנא נסה שנית."));
   };
 
   return (
