@@ -22,6 +22,8 @@ function ThreadPage() {
   useEffect(() => {
     if (!threadId) return;
 
+    setIsPending(true);
+
     axiosInstance
       .get(`/threads/${threadId}`)
       .then((res) =>
@@ -49,7 +51,7 @@ function ThreadPage() {
     if (thread) setIsClosed(thread.isClosed);
   }, [thread]);
 
-  const addComment = async (setIsPending) => {
+  const addComment = async (setIsPendingCallback) => {
     if (isClosed) {
       alert("הדיון נעול ולא ניתן להוסיף תגובות");
       return;
@@ -60,7 +62,7 @@ function ThreadPage() {
       return;
     }
 
-    setIsPending(true);
+    setIsPendingCallback(true);
 
     if (!replyingTo) {
       await axiosInstance
@@ -72,7 +74,7 @@ function ThreadPage() {
           })
         )
         .catch((err) => handleError(err, "הוספת התגובה נכשלה"))
-        .finally(() => setIsPending(false));
+        .finally(() => setIsPendingCallback(false));
     } else {
       await axiosInstance
         .post(`/threads/${threadId}/comment/${replyingTo}/reply`, { content: newComment })
@@ -83,13 +85,13 @@ function ThreadPage() {
           })
         )
         .catch((err) => handleError(err, "הוספת התגובה נכשלה"))
-        .finally(() => setIsPending(false));
+        .finally(() => setIsPendingCallback(false));
     }
   };
 
   return (
     <div className="thread-page">
-      {isPending && <div className="thread-page-loading">טוען דיון...</div>}
+      {isPending && <div className="lds-dual-ring" id="thread-page-loading"></div>}
       {error && <div className="thread-page-error">{error}</div>}
 
       {!isPending && !error && thread && (

@@ -50,7 +50,7 @@ export const handleError = (error, defaultMessage, callback) => {
   const { status, data } = error.response;
   const { message, type } = data;
 
-  console.error(status, message);
+  console.error(status, data);
 
   if (defaultMessage) {
     alert(defaultMessage);

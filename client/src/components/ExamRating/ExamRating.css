@@ -77,3 +77,16 @@
   font-size: 1rem;
   color: rgba(0, 0, 0, 0.8);
 }
+
+#rate-loading {
+  margin-top: 1rem;
+  width: auto;
+  height: auto;
+}
+
+#rate-loading:after {
+  width: 20px;
+  height: 20px;
+  border: 2px solid black;
+  border-color: black transparent black transparent;
+}

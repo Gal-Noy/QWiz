@@ -7,6 +7,11 @@ function FilterBar(props) {
   const { setFilteredExams, setShowExams, setError } = props;
   const [courseExams, setCourseExams] = useState([]);
   const [isPending, setIsPending] = useState(false);
+  const [dropdownPendings, setDropdownPendings] = useState({
+    faculties: false,
+    departments: false,
+    courses: false,
+  });
 
   // Mandatory filters
   const [categoriesLists, setCategoriesLists] = useState({
@@ -42,7 +47,9 @@ function FilterBar(props) {
   });
   const [freeText, setFreeText] = useState("");
 
-  const fetchFaculties = async () =>
+  const fetchFaculties = async () => {
+    setDropdownPendings({ faculties: true, departments: false, courses: false });
+
     await axiosInstance
       .get("/info/faculties")
       .then((res) =>
@@ -52,9 +59,13 @@ function FilterBar(props) {
           setCategoriesLists({ faculties: sortedFaculties, departments: [], courses: [] });
         })
       )
-      .catch((err) => handleError(err));
+      .catch((err) => handleError(err))
+      .finally(() => setDropdownPendings({ faculties: false, departments: false, courses: false }));
+  };
 
-  const fetchDepartmentsByFaculty = async (facultyId) =>
+  const fetchDepartmentsByFaculty = async (facultyId) => {
+    setDropdownPendings({ faculties: false, departments: true, courses: false });
+
     await axiosInstance
       .get(`/info/faculty/${facultyId}/departments`)
       .then((res) =>
@@ -64,9 +75,13 @@ function FilterBar(props) {
           setCategoriesLists({ ...categoriesLists, departments: sortedDepartments, courses: [] });
         })
       )
-      .catch((err) => handleError(err));
+      .catch((err) => handleError(err))
+      .finally(() => setDropdownPendings({ faculties: false, departments: false, courses: false }));
+  };
 
-  const fetchCoursesByDepartment = async (departmentId) =>
+  const fetchCoursesByDepartment = async (departmentId) => {
+    setDropdownPendings({ faculties: false, departments: false, courses: true });
+
     await axiosInstance
       .get(`/info/department/${departmentId}/courses`)
       .then((res) =>
@@ -76,10 +91,13 @@ function FilterBar(props) {
           setCategoriesLists({ ...categoriesLists, courses: sortedCourses });
         })
       )
-      .catch((err) => handleError(err));
+      .catch((err) => handleError(err))
+      .finally(() => setDropdownPendings({ faculties: false, departments: false, courses: false }));
+  };
 
   const fetchCourseExams = async (courseId) => {
     setIsPending(true);
+
     await axiosInstance
       .get(`/exams/course/${courseId}`)
       .then((res) => handleResult(res, 200, () => setCourseExams(res.data)))
@@ -254,6 +272,7 @@ function FilterBar(props) {
           setValue={(val) => setChosenCategories({ ...chosenCategories, faculty: val })}
           isAvailable={categoriesLists.faculties.length > 0}
           size={"l"}
+          isPending={dropdownPendings.faculties}
           isSearchable={true}
         />
         <FilterDropdown
@@ -263,6 +282,7 @@ function FilterBar(props) {
           setValue={(val) => setChosenCategories({ ...chosenCategories, department: val })}
           isAvailable={categoriesLists.departments.length > 0}
           size={"l"}
+          isPending={dropdownPendings.departments}
           isSearchable={true}
         />
         <FilterDropdown
@@ -272,6 +292,7 @@ function FilterBar(props) {
           setValue={(val) => setChosenCategories({ ...chosenCategories, course: val })}
           isAvailable={categoriesLists.courses.length > 0}
           size={"l"}
+          isPending={dropdownPendings.courses}
           isSearchable={true}
         />
       </div>
@@ -284,6 +305,7 @@ function FilterBar(props) {
             setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, lecturers: val })}
             isAvailable={advancedSearchLists.lecturers.length > 0}
             size={"m"}
+            isPending={dropdownPendings.advancedFilters}
             isSearchable={false}
           />
           <FilterDropdown
@@ -293,6 +315,7 @@ function FilterBar(props) {
             setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, year: val })}
             isAvailable={advancedSearchLists.years.length > 0}
             size={"m"}
+            isPending={dropdownPendings.advancedFilters}
             isSearchable={false}
           />
           <FilterDropdown
@@ -302,6 +325,7 @@ function FilterBar(props) {
             setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, semester: val })}
             isAvailable={advancedSearchLists.semesters.length > 0}
             size={"m"}
+            isPending={dropdownPendings.advancedFilters}
             isSearchable={false}
           />
           <FilterDropdown
@@ -311,6 +335,7 @@ function FilterBar(props) {
             setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, term: val })}
             isAvailable={advancedSearchLists.terms.length > 0}
             size={"s"}
+            isPending={dropdownPendings.advancedFilters}
             isSearchable={false}
           />
           <FilterDropdown
@@ -320,6 +345,7 @@ function FilterBar(props) {
             setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, type: val })}
             isAvailable={advancedSearchLists.types.length > 0}
             size={"s"}
+            isPending={dropdownPendings.advancedFilters}
             isSearchable={false}
           />
           <FilterDropdown
@@ -329,6 +355,7 @@ function FilterBar(props) {
             setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, minGrade: val })}
             isAvailable={advancedSearchLists.minGrades.length > 0}
             size={"s"}
+            isPending={dropdownPendings.advancedFilters}
             isSearchable={false}
           />
           <FilterDropdown
@@ -338,6 +365,7 @@ function FilterBar(props) {
             setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, difficultyRating: val })}
             isAvailable={advancedSearchLists.difficultyRatings.length > 0}
             size={"s"}
+            isPending={dropdownPendings.advancedFilters}
             isSearchable={false}
           />
         </div>

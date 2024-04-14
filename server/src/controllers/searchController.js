@@ -109,6 +109,10 @@ const searchThreads = async (subQuery) => {
     .filter((word) => word.trim().length >= 3)
     .map((word) => new RegExp(word.trim(), "i"));
 
+  if (subQueryWords.length === 0) {
+    return res.json([]);
+  }
+
   const titleQuery = {
     $or: subQueryWords.map((word) => ({
       title: { $regex: word.source, $options: "i" },

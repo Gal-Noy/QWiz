@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "./FilterBar.css";
 
 function FilterDropdown(props) {
-  const { label, options, value, setValue, isAvailable, size, isSearchable } = props;
+  const { label, options, value, setValue, isAvailable, size, isPending, isSearchable } = props;
   const [isOpen, setIsOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [filteredOptions, setFilteredOptions] = useState(options);
@@ -50,7 +50,8 @@ function FilterDropdown(props) {
         `filter-dropdown ${size}` +
         (!isAvailable ? " disabled" : "") +
         (valueChosen ? " chosen" : "") +
-        (isOpen ? " show" : "")
+        (isOpen ? " show" : "") +
+        (isPending ? " pending" : "")
       }
     >
       <div
@@ -59,7 +60,11 @@ function FilterDropdown(props) {
           if (isAvailable) setIsOpen(!isOpen);
         }}
       >
-        <a className="filter-dropown-label">{value?.name || value || label}</a>
+        {isPending ? (
+          <div className="lds-dual-ring" id="filter-dropdown-loading"></div>
+        ) : (
+          <a className="filter-dropown-label">{value?.name || value || label}</a>
+        )}
         <div className="filter-dropdown-header-buttons">
           {valueChosen && (
             <span className="material-symbols-outlined filter-dropdown-clear" onClick={() => setValue(null)}>

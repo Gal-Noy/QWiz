@@ -8,8 +8,13 @@ function ExamRating(props) {
   const user = JSON.parse(localStorage.getItem("user"));
   const currRating = user.exams_ratings?.find((rating) => rating.exam === examId)?.difficultyRating;
   const [rating, setRating] = useState(currRating ? currRating : null);
+  const [isPending, setIsPending] = useState(false);
 
   const rateExam = async (rating) => {
+    if (isPending) return;
+
+    setIsPending(true);
+
     await axiosInstance
       .post(`/exams/${examId}/rate`, { rating })
       .then((res) =>
@@ -20,7 +25,8 @@ function ExamRating(props) {
           setRating(rating);
         })
       )
-      .catch((err) => handleError(err, "שגיאה בדירוג הבחינה, אנא נסה שנית."));
+      .catch((err) => handleError(err, "שגיאה בדירוג הבחינה, אנא נסה שנית."))
+      .finally(() => setIsPending(false));
   };
 
   return (
@@ -28,31 +34,51 @@ function ExamRating(props) {
       {editMode && !rating && (
         <div className="exam-rating">
           <a className="rate-exam-header">דרג/י את הבחינה:</a>
-          <form className="star-rating">
-            {[5, 4, 3, 2, 1].map((star) => (
-              <React.Fragment key={star}>
-                <input className="radio-input" type="radio" id={`${star}-stars-${examId}`} name="rating" value={star} />
-                <label className="radio-label" htmlFor={`${star}-stars-${examId}`} onClick={() => rateExam(star)} />
-              </React.Fragment>
-            ))}
-          </form>
+          {isPending ? (
+            <div className="lds-dual-ring" id="rate-loading"></div>
+          ) : (
+            <form className="star-rating">
+              {[5, 4, 3, 2, 1].map((star) => (
+                <React.Fragment key={star}>
+                  <input
+                    className="radio-input"
+                    type="radio"
+                    id={`${star}-stars-${examId}`}
+                    name="rating"
+                    value={star}
+                  />
+                  <label className="radio-label" htmlFor={`${star}-stars-${examId}`} onClick={() => rateExam(star)} />
+                </React.Fragment>
+              ))}
+            </form>
+          )}
         </div>
       )}
       {editMode && rating && (
         <div className="exam-rating">
           <a className="rate-exam-header">הדירוג שלך:</a>
-          <form className="star-rating">
-            {[5, 4, 3, 2, 1].map((star) => (
-              <React.Fragment key={star}>
-                <input className="radio-input" type="radio" id={`${star}-stars-${examId}`} name="rating" value={star} />
-                <label
-                  className={`radio-label ${star <= rating ? "selected" : ""}`}
-                  htmlFor={`${star}-stars-${examId}`}
-                  onClick={() => rateExam(star)}
-                />
-              </React.Fragment>
-            ))}
-          </form>
+          {isPending ? (
+            <div className="lds-dual-ring" id="rate-loading"></div>
+          ) : (
+            <form className="star-rating">
+              {[5, 4, 3, 2, 1].map((star) => (
+                <React.Fragment key={star}>
+                  <input
+                    className="radio-input"
+                    type="radio"
+                    id={`${star}-stars-${examId}`}
+                    name="rating"
+                    value={star}
+                  />
+                  <label
+                    className={`radio-label ${star <= rating ? "selected" : ""}`}
+                    htmlFor={`${star}-stars-${examId}`}
+                    onClick={() => rateExam(star)}
+                  />
+                </React.Fragment>
+              ))}
+            </form>
+          )}
         </div>
       )}
 

@@ -53,6 +53,18 @@
   &.show {
     border-radius: 5px 5px 0 0;
   }
+  &.pending {
+    background-color: var(--orange1);
+    color: grey;
+    cursor: default;
+  }
+}
+
+#filter-dropdown-loading:after {
+  width: 20px;
+  height: 20px;
+  border: 2px solid grey;
+  border-color: grey transparent grey transparent;
 }
 
 .filter-dropdown-header {
