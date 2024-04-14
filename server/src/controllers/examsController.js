@@ -1,28 +1,30 @@
 import { Exam } from "../models/examModel.js";
 import { User } from "../models/userModel.js";
 import { Faculty, Department, Course } from "../models/infoModels.js";
-import { uploadFile, getPresignedUrl, deleteFile } from "../utils/s3.js";
+import { uploadFile, getPresignedUrl } from "../utils/s3.js";
 
 const examsController = {
   getAllExams: async (req, res) => {
     try {
       const exams = await Exam.find().select("-s3Key");
-      res.json(exams);
+
+      return res.json(exams);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
   createExam: async (req, res) => {
     try {
       const file = req.file;
+
       if (!file) {
-        return res.status(400).send("No file uploaded.");
+        return res.status(400).json({ type: "FileNotUploadedError", message: "Please provide a file" });
       }
 
       const examData = JSON.parse(req.body.examData);
       if (!examData) {
-        return res.status(400).json({ message: "Please provide exam data" });
+        return res.status(400).json({ type: "MissingFieldsError", message: "Please provide exam data" });
       }
 
       const {
@@ -42,25 +44,26 @@ const examsController = {
 
       if (!faculty || !department || !course || !year || !semester || !term || !type || !phone_number || !id_number) {
         return res.status(400).json({
+          type: "MissingFieldsError",
           message: "Please provide faculty, department, course, year, semester, term, type, and full contact details.",
         });
       }
 
       const existingFaculty = await Faculty.findById(faculty._id);
       if (!existingFaculty) {
-        return res.status(404).json({ message: "Faculty not found" });
+        return res.status(404).json({ type: "FacultyNotFoundError", message: "Faculty not found" });
       }
       const existingDepartment = await Department.findOne({ name: department.name, faculty: faculty._id });
       if (!existingDepartment) {
-        return res.status(404).json({ message: "Department not found" });
+        return res.status(404).json({ type: "DepartmentNotFoundError", message: "Department not found" });
       }
       const existingCourse = await Course.findOne({ name: course.name, department: department._id });
       if (!existingCourse) {
-        return res.status(404).json({ message: "Course not found" });
+        return res.status(404).json({ type: "CourseNotFoundError", message: "Course not found" });
       }
       const existingExam = await Exam.findOne({ course, year, semester, term });
       if (existingExam) {
-        return res.status(400).json({ message: "Exam already exists" });
+        return res.status(400).json({ type: "ExamExistsError", message: "Exam already exists" });
       }
 
       const fileContent = file.buffer;
@@ -111,22 +114,25 @@ const examsController = {
         user: dbUser,
       };
 
-      res.status(201).json(response);
+      return res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
   getCourseExams: async (req, res) => {
     try {
       const course = await Course.findById(req.params.id);
+
       if (!course) {
-        return res.status(404).json({ message: "Course not found" });
+        return res.status(404).json({ type: "CourseNotFoundError", message: "Course not found" });
       }
+
       const exams = await Exam.find({ course: course._id }).select("-s3Key");
-      res.json(exams);
+
+      return res.json(exams);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -135,26 +141,31 @@ const examsController = {
       const exam = await Exam.findById(req.params.id).select("-s3Key");
 
       if (!exam) {
-        return res.status(404).json({ message: "Exam not found" });
+        return res.status(404).json({ type: "ExamNotFoundError", message: "Exam not found" });
       }
-      res.json(exam);
+
+      return res.json(exam);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
   updateExam: async (req, res) => {
     try {
       const exam = await Exam.findById(req.params.id);
+
       if (!exam) {
-        return res.status(404).json({ message: "Exam not found" });
+        return res.status(404).json({ type: "ExamNotFoundError", message: "Exam not found" });
       }
+
       exam.set(req.body);
       const updatedExam = await exam.save();
+
       delete updatedExam.s3Key;
-      res.json(updatedExam);
+
+      return res.json(updatedExam);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -163,24 +174,24 @@ const examsController = {
       const exam = await Exam.findById(req.params.id);
 
       if (!exam) {
-        return res.status(404).json({ message: "Exam not found" });
+        return res.status(404).json({ type: "ExamNotFoundError", message: "Exam not found" });
       }
 
-      await deleteFile(exam.s3Key);
-
       await exam.remove();
-      res.json({ message: "Exam deleted successfully" });
+
+      return res.json({ message: "Exam deleted successfully" });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
   getUploadedExams: async (req, res) => {
     try {
       const exams = await Exam.find({ uploadedBy: req.user.user_id }).select("-s3Key");
-      res.json(exams);
+
+      return res.json(exams);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -191,9 +202,10 @@ const examsController = {
           path: "favorite_exams",
         })
         .select("-s3Key");
-      res.json(user.favorite_exams);
+
+      return res.json(user.favorite_exams);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -203,15 +215,15 @@ const examsController = {
       const exam = await Exam.findById(req.params.id);
 
       if (!exam) {
-        return res.status(404).json({ message: "Exam not found" });
+        return res.status(404).json({ type: "ExamNotFoundError", message: "Exam not found" });
       }
 
       user.favorite_exams.push(exam._id);
       await user.save();
 
-      res.json(user.favorite_exams);
+      return res.json(user.favorite_exams);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -223,9 +235,9 @@ const examsController = {
       user.favorite_exams = user.favorite_exams.filter((exam) => exam._id.toString() !== examId);
       await user.save();
 
-      res.json(user.favorite_exams);
+      return res.json(user.favorite_exams);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -235,8 +247,9 @@ const examsController = {
       const exam = await Exam.findById(req.params.id).select("-s3Key");
 
       if (!exam) {
-        return res.status(404).json({ message: "Exam not found" });
+        return res.status(404).json({ type: "ExamNotFoundError", message: "Exam not found" });
       }
+
       const { totalRatings, averageRating } = exam.difficultyRating;
 
       const dbUser = await User.findById(req.user.user_id);
@@ -265,22 +278,25 @@ const examsController = {
       await dbUser.save();
 
       delete updatedExam.s3Key;
-      res.json({ updatedExam, user: dbUser });
+      return res.json({ updatedExam, user: dbUser });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
   getPresignedUrl: async (req, res) => {
     try {
       const exam = await Exam.findById(req.params.id);
+
       if (!exam) {
-        return res.status(404).json({ message: "Exam not found" });
+        return res.status(404).json({ type: "ExamNotFoundError", message: "Exam not found" });
       }
+
       const presignedUrl = await getPresignedUrl(exam.s3Key);
-      res.json({ presignedUrl });
+
+      return res.json({ presignedUrl });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 };

@@ -14,7 +14,7 @@ export const authenticateToken = async (req, res, next) => {
     const user = await User.findById(decoded.user_id);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found." });
+      return res.status(404).json({ type: "UserNotFoundError", message: "User not found." });
     }
     if (!user.isActive) {
       return res.status(400).json({ message: "User is not active." });

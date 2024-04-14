@@ -41,9 +41,6 @@ threadsRouter.delete("/:id", authenticateAdmin, threadsController.deleteThread);
 // GET: get threads by user id
 threadsRouter.get("/user/:id", authenticateAdmin, threadsController.getThreadsByUserId);
 
-// GET: get threads by tags
-threadsRouter.get("/tags/:tags", threadsController.getThreadsByTags);
-
 // POST: toggle thread closed status
 threadsRouter.post("/:id/toggle", threadsController.toggleThreadClosed);
 

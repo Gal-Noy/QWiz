@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { deleteFile } from "../utils/s3.js";
 
 const examSchema = mongoose.Schema({
   s3Key: {
@@ -61,6 +62,8 @@ examSchema.pre("remove", async function (next) {
   );
 
   await this.model("User").updateMany({ favoriteExams: this._id }, { $pull: { favoriteExams: this._id } });
+
+  await deleteFile(this.s3Key);
 
   next();
 });

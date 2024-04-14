@@ -6,20 +6,19 @@ const usersController = {
     try {
       const users = await User.find({});
 
-      return res.status(200).json(users);
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send(err.message);
+      return res.json(users);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
     }
   },
 
   getUserById: async (req, res) => {
     try {
       const user = await User.findById(req.params.id);
-      return res.status(200).json(user);
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send(err.message);
+
+      return res.json(user);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -29,7 +28,9 @@ const usersController = {
 
       if (newDetails.password) {
         if (newDetails.password.length < 6) {
-          return res.status(400).send("Password must be at least 6 characters long");
+          res
+            .status(400)
+            .json({ type: "PasswordLengthError", message: "Password must be at least 6 characters long." });
         }
         const hashedPassword = await bcrypt.hash(newDetails.password, 10);
         newDetails.password = hashedPassword;
@@ -41,10 +42,9 @@ const usersController = {
       dbUser.set(newDetails);
       await dbUser.save();
 
-      return res.status(200).json(dbUser);
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send(err.message);
+      return res.json(dbUser);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -52,10 +52,9 @@ const usersController = {
     try {
       const deletedUser = await User.findByIdAndDelete(req.params.id);
 
-      return res.status(200).json(deletedUser);
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send(err.message);
+      return res.json(deletedUser);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
     }
   },
 };

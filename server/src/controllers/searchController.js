@@ -126,7 +126,10 @@ const searchController = {
   freeSearch: async (req, res) => {
     try {
       const queryParts = req.params.query.split(" ");
-      if (queryParts.length === 0) return res.status(400).json({ error: "No search query provided" });
+
+      if (queryParts.length === 0) {
+        return res.status(400).json({ type: "MissingFieldsError", message: "Please enter a search query" });
+      }
 
       const subQueries = getQuerySubQueries(queryParts);
 
@@ -160,9 +163,9 @@ const searchController = {
         }
       }
 
-      res.json(searchResults);
+      return res.json(searchResults);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error.message });
     }
   },
 };

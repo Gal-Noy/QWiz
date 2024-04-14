@@ -8,18 +8,20 @@ const threadsController = {
   getAllThreads: async (req, res) => {
     try {
       const threads = await Thread.find();
-      res.json(threads);
+
+      return res.json(threads);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
   getThreadsByExam: async (req, res) => {
     try {
       const threads = await Thread.find({ exam: req.params.id });
-      res.json(threads);
+
+      return res.json(threads);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -28,15 +30,15 @@ const threadsController = {
       const thread = await Thread.findById(req.params.id);
 
       if (!thread) {
-        return res.status(404).json({ message: "Thread not found" });
+        return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
       }
 
       thread.views++;
       await thread.save();
 
-      res.json(thread);
+      return res.json(thread);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -45,13 +47,13 @@ const threadsController = {
       const { title, content, exam, tags } = req.body;
 
       if (!title || !content || !exam) {
-        return res.status(400).json({ message: "Please provide title, content and exam" });
+        return res.status(400).json({ type: "MissingFieldsError", message: "Please provide title, content and exam" });
       }
 
       const examObj = await Exam.findById(exam);
 
       if (!examObj) {
-        return res.status(404).json({ message: "Exam not found" });
+        return res.status(404).json({ type: "ExamNotFoundError", message: "Exam not found" });
       }
 
       const newThread = {
@@ -75,9 +77,9 @@ const threadsController = {
       thread.comments.push(comment._id);
       await thread.save();
 
-      res.status(201).json(thread);
+      return res.status(201).json(thread);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -86,15 +88,15 @@ const threadsController = {
       const thread = await Thread.findById(req.params.id);
 
       if (!thread) {
-        return res.status(404).json({ message: "Thread not found" });
+        return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
       }
 
       thread.set(req.body);
       await thread.save();
 
-      res.json(thread);
+      return res.json(thread);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -103,7 +105,7 @@ const threadsController = {
       const thread = await Thread.findById(req.params.id);
 
       if (!thread) {
-        return res.status(404).json({ message: "Thread not found" });
+        return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
       }
       if (thread.creator._id.toString() !== req.user.user_id) {
         return res.status(403).json({ message: "Access denied" });
@@ -112,15 +114,15 @@ const threadsController = {
       const { title } = req.body;
 
       if (!title) {
-        return res.status(400).json({ message: "Please provide title" });
+        return res.status(400).json({ type: "MissingFieldsError", message: "Please provide title" });
       }
 
       thread.title = title;
       await thread.save();
 
-      res.json(thread);
+      return res.json(thread);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -129,41 +131,34 @@ const threadsController = {
       const thread = await Thread.findById(req.params.id);
 
       if (!thread) {
-        return res.status(404).json({ message: "Thread not found" });
+        return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
       }
 
       await thread.remove();
 
-      res.json({ message: "Thread deleted" });
+      return res.json({ message: "Thread deleted" });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
   getThreadsByUserId: async (req, res) => {
     try {
       const threads = await Thread.find({ creator: req.params.id });
-      res.json(threads);
+
+      return res.json(threads);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
   getThreadsByUser: async (req, res) => {
     try {
       const threads = await Thread.find({ creator: req.user.user_id });
-      res.json(threads);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
 
-  getThreadsByTags: async (req, res) => {
-    try {
-      const threads = await Thread.find({ tags: { $in: [req.params.tag] } });
-      res.json(threads);
+      return res.json(threads);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -172,7 +167,7 @@ const threadsController = {
       const thread = await Thread.findById(req.params.id);
 
       if (!thread) {
-        return res.status(404).json({ message: "Thread not found" });
+        return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
       }
 
       if (thread.creator._id.toString() !== req.user.user_id) {
@@ -182,18 +177,19 @@ const threadsController = {
       thread.isClosed = !thread.isClosed;
       await thread.save();
 
-      res.json(thread);
+      return res.json(thread);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
   getCreatedThreads: async (req, res) => {
     try {
       const threads = await Thread.find({ creator: req.user.user_id });
-      res.json(threads);
+
+      return res.json(threads);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -202,9 +198,10 @@ const threadsController = {
       const user = await User.findById(req.user.user_id).populate({
         path: "starred_threads",
       });
-      res.json(user.starred_threads);
+
+      return res.json(user.starred_threads);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -214,15 +211,15 @@ const threadsController = {
       const thread = await Thread.findById(req.params.id);
 
       if (!thread) {
-        return res.status(404).json({ message: "Thread not found" });
+        return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
       }
 
       user.starred_threads.push(thread._id);
       await user.save();
 
-      res.json(user.starred_threads);
+      return res.json(user.starred_threads);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -234,9 +231,9 @@ const threadsController = {
       user.starred_threads = user.starred_threads.filter((thread) => thread._id.toString() !== threadId);
       await user.save();
 
-      res.json(user.starred_threads);
+      return res.json(user.starred_threads);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -245,9 +242,14 @@ const threadsController = {
   getCommentById: async (req, res) => {
     try {
       const comment = await Comment.findById(req.params.id);
-      res.json(comment);
+
+      if (!comment) {
+        return res.status(404).json({ type: "CommentNotFoundError", message: "Comment not found" });
+      }
+
+      return res.json(comment);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -256,7 +258,7 @@ const threadsController = {
       const thread = await Thread.findById(req.params.id);
 
       if (!thread) {
-        return res.status(404).json({ message: "Thread not found" });
+        return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
       }
       if (thread.isClosed) {
         return res.status(403).json({ message: "Thread is closed" });
@@ -265,7 +267,7 @@ const threadsController = {
       const { content } = req.body;
 
       if (!content) {
-        return res.status(400).json({ message: "Please provide content" });
+        return res.status(400).json({ type: "MissingFieldsError", message: "Please provide content" });
       }
 
       const newComment = {
@@ -280,9 +282,9 @@ const threadsController = {
       thread.comments.push(comment._id);
       await thread.save();
 
-      res.status(201).json(thread);
+      return res.status(201).json(thread);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -291,7 +293,7 @@ const threadsController = {
       const thread = await Thread.findById(req.params.threadId);
 
       if (!thread) {
-        return res.status(404).json({ message: "Thread not found" });
+        return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
       }
       if (thread.isClosed) {
         return res.status(403).json({ message: "Thread is closed" });
@@ -300,13 +302,13 @@ const threadsController = {
       const comment = await Comment.findById(req.params.commentId);
 
       if (!comment) {
-        return res.status(404).json({ message: "Comment not found" });
+        return res.status(404).json({ type: "CommentNotFoundError", message: "Comment not found" });
       }
 
       const { content } = req.body;
 
       if (!content) {
-        return res.status(400).json({ message: "Please provide content" });
+        return res.status(400).json({ type: "MissingFieldsError", message: "Please provide content" });
       }
 
       const newReply = {
@@ -321,9 +323,9 @@ const threadsController = {
       comment.replies.push(reply._id);
       await comment.save();
 
-      res.status(201).json(comment);
+      return res.status(201).json(comment);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -332,7 +334,7 @@ const threadsController = {
       const comment = await Comment.findById(req.params.id);
 
       if (!comment) {
-        return res.status(404).json({ message: "Comment not found" });
+        return res.status(404).json({ type: "CommentNotFoundError", message: "Comment not found" });
       }
       if (comment.sender._id.toString() !== req.user.user_id) {
         return res.status(403).json({ message: "Access denied" });
@@ -344,9 +346,9 @@ const threadsController = {
 
       await comment.save();
 
-      res.json(comment);
+      return res.json(comment);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -355,7 +357,7 @@ const threadsController = {
       const comment = await Comment.findById(req.params.id);
 
       if (!comment) {
-        return res.status(404).json({ message: "Comment not found" });
+        return res.status(404).json({ type: "CommentNotFoundError", message: "Comment not found" });
       }
 
       const index = comment.likes.indexOf(req.user.user_id);
@@ -367,9 +369,9 @@ const threadsController = {
 
       await comment.save();
 
-      res.json(comment);
+      return res.json(comment);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
@@ -378,14 +380,14 @@ const threadsController = {
       const comment = await Comment.findById(req.body.commentId);
 
       if (!comment) {
-        return res.status(404).json({ message: "Comment not found" });
+        return res.status(404).json({ type: "CommentNotFoundError", message: "Comment not found" });
       }
 
       await comment.remove();
 
-      res.json({ message: "Comment deleted" });
+      return res.json({ message: "Comment deleted" });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 };
