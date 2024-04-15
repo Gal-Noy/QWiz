@@ -31,7 +31,7 @@ function FreeSearchPage() {
               <a className="free-search-results-list-header">מבחנים</a>
               <ul className="free-search-list-ul">
                 {searchResults.exams.map((exam) => (
-                  <FreeSearchExamBlock exam={exam} key={exam._id} />
+                  <FreeSearchExamBlock key={exam._id} exam={exam} />
                 ))}
               </ul>
             </div>

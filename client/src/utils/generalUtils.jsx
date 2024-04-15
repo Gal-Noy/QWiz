@@ -28,4 +28,7 @@ const sumComments = (comments) => {
   return sum;
 };
 
-export { formatDate, formatDateAndTime, examToString, examToStringVerbose, sumComments };
+const calcAvgRating = (difficultyRatings) =>
+  difficultyRatings.reduce((acc, curr) => acc + curr.rating, 0) / difficultyRatings.length;
+
+export { formatDate, formatDateAndTime, examToString, examToStringVerbose, sumComments, calcAvgRating };

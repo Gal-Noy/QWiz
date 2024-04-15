@@ -94,6 +94,10 @@ export const handleError = (error, defaultMessage, callback) => {
             alert("יש להעלות קובץ");
             break;
           }
+          case "InvalidRatingError": {
+            alert("דירוג לא חוקי");
+            break;
+          }
         }
         break;
       }

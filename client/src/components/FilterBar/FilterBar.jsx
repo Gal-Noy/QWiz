@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import FilterDropdown from "./FilterDropdown";
 import "./FilterBar.css";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import { calcAvgRating } from "../../utils/generalUtils";
 
 function FilterBar(props) {
   const { setFilteredExams, setShowExams, setError } = props;
@@ -131,7 +132,7 @@ function FilterBar(props) {
       if (!updatedAdvancedSearchLists.minGrades.includes(`${minGrade}+`)) {
         updatedAdvancedSearchLists.minGrades.push(`${minGrade}+`);
       }
-      const difficultyRating = Math.floor(exam.difficultyRating.averageRating);
+      const difficultyRating = Math.floor(calcAvgRating(exam.difficultyRatings));
       if (!updatedAdvancedSearchLists.difficultyRatings.includes(`${difficultyRating}+`)) {
         updatedAdvancedSearchLists.difficultyRatings.push(`${difficultyRating}+`);
       }
@@ -196,7 +197,8 @@ function FilterBar(props) {
           exam.term === freeText ||
           exam.type === freeText ||
           exam.grade === freeText ||
-          exam.difficultyRating.averageRating === freeText
+          Math.floor(exam.grade / 10) * 10 === freeText ||
+          Math.floor(calcAvgRating(exam.difficultyRatings)) === freeText
       );
     }
 
@@ -220,7 +222,7 @@ function FilterBar(props) {
       : 0;
     advancedSearchChoices.difficultyRating &&
       (filteredExams = filteredExams.filter(
-        (exam) => Math.floor(exam.difficultyRating.averageRating) >= difficultyRatingFilter
+        (exam) => Math.floor(calcAvgRating(exam.difficultyRatings)) >= difficultyRatingFilter
       ));
 
     setFilteredExams(filteredExams);

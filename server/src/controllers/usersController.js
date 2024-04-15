@@ -34,9 +34,9 @@ const usersController = {
         }
         const hashedPassword = await bcrypt.hash(newDetails.password, 10);
         newDetails.password = hashedPassword;
-      } else {
-        delete newDetails.password;
       }
+      
+      delete newDetails.password;
 
       const dbUser = await User.findById(req.params.id);
       dbUser.set(newDetails);

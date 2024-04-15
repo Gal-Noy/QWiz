@@ -49,10 +49,21 @@ const examSchema = mongoose.Schema({
     ref: "User",
     required: true,
   },
-  difficultyRating: {
-    totalRatings: { type: Number, default: 0 },
-    averageRating: { type: Number, default: 0, min: 0, max: 5 },
-  },
+  difficultyRatings: [
+    {
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+      rating: {
+        type: Number,
+        min: 0,
+        max: 5,
+        required: true,
+      },
+    }
+  ]
 });
 
 const deleteExam = async function (next) {
@@ -63,8 +74,6 @@ const deleteExam = async function (next) {
     await deleteFile(s3Key);
 
     await Thread.deleteMany({ exam: examId });
-
-    await User.updateMany({ "exams_ratings.exam": examId }, { $pull: { exams_ratings: { exam: examId } } });
 
     await User.updateMany({ favorite_exams: examId }, { $pull: { favorite_exams: examId } });
 
@@ -80,8 +89,6 @@ const deleteExams = async function (next) {
 
   try {
     await Thread.deleteMany({ exam: { $in: examIds } });
-
-    await User.updateMany({ "exams_ratings.exam": { $in: examIds } }, { $pull: { exams_ratings: { exam: { $in: examIds } } } });
 
     await User.updateMany({ favorite_exams: { $in: examIds } }, { $pull: { favorite_exams: { $in: examIds } } });
 

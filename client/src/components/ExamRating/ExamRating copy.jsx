@@ -1,16 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
-import { calcAvgRating } from "../../utils/generalUtils";
 import "./ExamRating.css";
 
 function ExamRating(props) {
-  const { exam, setExam, editMode } = props;
-  const { difficultyRatings } = exam;
+  const { exam, difficultyRating, editMode, setExam } = props;
+  const { totalRatings, averageRating } = difficultyRating;
   const user = JSON.parse(localStorage.getItem("user"));
-  const existingRating = difficultyRatings.find((rating) => rating.user === user._id);
-  const totalRatings = difficultyRatings.length;
-  const averageRating = calcAvgRating(difficultyRatings);
-  const [rating, setRating] = useState(existingRating ? existingRating.rating : null);
+  const currRating = user.exams_ratings?.find((rating) => rating.exam === exam._id)?.difficultyRating;
+  const [rating, setRating] = useState(currRating ? currRating : null);
   const [isPending, setIsPending] = useState(false);
 
   const rateExam = async (rating) => {
@@ -20,14 +17,17 @@ function ExamRating(props) {
 
     await axiosInstance
       .post(`/exams/${exam._id}/rate`, { rating })
-      .then((res) => handleResult(res, 200, () => setExam(res.data)))
+      .then((res) =>
+        handleResult(res, 200, () => {
+          const { updatedExam, user } = res.data;
+          setExam(updatedExam);
+          localStorage.setItem("user", JSON.stringify(user));
+          setRating(rating);
+        })
+      )
       .catch((err) => handleError(err, "שגיאה בדירוג הבחינה, אנא נסה שנית."))
       .finally(() => setIsPending(false));
   };
-
-  useEffect(() => {
-    setRating(existingRating ? existingRating.rating : null);
-  }, [existingRating]);
 
   return (
     <div className="table-element row rate" id={editMode ? "rate_exam" : ""}>

@@ -90,7 +90,7 @@ function ExamDetails({ examId }) {
               </div>
               <div className="exam-details-item">
                 <a className="exam-details-item-header">דירוג קושי:</a>
-                <ExamRating difficultyRating={exam.difficultyRating} examId={exam._id} editMode={false} />
+                <ExamRating exam={exam} editMode={false} />
               </div>
               <div className="exam-details-item">
                 <a className="exam-details-item-header">הועלה על ידי:</a>
@@ -105,7 +105,7 @@ function ExamDetails({ examId }) {
               </Document>
               {!pdfLoaded && <div className="lds-dual-ring" id="loading-pdf"></div>}
             </div>
-            <ExamRating difficultyRating={exam.difficultyRating} examId={exam._id} editMode={true} setExam={setExam} />
+            <ExamRating exam={exam} setExam={setExam} editMode={true} />
           </div>
         </>
       )}

@@ -23,7 +23,7 @@ function FreeSearchExamBlock({ exam }) {
         </div>
         <div className="free-search-list-item-secondary-details-pair">
           <a className="secondary-details-pair-key">דירוג קושי: </a>
-          <ExamRating difficultyRating={exam.difficultyRating} examId={exam._id} editMode={false} />
+          <ExamRating exam={exam} editMode={false} />
         </div>
       </div>
     </li>

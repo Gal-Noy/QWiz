@@ -73,8 +73,6 @@ const examsController = {
       }`;
       await uploadFile(fileContent, s3Key, fileType);
 
-      const totalRatings = difficultyRating > 0 ? 1 : 0;
-      const averageRating = difficultyRating;
       const exam = new Exam({
         s3Key,
         course,
@@ -84,7 +82,7 @@ const examsController = {
         type,
         grade,
         lecturers,
-        difficultyRating: { totalRatings, averageRating },
+        difficultyRatings: difficultyRating > 0 ? [{ user: req.user.user_id, rating: difficultyRating }] : [],
         uploadedBy: req.user.user_id,
       });
 
@@ -99,9 +97,6 @@ const examsController = {
       ) {
         dbUser.phone_number = phone_number;
         dbUser.id_number = id_number;
-      }
-      if (difficultyRating > 0) {
-        dbUser.exams_ratings.push({ exam: exam._id, difficultyRating: difficultyRating });
       }
 
       await dbUser.save();
@@ -247,35 +242,21 @@ const examsController = {
         return res.status(404).json({ type: "ExamNotFoundError", message: "Exam not found" });
       }
 
-      const { totalRatings, averageRating } = exam.difficultyRating;
-
-      const dbUser = await User.findById(req.user.user_id);
-      const examRating = dbUser.exams_ratings.find((rating) => rating.exam.toString() === req.params.id);
-
-      if (!examRating) {
-        // User has not rated this exam before
-        const newAverageRating = (averageRating * totalRatings + rating) / (totalRatings + 1);
-        exam.difficultyRating = { totalRatings: totalRatings + 1, averageRating: newAverageRating };
-        dbUser.exams_ratings.push({ exam: req.params.id, difficultyRating: rating });
-      } else {
-        // User has rated this exam before
-        const oldRating = examRating.difficultyRating;
-        const newAverageRating = (averageRating * totalRatings - oldRating + rating) / totalRatings;
-        exam.difficultyRating = { totalRatings, averageRating: newAverageRating };
-        examRating.difficultyRating = rating;
-        dbUser.exams_ratings = dbUser.exams_ratings.map((rating) => {
-          if (rating.exam.toString() === req.params.id) {
-            return examRating;
-          }
-          return rating;
-        });
+      if (rating < 0 || rating > 5) {
+        return res.status(400).json({ type: "InvalidRatingError", message: "Rating must be between 0 and 5" });
       }
 
-      const updatedExam = await exam.save();
-      await dbUser.save();
+      const existingRating = exam.difficultyRatings.find((rating) => rating.user.toString() === req.user.user_id);
 
-      delete updatedExam.s3Key;
-      return res.json({ updatedExam, user: dbUser });
+      if (existingRating) {
+        existingRating.rating = rating;
+      } else {
+        exam.difficultyRatings.push({ user: req.user.user_id, rating });
+      }
+
+      await exam.save();
+
+      return res.json(exam);
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }

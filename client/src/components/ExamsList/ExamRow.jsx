@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axiosInstance, { handleResult, handleError } from "../../utils/axiosInstance";
 import ExamRating from "../ExamRating/ExamRating";
 
@@ -72,7 +72,7 @@ function ExamRow({ exam }) {
       <div className="table-element semester">{exam.semester === 1 ? "א'" : exam.semester === 2 ? "ב'" : "קיץ"}</div>
       <div className="table-element term">{exam.semester === 1 ? "א'" : exam.semester === 2 ? "ב'" : "ג'"}</div>
       <div className="table-element grade">{exam.grade}</div>
-      <ExamRating difficultyRating={exam.difficultyRating} examId={exam._id} editMode={false} />
+      <ExamRating exam={exam} editMode={false} />
     </div>
   );
 }

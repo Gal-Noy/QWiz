@@ -91,7 +91,7 @@ function ThreadsList(props) {
               sortFunc={(isAsc) =>
                 setThreads((prevThreads) =>
                   prevThreads
-                    .slice() // TODO
+                    .slice()
                     .sort((a, b) =>
                       isAsc
                         ? a.exam.course.name.localeCompare(b.exam.course.name)

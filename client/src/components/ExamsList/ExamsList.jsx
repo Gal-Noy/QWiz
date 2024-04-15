@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import { calcAvgRating } from "../../utils/generalUtils";
 import ExamRow from "./ExamRow";
 import ListHeader from "../ListHeader/ListHeader";
 import "./ExamsList.css";
@@ -187,12 +188,13 @@ function ExamsList(props) {
                 prevExams
                   .slice()
                   .sort((a, b) =>
-                    a.difficultyRating.averageRating !== 0 && b.difficultyRating.averageRating !== 0
-                      ? (a.difficultyRating.averageRating > b.difficultyRating.averageRating ? 1 : -1) *
-                        (isAsc ? 1 : -1)
-                      : a.difficultyRating.averageRating === 0
+                    a.difficultyRatings.length === 0 && b.difficultyRatings.length === 0
+                      ? 0
+                      : a.difficultyRatings.length === 0
                       ? 1
-                      : -1
+                      : b.difficultyRatings.length === 0
+                      ? -1
+                      : (isAsc ? 1 : -1) * (calcAvgRating(a.difficultyRatings) - calcAvgRating(b.difficultyRatings))
                   )
               )
             }
