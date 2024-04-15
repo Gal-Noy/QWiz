@@ -5,32 +5,32 @@ import ExamForum from "./ExamForum";
 import "./ExamPage.css";
 
 function ExamPage() {
-  const { examId } = useParams();
-  const [tabChosen, setTabChosen] = useState("details"); // "details" or "forum"
+  const { examId, tab } = useParams();
+  if (!tab) window.location.replace(`/exam/${examId}/details`);
 
-  return (
+  return tab ? (
     <div className="exam-page">
       <div className="exam-container">
         <div className="exam-container-tabs">
           <a
-            className={`exam-container-tab ${tabChosen === "details" ? "chosen" : ""}`}
+            className={`exam-container-tab ${tab === "details" ? "chosen" : ""}`}
             id="details-tab"
-            onClick={() => setTabChosen("details")}
+            onClick={() => window.location.replace(`/exam/${examId}/details`)}
           >
             פרטי הבחינה
           </a>
           <a
-            className={`exam-container-tab ${tabChosen === "forum" ? "chosen" : ""}`}
+            className={`exam-container-tab ${tab === "forum" ? "chosen" : ""}`}
             id="forum-tab"
-            onClick={() => setTabChosen("forum")}
+            onClick={() => window.location.replace(`/exam/${examId}/forum`)}
           >
             פורום
           </a>
         </div>
-        {tabChosen === "details" ? <ExamDetails examId={examId} /> : <ExamForum examId={examId} />}
+        {tab === "details" ? <ExamDetails examId={examId} /> : <ExamForum examId={examId} />}
       </div>
     </div>
-  );
+  ) : null;
 }
 
 export default ExamPage;

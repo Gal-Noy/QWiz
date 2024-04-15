@@ -20,7 +20,12 @@ function App() {
     <Router>
       {isLoggedIn && <NavBar />}
       <Routes>
-        <Route path="/" element={isLoggedIn ? <HomePage /> : <Navigate to="/auth/login" replace />} />
+        {/* home routes */}
+        <Route
+          path="/"
+          element={isLoggedIn ? <Navigate to="/home" replace /> : <Navigate to="/auth/login" replace />}
+        />
+        <Route path="/home" element={isLoggedIn ? <HomePage /> : <Navigate to="/auth/login" replace />} />
 
         {/* auth route */}
         <Route path="/auth/:formType" element={isLoggedIn ? <Navigate to="/" replace /> : <AuthPage />} />
@@ -40,9 +45,10 @@ function App() {
 
         {/* exam routes */}
         <Route path="/exam/:examId" element={isLoggedIn ? <ExamPage /> : <Navigate to="/" replace />} />
+        <Route path="/exam/:examId/:tab" element={isLoggedIn ? <ExamPage /> : <Navigate to="/" replace />} />
         <Route path="/exam/:examId/new-thread" element={isLoggedIn ? <NewThreadPage /> : <Navigate to="/" replace />} />
 
-        {/* thread route */}
+        {/* thread routes */}
         <Route path="/thread/:threadId" element={isLoggedIn ? <ThreadPage /> : <Navigate to="/" replace />} />
         <Route
           path="/thread/:threadId/comment/:commentId"
