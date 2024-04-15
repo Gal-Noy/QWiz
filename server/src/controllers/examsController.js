@@ -49,6 +49,8 @@ const examsController = {
         });
       }
 
+      // Validate faculty, department, course, and exam existence
+
       const existingFaculty = await Faculty.findById(faculty._id);
       if (!existingFaculty) {
         return res.status(404).json({ type: "FacultyNotFoundError", message: "Faculty not found" });
@@ -66,12 +68,46 @@ const examsController = {
         return res.status(400).json({ type: "ExamExistsError", message: "Exam already exists" });
       }
 
+      // Upload file to S3
+      
       const fileContent = file.buffer;
       const fileType = file.mimetype;
       const s3Key = `${faculty.name}/${department.name}/${course.name}/${course.code}-${year}-${semester}-${term}.${
         fileType.split("/")[1]
       }`;
       await uploadFile(fileContent, s3Key, fileType);
+
+      // Handle user
+
+      const dbUser = await User.findById(req.user.user_id);
+
+      if (phone_number) {
+        if (!phone_number.match(/^\+?\d{9,20}$/)) {
+          return res.status(400).json({ type: "PhoneNumberError", message: "Invalid phone number" });
+        }
+        if (phone_number.length < 9) {
+          return res
+            .status(400)
+            .json({ type: "PhoneNumberLengthError", message: "Phone number must be at least 9 digits long." });
+        }
+      }
+      if (id_number && !id_number.match(/^\d{9}$/)) {
+        return res.status(400).json({ type: "IDNumberError", message: "Invalid ID number" });
+      }
+
+      if (
+        !dbUser.phone_number ||
+        !dbUser.id_number ||
+        dbUser.phone_number !== phone_number ||
+        dbUser.id_number !== id_number
+      ) {
+        dbUser.phone_number = phone_number;
+        dbUser.id_number = id_number;
+      }
+
+      await dbUser.save();
+
+      // Save exam
 
       const exam = new Exam({
         s3Key,
@@ -85,21 +121,6 @@ const examsController = {
         difficultyRatings: difficultyRating > 0 ? [{ user: req.user.user_id, rating: difficultyRating }] : [],
         uploadedBy: req.user.user_id,
       });
-
-      // Handle user
-      const dbUser = await User.findById(req.user.user_id);
-
-      if (
-        !dbUser.phone_number ||
-        !dbUser.id_number ||
-        dbUser.phone_number !== phone_number ||
-        dbUser.id_number !== id_number
-      ) {
-        dbUser.phone_number = phone_number;
-        dbUser.id_number = id_number;
-      }
-
-      await dbUser.save();
 
       const newExam = await exam.save();
       delete newExam.s3Key;

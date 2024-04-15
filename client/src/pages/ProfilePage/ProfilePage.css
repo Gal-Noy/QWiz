@@ -152,6 +152,7 @@
   margin-bottom: 2rem;
   padding: 0.5rem;
   outline: none;
+  min-height: 6vh;
 
   &:hover {
     background-color: #dddddd;
@@ -170,9 +171,15 @@
   box-sizing: border-box;
   border: 1px solid #b9b9b9;
   font-size: 1.3rem;
+  text-align: right;
 
   &:focus {
     outline: none;
     border: 1px solid #007bff;
   }
+}
+
+#personal-details-loading:after {
+  border: 2px solid black;
+  border-color: black transparent black transparent;
 }

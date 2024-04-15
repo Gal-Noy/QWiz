@@ -142,9 +142,9 @@
   align-items: center;
   width: 80%;
   font-size: 1.2rem;
-}
 
-a:visited {
-  text-decoration: none;
-  color: var(--blue2);
+  a:visited {
+    text-decoration: none;
+    color: var(--blue2);
+  }
 }

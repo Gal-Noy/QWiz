@@ -36,7 +36,7 @@ export const handleResult = (res, status, callback) => {
       callback();
     }
   } else {
-    alert("שגיאה");
+    alert("תגובה לא צפויה מהשרת");
   }
 };
 
@@ -98,6 +98,30 @@ export const handleError = (error, defaultMessage, callback) => {
             alert("דירוג לא חוקי");
             break;
           }
+          case "EmailError": {
+            alert("דואר אלקטרוני לא חוקי");
+            break;
+          }
+          case "NameLengthError": {
+            alert("שם חייב להיות לפחות 2 תווים");
+            break;
+          }
+          case "PhoneNumberError": {
+            alert("מספר טלפון לא חוקי");
+            break;
+          }
+          case "PhoneNumberLengthError": {
+            alert("מספר טלפון חייב להיות לפחות 9 ספרות");
+            break;
+          }
+          case "IDNumberError": {
+            alert("מספר תעודת זהות לא חוקי");
+            break;
+          }
+          default: {
+            alert("בקשה לא חוקית");
+            break;
+          }
         }
         break;
       }
@@ -140,6 +164,10 @@ export const handleError = (error, defaultMessage, callback) => {
           }
           case "CommentNotFoundError": {
             alert("תגובה לא נמצאה");
+            break;
+          }
+          default: {
+            alert("לא נמצא");
             break;
           }
         }

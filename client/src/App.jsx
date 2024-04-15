@@ -58,7 +58,7 @@ function App() {
         {/* free search route */}
         <Route path="/search/:query" element={isLoggedIn ? <FreeSearchPage /> : <Navigate to="/" replace />} />
 
-        {/* 404 route */}
+        {/* 404 routes */}
         <Route path="*" element={<Navigate to="/404" replace />} />
         <Route path="/404" element={<NotFound />} />
       </Routes>

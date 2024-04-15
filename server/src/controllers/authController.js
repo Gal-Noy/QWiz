@@ -17,12 +17,18 @@ const authController = {
         return res.status(400).json({ type: "UserExistError", message: "User with same email already exists." });
       }
 
+      if (
+        !email.match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        )
+      ) {
+        return res.status(400).json({ type: "EmailError", message: "Invalid email" });
+      }
       if (password.length < 6) {
         return res
           .status(400)
           .json({ type: "PasswordLengthError", message: "Password must be at least 6 characters long." });
       }
-
       if (password !== confirmPassword) {
         return res.status(400).json({ type: "PasswordsMismatchError", message: "Passwords do not match." });
       }

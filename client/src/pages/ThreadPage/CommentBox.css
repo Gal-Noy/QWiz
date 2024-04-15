@@ -58,10 +58,7 @@
     color: var(--blue1);
   }
 }
-a:visited {
-  text-decoration: none;
-  color: black;
-}
+
 .edit-comment-title-input {
   font-size: 1.2rem;
   font-weight: bold;

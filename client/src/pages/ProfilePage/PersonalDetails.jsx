@@ -11,28 +11,47 @@ function PersonalDetails() {
     phone_number: user.phone_number || "",
     id_number: user.id_number || "",
   });
+  const [isPending, setIsPending] = useState(false);
 
   const saveChanges = async () => {
+    if (isPending) return;
+
     if (!editedUser.name || !editedUser.email) {
       alert("אנא מלא/י את השדות שם מלא ודואר אלקטרוני");
       return;
     }
+
+    if (
+      editedUser.name === user.name &&
+      editedUser.email === user.email &&
+      editedUser.phone_number === (user.phone_number || "") &&
+      editedUser.id_number === (user.id_number || "")
+    ) {
+      setEditMode(false);
+      return;
+    }
+
+    setIsPending(true);
+
     await axiosInstance
       .put(`/users/${user._id}`, editedUser)
       .then((res) =>
-        handleResult(200, () => {
+        handleResult(res, 200, () => {
           localStorage.setItem("user", JSON.stringify(res.data));
-          setEditedUser({
-            ...res.data,
-            password: "",
-            phone_number: res.data.phone_number || "",
-            id_number: res.data.id_number || "",
-          });
           alert("הפרטים עודכנו בהצלחה");
         })
       )
-      .then(() => setEditMode(false))
-      .catch((err) => handleError(err, "שגיאה בעדכון הפרטים, אנא נסה שנית"));
+      .catch((err) => handleError(err))
+      .finally(() => {
+        setEditedUser({
+          ...user,
+          password: "",
+          phone_number: user.phone_number || "",
+          id_number: user.id_number || "",
+        });
+        setIsPending(false);
+        setEditMode(false);
+      });
   };
 
   return (
@@ -106,7 +125,7 @@ function PersonalDetails() {
             else setEditMode(!editMode);
           }}
         >
-          {editMode ? "שמור" : "ערוך"}
+          {editMode ? isPending ? <div className="lds-dual-ring" id="personal-details-loading"></div> : "שמור" : "ערוך"}
         </button>
         {editMode && (
           <button
