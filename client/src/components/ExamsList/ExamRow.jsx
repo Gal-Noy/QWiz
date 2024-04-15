@@ -40,10 +40,6 @@ function ExamRow({ exam }) {
     }
   };
 
-  // useEffect(() => {
-  //   setIsFavorite(favoriteExams.includes(exam._id));
-  // }, [favoriteExams]);
-
   return (
     <div
       className="exam-row"

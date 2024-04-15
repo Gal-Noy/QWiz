@@ -6,7 +6,7 @@ import "./ThreadsList.css";
 
 function ThreadsList(props) {
   const { threads, setThreads, isProfilePage, isPending, error } = props;
-  const [starredThreads, setStarredThreads] = useState([]);
+  const user = JSON.parse(localStorage.getItem("user"));
   const [sortHeader, setSortHeader] = useState("");
   const [numPages, setNumPages] = useState(threads.length > 0 ? Math.ceil(threads.length / 10) : 0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,7 +22,7 @@ function ThreadsList(props) {
       .then((res) =>
         handleResult(res, 200, () => {
           const starredThreadsIds = res.data.map((thread) => thread._id);
-          setStarredThreads(starredThreadsIds);
+          localStorage.setItem("user", JSON.stringify({ ...user, starred_threads: starredThreadsIds }));
         })
       )
       .catch((err) => handleError(err, "שגיאה בטעינת הדיונים המסומנים בכוכב, אנא נסה שנית."));
@@ -65,7 +65,7 @@ function ThreadsList(props) {
             setSortHeader={setSortHeader}
             sortFunc={(isAsc) =>
               setThreads((prevThreads) =>
-                prevThreads.slice().sort((a, b) => (starredThreads.includes(a._id) ? -1 : 1) * (isAsc ? 1 : -1))
+                prevThreads.slice().sort((a, b) => (user.starred_threads.includes(a._id) ? -1 : 1) * (isAsc ? 1 : -1))
               )
             }
           />
@@ -229,8 +229,6 @@ function ThreadsList(props) {
               <ThreadRow
                 key={thread._id}
                 thread={thread}
-                starredThreads={starredThreads}
-                setStarredThreads={setStarredThreads}
                 exam={isProfilePage ? thread.exam : null}
                 isProfilePage={isProfilePage}
               />
