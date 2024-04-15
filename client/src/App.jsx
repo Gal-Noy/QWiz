@@ -14,40 +14,45 @@ import NotFound from "./components/NotFound/NotFound.jsx";
 import "./App.css";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token") && !!localStorage.getItem("user"));
+  const isLoggedIn = !!localStorage.getItem("token") && !!localStorage.getItem("user");
 
   return (
     <Router>
-      {isLoggedIn && (
-        <NavBar
-          onLogout={() => {
-            setIsLoggedIn(false);
-          }}
-        />
-      )}
+      {isLoggedIn && <NavBar />}
       <Routes>
+        <Route path="/" element={isLoggedIn ? <HomePage /> : <Navigate to="/auth/login" replace />} />
+
+        {/* auth route */}
+        <Route path="/auth/:formType" element={isLoggedIn ? <Navigate to="/" replace /> : <AuthPage />} />
+
+        {/* profile routes */}
         <Route
-          path="/"
-          element={isLoggedIn ? <HomePage onLogout={() => setIsLoggedIn(false)} /> : <Navigate to="/login" replace />}
+          path="/profile"
+          element={isLoggedIn ? <Navigate to="/profile/personal-details" replace /> : <Navigate to="/" replace />}
         />
-        <Route
-          path="/login"
-          element={
-            isLoggedIn ? (
-              <Navigate to="/" replace />
-            ) : (
-              <AuthPage formType={"login"} onLogin={() => setIsLoggedIn(true)} />
-            )
-          }
-        />
-        <Route path="/register" element={isLoggedIn ? <Navigate to="/" replace /> : <AuthPage formType={"signup"} />} />
-        <Route path="/exams" element={isLoggedIn ? <ExamsSearchPage /> : <Navigate to="/" replace />} />
+        <Route path="/profile/:tab" element={isLoggedIn ? <ProfilePage /> : <Navigate to="/" replace />} />
+
+        {/* upload exam route */}
         <Route path="/upload" element={isLoggedIn ? <UploadPage /> : <Navigate to="/" replace />} />
-        <Route path="/profile" element={isLoggedIn ? <ProfilePage /> : <Navigate to="/" replace />} />
+
+        {/* exams search route */}
+        <Route path="/exams" element={isLoggedIn ? <ExamsSearchPage /> : <Navigate to="/" replace />} />
+
+        {/* exam routes */}
         <Route path="/exam/:examId" element={isLoggedIn ? <ExamPage /> : <Navigate to="/" replace />} />
         <Route path="/exam/:examId/new-thread" element={isLoggedIn ? <NewThreadPage /> : <Navigate to="/" replace />} />
+
+        {/* thread route */}
         <Route path="/thread/:threadId" element={isLoggedIn ? <ThreadPage /> : <Navigate to="/" replace />} />
+        <Route
+          path="/thread/:threadId/comment/:commentId"
+          element={isLoggedIn ? <ThreadPage /> : <Navigate to="/" replace />}
+        />
+
+        {/* free search route */}
         <Route path="/search/:query" element={isLoggedIn ? <FreeSearchPage /> : <Navigate to="/" replace />} />
+
+        {/* 404 route */}
         <Route path="*" element={<Navigate to="/404" replace />} />
         <Route path="/404" element={<NotFound />} />
       </Routes>

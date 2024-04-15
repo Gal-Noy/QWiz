@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ContentArea from "../../components/ContentArea/ContentArea";
 
 function NewComment(props) {
-  const { replyingTo, setReplyingTo, newComment, setNewComment, addComment } = props;
+  const { currReplied, setCurrReplied, newComment, setNewComment, addComment } = props;
   const [isPending, setIsPending] = useState(false);
 
   const addNewComment = async () => {
@@ -13,9 +13,9 @@ function NewComment(props) {
   return (
     <div className="new-comment">
       <a className="new-comment-title">
-        {replyingTo ? "תגובה ישירה" : "תגובה חדשה לדיון"}
-        {replyingTo && (
-          <span className="material-symbols-outlined close-btn" onClick={() => setReplyingTo(null)}>
+        {currReplied ? "תגובה ישירה" : "תגובה חדשה לדיון"}
+        {currReplied && (
+          <span className="material-symbols-outlined close-btn" onClick={() => setCurrReplied(null)}>
             close
           </span>
         )}

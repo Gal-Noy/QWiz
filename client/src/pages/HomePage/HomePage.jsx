@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import HomePageInfoBlock from "./HomePageInfoBlock";
 import "./HomePage.css";
 
-function HomePage({ onLogout }) {
+function HomePage() {
+
   return (
     <div className="homepage-div">
       <div className="homepage-main-div">

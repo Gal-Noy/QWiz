@@ -1,24 +1,25 @@
-import React, { useState, useEffect } from "react";
-import "./ProfilePage.css";
+import React from "react";
+import { useParams } from "react-router-dom";
 import PersonalDetails from "./PersonalDetails";
 import ProfileSidebar from "./ProfileSidebar";
 import UploadedExams from "./UploadedExams";
 import FavoriteExams from "./FavoriteExams";
 import CreatedThreads from "./CreatedThreads";
 import StarredThreads from "./StarredThreads";
+import "./ProfilePage.css";
 
 function ProfilePage() {
-  const [selectedTab, setSelectedTab] = useState("personal-details"); // "personal-details", "uploaded-exams", "favorite-exams", "created-threads", "starred-threads"
+  const { tab } = useParams();
 
   return (
     <div className="profile-page">
-      <ProfileSidebar selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
+      <ProfileSidebar tab={tab} />
       <div className="profile-page-content">
-        {selectedTab === "personal-details" && <PersonalDetails />}
-        {selectedTab === "uploaded-exams" && <UploadedExams />}
-        {selectedTab === "favorite-exams" && <FavoriteExams />}
-        {selectedTab === "created-threads" && <CreatedThreads />}
-        {selectedTab === "starred-threads" && <StarredThreads />}
+        {tab === "personal-details" && <PersonalDetails />}
+        {tab === "uploaded-exams" && <UploadedExams />}
+        {tab === "favorite-exams" && <FavoriteExams />}
+        {tab === "created-threads" && <CreatedThreads />}
+        {tab === "starred-threads" && <StarredThreads />}
       </div>
     </div>
   );

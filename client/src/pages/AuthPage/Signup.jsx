@@ -81,7 +81,7 @@ function Signup() {
       </form>
       <span className="auth-form-footer">
         כבר נרשמת? התחבר/י&nbsp;
-        <Link to="/login">כאן</Link>
+        <Link to="/auth/login">כאן</Link>
       </span>
     </div>
   );

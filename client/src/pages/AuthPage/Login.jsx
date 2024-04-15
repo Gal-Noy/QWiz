@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 
-function Login({ onLogin }) {
+function Login() {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [isPending, setIsPending] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,8 +27,7 @@ function Login({ onLogin }) {
         handleResult(res, 200, () => {
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("user", JSON.stringify(res.data.user));
-          onLogin();
-          navigate("/");
+          window.location.href = "/";
         })
       )
       .catch((err) => handleError(err))
@@ -60,7 +58,7 @@ function Login({ onLogin }) {
       </form>
       <span className="auth-form-footer">
         עוד לא נרשמת? הירשם/י&nbsp;
-        <Link to="/register">כאן</Link>
+        <Link to="/auth/register">כאן</Link>
       </span>
     </div>
   );

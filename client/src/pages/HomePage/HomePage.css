@@ -55,7 +55,7 @@
   text-align: center;
   font-size: 1.5rem;
 
-  &.hovered {
+  &:hover {
     height: 30vh;
     transition: height 0.5s ease;
 

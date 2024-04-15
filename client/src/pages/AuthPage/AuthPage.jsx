@@ -1,10 +1,11 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import Login from "./Login";
 import Signup from "./Signup";
 import "./AuthPage.css";
 
-function AuthPage(props) {
-  const { formType, onLogin } = props;
+function AuthPage() {
+  const { formType } = useParams();
 
   return (
     <div className="auth-page">
@@ -12,7 +13,7 @@ function AuthPage(props) {
         <label id="auth-logo-row-1">QWiz</label>
         <label id="auth-logo-row-2">פורטל המבחנים החדש</label>
       </div>
-      <div className="auth-side-form">{formType === "login" ? <Login onLogin={onLogin} /> : <Signup />}</div>
+      <div className="auth-side-form">{formType === "login" ? <Login /> : <Signup />}</div>
     </div>
   );
 }

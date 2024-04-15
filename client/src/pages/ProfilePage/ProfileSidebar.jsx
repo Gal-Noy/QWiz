@@ -1,39 +1,43 @@
 import React from "react";
 
-function ProfileSidebar({ selectedTab, setSelectedTab }) {
+function ProfileSidebar({ tab }) {
+  const setTab = (tab) => {
+    window.location.href = `/profile/${tab}`;
+  };
+
   return (
     <div className="profile-page-sidebar">
       <div
-        className={"profile-page-sidebar-item" + (selectedTab === "personal-details" ? " active" : "")}
-        onClick={() => setSelectedTab("personal-details")}
+        className={"profile-page-sidebar-item" + (tab === "personal-details" ? " active" : "")}
+        onClick={() => setTab("personal-details")}
       >
         <span className="material-symbols-outlined sidebar-icon">person</span>
         פרטים אישיים
       </div>
       <div
-        className={"profile-page-sidebar-item" + (selectedTab === "uploaded-exams" ? " active" : "")}
-        onClick={() => setSelectedTab("uploaded-exams")}
+        className={"profile-page-sidebar-item" + (tab === "uploaded-exams" ? " active" : "")}
+        onClick={() => setTab("uploaded-exams")}
       >
         <span className="material-symbols-outlined sidebar-icon">cloud_upload</span>
         מבחנים שהעליתי
       </div>
       <div
-        className={"profile-page-sidebar-item" + (selectedTab === "favorite-exams" ? " active" : "")}
-        onClick={() => setSelectedTab("favorite-exams")}
+        className={"profile-page-sidebar-item" + (tab === "favorite-exams" ? " active" : "")}
+        onClick={() => setTab("favorite-exams")}
       >
         <span className="material-symbols-outlined sidebar-icon">star</span>
         מבחנים מועדפים
       </div>
       <div
-        className={"profile-page-sidebar-item" + (selectedTab === "created-threads" ? " active" : "")}
-        onClick={() => setSelectedTab("created-threads")}
+        className={"profile-page-sidebar-item" + (tab === "created-threads" ? " active" : "")}
+        onClick={() => setTab("created-threads")}
       >
         <span className="material-symbols-outlined sidebar-icon">forum</span>
         דיונים שיצרתי
       </div>
       <div
-        className={"profile-page-sidebar-item" + (selectedTab === "starred-threads" ? " active" : "")}
-        onClick={() => setSelectedTab("starred-threads")}
+        className={"profile-page-sidebar-item" + (tab === "starred-threads" ? " active" : "")}
+        onClick={() => setTab("starred-threads")}
       >
         <span className="material-symbols-outlined sidebar-icon">star</span>
         דיונים מסומנים בכוכב

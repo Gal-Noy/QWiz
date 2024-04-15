@@ -7,17 +7,22 @@ import { examToString, sumComments } from "../../utils/generalUtils";
 import "./ThreadPage.css";
 
 function ThreadPage() {
-  const { threadId } = useParams();
+  const { threadId, commentId } = useParams();
   const [thread, setThread] = useState(null);
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState(null);
   const [newComment, setNewComment] = useState("");
-  const [replyingTo, setReplyingTo] = useState(null);
+  const [currReplied, setCurrReplied] = useState(null);
   const [expandAll, setExpandAll] = useState(true);
   const [isClosed, setIsClosed] = useState(false);
   const [isClosedPending, setIsClosedPending] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
   const isAdmin = user && thread?.creator._id === user._id;
+
+  if (commentId) {
+    const commentElement = document.getElementById(`comment-${commentId}`);
+    if (commentElement) commentElement.scrollIntoView({ behavior: "smooth" });
+  }
 
   useEffect(() => {
     if (!threadId) return;
@@ -30,7 +35,7 @@ function ThreadPage() {
         handleResult(res, 200, () => {
           const fetchedThread = res.data;
           setThread(fetchedThread);
-          setReplyingTo(null);
+          setCurrReplied(null);
         })
       )
       .catch((err) => handleError(err, null, () => setError("אירעה שגיאה בעת טעינת הדיון")))
@@ -64,7 +69,7 @@ function ThreadPage() {
 
     setIsPendingCallback(true);
 
-    if (!replyingTo) {
+    if (!currReplied) {
       await axiosInstance
         .post(`/threads/${threadId}/comment`, { content: newComment })
         .then((res) =>
@@ -77,7 +82,7 @@ function ThreadPage() {
         .finally(() => setIsPendingCallback(false));
     } else {
       await axiosInstance
-        .post(`/threads/${threadId}/comment/${replyingTo}/reply`, { content: newComment })
+        .post(`/threads/${threadId}/comment/${currReplied}/reply`, { content: newComment })
         .then((res) =>
           handleResult(res, 201, () => {
             alert("התגובה נוספה בהצלחה");
@@ -136,22 +141,24 @@ function ThreadPage() {
             {thread.comments.map((comment) => (
               <CommentBox
                 key={comment._id}
+                threadId={threadId}
                 comment={comment}
-                replyingTo={replyingTo}
-                setReplyingTo={setReplyingTo}
+                currReplied={currReplied}
+                setCurrReplied={setCurrReplied}
                 newComment={newComment}
                 setNewComment={setNewComment}
                 addComment={addComment}
                 nest={0}
                 expand={expandAll}
                 isClosed={isClosed}
+                replyTo={thread.comments[0]._id} // reply to the first comment
               />
             ))}
 
-            {!isClosed && !replyingTo && (
+            {!isClosed && !currReplied && (
               <NewComment
-                replyingTo={null}
-                setReplyingTo={setReplyingTo}
+                currReplied={null}
+                setCurrReplied={setCurrReplied}
                 newComment={newComment}
                 setNewComment={setNewComment}
                 addComment={addComment}

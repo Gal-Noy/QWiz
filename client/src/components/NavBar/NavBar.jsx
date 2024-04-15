@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import defaultAvatar from "../../assets/default-avatar.jpg";
 import "./NavBar.css";
 
-function NavBar({ onLogout }) {
+function NavBar() {
   const user = JSON.parse(localStorage.getItem("user"));
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [freeSearchValue, setFreeSearchValue] = useState("");
@@ -17,9 +17,8 @@ function NavBar({ onLogout }) {
         handleResult(res, 200, () => {
           localStorage.removeItem("token");
           localStorage.removeItem("user");
-          onLogout();
           alert("התנתקת בהצלחה");
-          navigate("/login");
+          window.location.href = "/";
         })
       )
       .catch((err) => handleError(err));
