@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import { toast } from "react-custom-alert";
 
 function Login() {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
@@ -13,7 +14,7 @@ function Login() {
     const { email, password } = loginData;
 
     if (!email || !password) {
-      alert("יש למלא כל השדות");
+      toast.warning("יש למלא כל השדות");
       setIsPending(false);
       return;
     }
@@ -30,8 +31,7 @@ function Login() {
           window.location.href = "/";
         })
       )
-      .catch((err) => handleError(err))
-      .finally(() => setIsPending(false));
+      .catch((err) => handleError(err, null, () => setIsPending(false)));
   };
 
   return (

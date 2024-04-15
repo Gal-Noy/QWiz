@@ -4,6 +4,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import SelectFilter from "../../components/SelectFilter/SelectFilter";
+import { toast } from "react-custom-alert";
 import "./UploadForm.css";
 
 function UploadForm() {
@@ -27,7 +28,6 @@ function UploadForm() {
     difficultyRating: 0, // optional, 1-5
   });
   const [isPending, setIsPending] = useState(false);
-  const navigate = useNavigate();
 
   const createExam = async () => {
     setIsPending(true);
@@ -45,13 +45,13 @@ function UploadForm() {
       !examDetails.term ||
       !examDetails.type
     ) {
-      alert("יש למלא את כל השדות המסומנים בכוכבית.");
+      toast.warning("יש למלא את כל השדות המסומנים בכוכבית.");
       setIsPending(false);
       return;
     }
 
     if (!file) {
-      alert("יש להעלות קובץ.");
+      toast.warning("יש להעלות קובץ.");
       setIsPending(false);
       return;
     }
@@ -74,13 +74,10 @@ function UploadForm() {
       })
       .then((res) =>
         handleResult(res, 201, () => {
-          const updatedUser = res.data.user;
+          const { user: updatedUser, exam } = res.data;
           localStorage.setItem("user", JSON.stringify(updatedUser));
-          var stayOnPage = window.confirm("המבחן נוסף בהצלחה! האם תרצה להוסיף עוד מבחן?");
-          if (!stayOnPage) {
-            navigate("/");
-          }
-          clearForm();
+          toast.success("המבחן נוצר בהצלחה!");
+          setTimeout(() => (window.location.href = `exam/${exam._id}`), 1000);
         })
       )
       .catch((err) => handleError(err))
@@ -88,6 +85,8 @@ function UploadForm() {
   };
 
   const clearForm = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
     setStudentDetails({
       name: user.name,
       email: user.email,
@@ -142,7 +141,6 @@ function UploadForm() {
       )
       .catch((err) => handleError(err, "שגיאה בטעינת המחלקות, אנא נסה שנית."));
 
-
   const fetchCoursesByDepartment = async (departmentId) =>
     await axiosInstance
       .get(`/info/department/${departmentId}/courses`)
@@ -177,7 +175,7 @@ function UploadForm() {
       const selectedFile = e.target.files[0];
 
       if (!selectedFile.type.includes("pdf")) {
-        alert("נא להעלות קובץ מסוג PDF בלבד.");
+        toast.warning("נא להעלות קובץ מסוג PDF בלבד.");
         return;
       }
 

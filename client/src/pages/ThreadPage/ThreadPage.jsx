@@ -4,6 +4,7 @@ import axiosInstance, { handleError, handleResult } from "../../utils/axiosInsta
 import CommentBox from "./CommentBox";
 import NewComment from "./NewComment";
 import { examToString, sumComments } from "../../utils/generalUtils";
+import { toast } from "react-custom-alert";
 import "./ThreadPage.css";
 
 function ThreadPage() {
@@ -58,12 +59,12 @@ function ThreadPage() {
 
   const addComment = async (setIsPendingCallback) => {
     if (isClosed) {
-      alert("הדיון נעול ולא ניתן להוסיף תגובות");
+      toast.warning("הדיון נעול ולא ניתן להוסיף תגובות");
       return;
     }
 
     if (!newComment) {
-      alert("אנא הכנס/י תוכן לתגובה");
+      toast.warning("אנא הכנס/י תוכן לתגובה");
       return;
     }
 
@@ -74,8 +75,8 @@ function ThreadPage() {
         .post(`/threads/${threadId}/comment`, { content: newComment })
         .then((res) =>
           handleResult(res, 201, () => {
-            alert("התגובה נוספה בהצלחה");
-            window.location.reload();
+            toast.success("התגובה נוספה בהצלחה");
+            setTimeout(() => window.location.reload(), 1000);
           })
         )
         .catch((err) => handleError(err, "הוספת התגובה נכשלה"))
@@ -85,8 +86,8 @@ function ThreadPage() {
         .post(`/threads/${threadId}/comment/${currReplied}/reply`, { content: newComment })
         .then((res) =>
           handleResult(res, 201, () => {
-            alert("התגובה נוספה בהצלחה");
-            window.location.reload();
+            toast.success("התגובה נוספה בהצלחה");
+            setTimeout(() => window.location.reload(), 1000);
           })
         )
         .catch((err) => handleError(err, "הוספת התגובה נכשלה"))
@@ -120,7 +121,7 @@ function ThreadPage() {
             <div className="thread-page-tags">
               {thread.tags.map((tag, index) => (
                 <span className="thread-page-tag" key={index}>
-                  #<a href={`/search/${tag}`}>{tag}</a>
+                  #<a href={`/search/${tag}`}>{tag}</a>,
                 </span>
               ))}
             </div>

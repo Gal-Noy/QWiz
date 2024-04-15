@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import defaultAvatar from "../../assets/default-avatar.jpg";
+import { toast } from "react-custom-alert";
 
 function PersonalDetails() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -17,7 +18,7 @@ function PersonalDetails() {
     if (isPending) return;
 
     if (!editedUser.name || !editedUser.email) {
-      alert("אנא מלא/י את השדות שם מלא ודואר אלקטרוני");
+      toast.warning("אנא מלא/י את השדות שם מלא ודואר אלקטרוני");
       return;
     }
 
@@ -37,18 +38,28 @@ function PersonalDetails() {
       .put(`/users/${user._id}`, editedUser)
       .then((res) =>
         handleResult(res, 200, () => {
-          localStorage.setItem("user", JSON.stringify(res.data));
-          alert("הפרטים עודכנו בהצלחה");
+          const updatedUser = res.data;
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+          setEditedUser({
+            ...updatedUser,
+            password: "",
+            phone_number: updatedUser.phone_number || "",
+            id_number: updatedUser.id_number || "",
+          });
+          toast.success("הפרטים עודכנו בהצלחה");
         })
       )
-      .catch((err) => handleError(err))
+      .catch((err) =>
+        handleError(err, null, () => {
+          setEditedUser({
+            ...user,
+            password: "",
+            phone_number: user.phone_number || "",
+            id_number: user.id_number || "",
+          });
+        })
+      )
       .finally(() => {
-        setEditedUser({
-          ...user,
-          password: "",
-          phone_number: user.phone_number || "",
-          id_number: user.id_number || "",
-        });
         setIsPending(false);
         setEditMode(false);
       });

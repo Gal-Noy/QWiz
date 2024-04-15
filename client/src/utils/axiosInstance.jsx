@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-custom-alert";
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
@@ -36,14 +37,15 @@ export const handleResult = (res, status, callback) => {
       callback();
     }
   } else {
-    alert("תגובה לא צפויה מהשרת");
+    toast.error("תגובה לא צפויה מהשרת");
   }
 };
 
 export const handleError = (error, defaultMessage, callback) => {
+  console.log(error);
   if (!error.response) {
     console.error(error.message);
-    alert("שגיאת שרת");
+    toast.error("שגיאת שרת");
     return;
   }
 
@@ -53,73 +55,73 @@ export const handleError = (error, defaultMessage, callback) => {
   console.error(status, data);
 
   if (status !== 401 && status !== 403 && defaultMessage) {
-    alert(defaultMessage);
+    toast.error(defaultMessage);
   } else {
     switch (status) {
       case 500: {
-        alert("שגיאת שרת");
+        toast.error("שגיאת שרת");
         break;
       }
       case 400: {
         switch (type) {
           case "MissingFieldsError": {
-            alert("יש למלא את כל השדות");
+            toast.error("יש למלא את כל השדות");
             break;
           }
           case "UserExistError": {
-            alert("משתמש כבר קיים עם אימייל זה");
+            toast.error("משתמש כבר קיים עם אימייל זה");
             break;
           }
           case "PasswordLengthError": {
-            alert("סיסמה חייבת להיות לפחות 6 תווים");
+            toast.error("סיסמה חייבת להיות לפחות 6 תווים");
             break;
           }
           case "PasswordsMismatchError": {
-            alert("הסיסמאות אינן תואמות");
+            toast.error("הסיסמאות אינן תואמות");
             break;
           }
           case "UserActiveError": {
-            alert("משתמש כבר מחובר");
+            toast.error("משתמש כבר מחובר");
             break;
           }
           case "InvalidCredentialsError": {
-            alert("פרטי ההתחברות שגויים");
+            toast.error("פרטי ההתחברות שגויים");
             break;
           }
           case "ExamExistsError": {
-            alert("מבחן כבר קיים");
+            toast.error("מבחן כבר קיים");
             break;
           }
           case "FileNotUploadedError": {
-            alert("יש להעלות קובץ");
+            toast.error("יש להעלות קובץ");
             break;
           }
           case "InvalidRatingError": {
-            alert("דירוג לא חוקי");
+            toast.error("דירוג לא חוקי");
             break;
           }
           case "EmailError": {
-            alert("דואר אלקטרוני לא חוקי");
+            toast.error("דואר אלקטרוני לא חוקי");
             break;
           }
           case "NameLengthError": {
-            alert("שם חייב להיות לפחות 2 תווים");
+            toast.error("שם חייב להיות לפחות 2 תווים");
             break;
           }
           case "PhoneNumberError": {
-            alert("מספר טלפון לא חוקי");
+            toast.error("מספר טלפון לא חוקי");
             break;
           }
           case "PhoneNumberLengthError": {
-            alert("מספר טלפון חייב להיות לפחות 9 ספרות");
+            toast.error("מספר טלפון חייב להיות לפחות 9 ספרות");
             break;
           }
           case "IDNumberError": {
-            alert("מספר תעודת זהות לא חוקי");
+            toast.error("מספר תעודת זהות לא חוקי");
             break;
           }
           default: {
-            alert("בקשה לא חוקית");
+            toast.error("בקשה לא חוקית");
             break;
           }
         }
@@ -128,46 +130,46 @@ export const handleError = (error, defaultMessage, callback) => {
       case 401: {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-        alert("תוקף ההתחברות פג, אנא התחבר מחדש");
+        toast.error("תוקף ההתחברות פג, אנא התחבר מחדש");
         window.location.href = "/login";
         break;
       }
       case 403: {
-        alert("אין לך הרשאה לבצע פעולה זו");
+        toast.error("אין לך הרשאה לבצע פעולה זו");
         break;
       }
       case 404: {
         switch (type) {
           case "UserNotFoundError": {
-            alert("משתמש לא נמצא");
+            toast.error("משתמש לא נמצא");
             break;
           }
           case "ExamNotFoundError": {
-            alert("מבחן לא נמצא");
+            toast.error("מבחן לא נמצא");
             break;
           }
           case "FacultyNotFoundError": {
-            alert("פקולטה לא נמצאה");
+            toast.error("פקולטה לא נמצאה");
             break;
           }
           case "DepartmentNotFoundError": {
-            alert("מחלקה לא נמצאה");
+            toast.error("מחלקה לא נמצאה");
             break;
           }
           case "CourseNotFoundError": {
-            alert("קורס לא נמצא");
+            toast.error("קורס לא נמצא");
             break;
           }
           case "ThreadNotFoundError": {
-            alert("דיון לא נמצא");
+            toast.error("דיון לא נמצא");
             break;
           }
           case "CommentNotFoundError": {
-            alert("תגובה לא נמצאה");
+            toast.error("תגובה לא נמצאה");
             break;
           }
           default: {
-            alert("לא נמצא");
+            toast.error("לא נמצא");
             break;
           }
         }

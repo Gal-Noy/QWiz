@@ -4,6 +4,7 @@ import PageHeader from "../../components/PageHeader/PageHeader";
 import ContentArea from "../../components/ContentArea/ContentArea";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import { examToString } from "../../utils/generalUtils";
+import { toast } from "react-custom-alert";
 import "./NewThreadPage.css";
 
 function NewThread() {
@@ -26,12 +27,12 @@ function NewThread() {
 
   const createNewThread = async () => {
     if (!threadDetails.title || !threadContent) {
-      alert("אנא מלא/י כותרת ותוכן");
+      toast.warning("אנא מלא/י כותרת ותוכן");
       return;
     }
     for (const tag of threadDetails.tags) {
       if (tag.includes(" ")) {
-        alert("אנא הכנס/י תגיות מופרדות בפסיק ללא רווחים");
+        toast.warning("אנא הכנס/י תגיות מופרדות בפסיק ללא רווחים");
         return;
       }
     }
@@ -49,8 +50,8 @@ function NewThread() {
       .post("/threads", newThread)
       .then((res) =>
         handleResult(res, 201, () => {
-          alert("הדיון נוצר בהצלחה");
-          window.location.href = `/thread/${res.data._id}`;
+          toast.success("הדיון נוצר בהצלחה");
+          setTimeout(() => (window.location.href = `/thread/${res.data._id}`), 1000);
         })
       )
       .catch((err) => handleError(err, "יצירת הדיון נכשלה"))

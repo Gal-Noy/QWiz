@@ -1,33 +1,38 @@
 import React, { useState } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
-import { useNavigate } from "react-router-dom";
 import defaultAvatar from "../../assets/default-avatar.jpg";
+import { toast } from "react-custom-alert";
 import "./NavBar.css";
 
 function NavBar() {
   const user = JSON.parse(localStorage.getItem("user"));
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [freeSearchValue, setFreeSearchValue] = useState("");
-  const navigate = useNavigate();
+  const [pendingLogout, setPendingLogout] = useState(false);
 
-  const handleLogout = async () =>
+  const handleLogout = async () => {
+    if (pendingLogout) return;
+    setPendingLogout(true);
     await axiosInstance
       .post("/auth/logout", {})
       .then((res) =>
         handleResult(res, 200, () => {
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          alert("התנתקת בהצלחה");
-          window.location.href = "/";
+          toast.success("התנתקת בהצלחה");
+          setTimeout(() => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "/";
+          }, 1000);
         })
       )
-      .catch((err) => handleError(err));
+      .catch((err) => handleError(err, null, () => setPendingLogout(false)));
+  };
 
   const freeSearch = () => {
     if (!freeSearchValue) return;
     setShowUserMenu(false);
     setFreeSearchValue("");
-    navigate(`/search/${freeSearchValue}`);
+    window.location.href = `/search/${freeSearchValue}`;
   };
 
   return (
@@ -36,7 +41,7 @@ function NavBar() {
         className="navbar-logo"
         onClick={() => {
           setShowUserMenu(false);
-          navigate("/");
+          window.location.href = "/";
         }}
       >
         QWiz
@@ -67,14 +72,14 @@ function NavBar() {
           <button
             className="user-menu-item"
             onClick={() => {
-              navigate("/profile");
+              window.location.href = "/profile";
               setShowUserMenu(false);
             }}
           >
             הפרופיל שלי
           </button>
           <button className="user-menu-item" onClick={handleLogout}>
-            התנתק
+            {pendingLogout ? <div className="lds-dual-ring" id="logout-loading"></div> : "התנתקות"}
           </button>
         </div>
       )}

@@ -3,6 +3,7 @@ import FilterDropdown from "./FilterDropdown";
 import "./FilterBar.css";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import { calcAvgRating } from "../../utils/generalUtils";
+import { toast } from "react-custom-alert";
 
 function FilterBar(props) {
   const { setFilteredExams, setShowExams, setError } = props;
@@ -116,11 +117,11 @@ function FilterBar(props) {
       if (!updatedAdvancedSearchLists.years.includes(exam.year)) {
         updatedAdvancedSearchLists.years.push(exam.year);
       }
-      const examSemester = exam.semester === 1 ? "'א" : exam.semester === 2 ? "'ב" : "'ג";
+      const examSemester = exam.semester === 1 ? "א" : exam.semester === 2 ? "ב" : "קיץ";
       if (!updatedAdvancedSearchLists.semesters.includes(examSemester)) {
         updatedAdvancedSearchLists.semesters.push(examSemester);
       }
-      const examTerm = exam.term === 1 ? "'א" : exam.term === 2 ? "'ב" : "'ג";
+      const examTerm = exam.term === 1 ? "א" : exam.term === 2 ? "ב" : 
       if (!updatedAdvancedSearchLists.terms.includes(examTerm)) {
         updatedAdvancedSearchLists.terms.push(examTerm);
       }
@@ -182,7 +183,7 @@ function FilterBar(props) {
     if (isPending) return;
     // Exams are already filtered by faculty, department, and course
     if (!chosenCategories.faculty || !chosenCategories.department || !chosenCategories.course) {
-      alert("יש לבחור פקולטה, מחלקה וקורס לפני החיפוש");
+      toast.warning("יש לבחור פקולטה, מחלקה וקורס לפני החיפוש");
       return;
     }
 

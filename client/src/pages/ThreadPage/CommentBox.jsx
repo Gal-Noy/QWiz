@@ -5,6 +5,7 @@ import axiosInstance, { handleError, handleResult } from "../../utils/axiosInsta
 import defaultAvatar from "../../assets/default-avatar.jpg";
 import NewComment from "./NewComment";
 import ContentArea from "../../components/ContentArea/ContentArea";
+import { toast } from "react-custom-alert";
 import "./CommentBox.css";
 
 function CommentBox(props) {
@@ -50,7 +51,7 @@ function CommentBox(props) {
 
   const allowReply = () => {
     if (isClosed) {
-      alert("הדיון נעול ולא ניתן להוסיף תגובות");
+      toast.warning("הדיון נעול ולא ניתן להוסיף תגובות");
       return;
     }
 
@@ -76,8 +77,8 @@ function CommentBox(props) {
       .put(`/threads/comment/${_id}`, { title: editedCommentTitle, content: editedCommentContent })
       .then((res) =>
         handleResult(res, 200, () => {
-          alert("התגובה עודכנה בהצלחה");
-          window.location.reload();
+          toast.success("התגובה עודכנה בהצלחה");
+          setTimeout(() => window.location.reload(), 1000);
         })
       )
       .catch((err) => handleError(err, "אירעה שגיאה בעת עדכון התגובה"));
@@ -86,7 +87,7 @@ function CommentBox(props) {
   const copyLinkToClipboard = () => {
     const link = `${window.location.origin}/thread/${threadId}/comment/${_id}`;
     navigator.clipboard.writeText(link);
-    alert("הקישור הועתק ללוח");
+    toast.info("הקישור הועתק ללוח");
   };
 
   return (
@@ -97,7 +98,7 @@ function CommentBox(props) {
             <img className="comment-sender-avatar" src={defaultAvatar} alt="avatar" />
             <a className="comment-sender-name">{sender.name}</a>
           </div>
-          <a className="comment-title">
+          <div className="comment-title">
             {!editMode ? (
               <Link to={`/thread/${threadId}/comment/${replyTo}`} className="link-to-replyTo">
                 {title}
@@ -109,7 +110,7 @@ function CommentBox(props) {
                 onChange={(e) => setEditedCommentTitle(e.target.value)}
               />
             )}
-          </a>
+          </div>
           <div className="comment-header-left-section">
             <a className="comment-createdAt">{formatDateAndTime(createdAt)}</a>
             <a className="comment-expand-button" onClick={() => setIsExpanded(!isExpanded)}>

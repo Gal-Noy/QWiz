@@ -1,31 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import { toast } from "react-custom-alert";
 
 function Signup() {
   const [signupData, setSignupData] = useState({ name: "", email: "", password: "", confirmPassword: "" });
   const [passwordsMatch, setPasswordsMatch] = useState(signupData.password === signupData.confirmPassword);
   const [isPending, setIsPending] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     setPasswordsMatch(signupData.password === signupData.confirmPassword);
   }, [signupData.confirmPassword, signupData.password]);
 
   const handleSubmit = async (e) => {
+    if (isPending) return;
+
     e.preventDefault();
     setIsPending(true);
 
     const { name, email, password, confirmPassword } = signupData;
 
     if (!name || !email || !password || !confirmPassword) {
-      alert("יש למלא כל השדות");
+      toast.warning("יש למלא כל השדות");
       setIsPending(false);
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("הסיסמאות אינן תואמות");
+      toast.warning("הסיסמאות אינן תואמות");
       setIsPending(false);
       return;
     }
@@ -34,12 +36,13 @@ function Signup() {
       .post("/auth/register", signupData)
       .then((res) => {
         handleResult(res, 201, () => {
-          alert("נרשמת בהצלחה");
-          navigate("/login");
+          toast.success("נרשמת בהצלחה");
+          setTimeout(() => {
+            window.location.href = "/auth/login";
+          }, 1000);
         });
       })
-      .catch((err) => handleError(err))
-      .finally(() => setIsPending(false));
+      .catch((err) => handleError(err, null, () => setIsPending(false)));
   };
 
   return (
