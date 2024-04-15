@@ -2,21 +2,29 @@ import React, { useState, useEffect } from "react";
 import axiosInstance, { handleResult, handleError } from "../../utils/axiosInstance";
 import ExamRating from "../ExamRating/ExamRating";
 
-function ExamRow({ exam, favoriteExams, setFavoriteExams }) {
-  const [isFavorite, setIsFavorite] = useState(favoriteExams.includes(exam._id));
+function ExamRow({ exam }) {
+  const user = JSON.parse(localStorage.getItem("user"));
   const [isFavoritePending, setIsFavoritePending] = useState(false);
 
   const addToFavorites = async () =>
     await axiosInstance
       .post(`/exams/favorites/${exam._id}`)
-      .then((res) => handleResult(res, 200, () => setFavoriteExams(res.data)))
+      .then((res) =>
+        handleResult(res, 200, () =>
+          localStorage.setItem("user", JSON.stringify({ ...user, favorite_exams: res.data }))
+        )
+      )
       .catch((err) => handleError(err, "שגיאה בהוספת הבחינה למועדפים, אנא נסה שנית."))
       .finally(() => setIsFavoritePending(false));
 
   const removeFromFavorites = async () =>
     await axiosInstance
       .delete(`/exams/favorites/${exam._id}`)
-      .then((res) => handleResult(res, 200, () => setFavoriteExams(res.data)))
+      .then((res) =>
+        handleResult(res, 200, () =>
+          localStorage.setItem("user", JSON.stringify({ ...user, favorite_exams: res.data }))
+        )
+      )
       .catch((err) => handleError(err, "שגיאה בהסרת הבחינה מהמועדפים, אנא נסה שנית."))
       .finally(() => setIsFavoritePending(false));
 
@@ -32,9 +40,9 @@ function ExamRow({ exam, favoriteExams, setFavoriteExams }) {
     }
   };
 
-  useEffect(() => {
-    setIsFavorite(favoriteExams.includes(exam._id));
-  }, [favoriteExams]);
+  // useEffect(() => {
+  //   setIsFavorite(favoriteExams.includes(exam._id));
+  // }, [favoriteExams]);
 
   return (
     <div
@@ -53,7 +61,7 @@ function ExamRow({ exam, favoriteExams, setFavoriteExams }) {
                 type="checkbox"
                 id={`checkbox-${exam._id}`}
                 onChange={handleFavoritesChange}
-                checked={isFavorite}
+                checked={user.favorite_exams.includes(exam._id)}
               />
               <div className="slider round"></div>
             </label>

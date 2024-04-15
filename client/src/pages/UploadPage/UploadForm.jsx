@@ -83,7 +83,7 @@ function UploadForm() {
           clearForm();
         })
       )
-      .catch((err) => handleError(err, "שגיאה בהוספת המבחן, אנא נסה שנית."))
+      .catch((err) => handleError(err))
       .finally(() => setIsPending(false));
   };
 

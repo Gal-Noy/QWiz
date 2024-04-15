@@ -52,7 +52,7 @@ export const handleError = (error, defaultMessage, callback) => {
 
   console.error(status, data);
 
-  if (defaultMessage) {
+  if (status !== 401 && status !== 403 && defaultMessage) {
     alert(defaultMessage);
   } else {
     switch (status) {

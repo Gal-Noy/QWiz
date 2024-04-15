@@ -6,7 +6,7 @@ import "./ExamsList.css";
 
 function ExamsList(props) {
   const { exams, setExams, showExams, isProfilePage, isPending, error } = props;
-  const [favoriteExams, setFavoriteExams] = useState([]);
+  const user = JSON.parse(localStorage.getItem("user"));
   const [sortHeader, setSortHeader] = useState("");
   const [numPages, setNumPages] = useState(exams.length > 0 ? Math.ceil(exams.length / 10) : 0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,19 +18,24 @@ function ExamsList(props) {
 
   useEffect(() => {
     if (showExams) {
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth",
-      });
       axiosInstance
         .get("/exams/favorites")
         .then((res) =>
           handleResult(res, 200, () => {
             const favoriteExamsIds = res.data.map((exam) => exam._id);
-            setFavoriteExams(favoriteExamsIds);
+            localStorage.setItem("user", JSON.stringify({ ...user, favorite_exams: favoriteExamsIds }));
           })
         )
         .catch((err) => handleError(err, "שגיאה בטעינת הבחינות המועדפות."));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (showExams) {
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth",
+      });
     }
   }, [showExams]);
 
@@ -73,7 +78,7 @@ function ExamsList(props) {
             setSortHeader={setSortHeader}
             sortFunc={(isAsc) =>
               setExams((prevExams) =>
-                prevExams.slice().sort((a, b) => (favoriteExams.includes(a._id) ? -1 : 1) * (isAsc ? 1 : -1))
+                prevExams.slice().sort((a, b) => (user.favorite_exams.includes(a._id) ? -1 : 1) * (isAsc ? 1 : -1))
               )
             }
           />
@@ -199,7 +204,7 @@ function ExamsList(props) {
         {!isPending && !error && (
           <div className="exams-list-rows">
             {currentExams.map((exam) => (
-              <ExamRow key={exam._id} exam={exam} favoriteExams={favoriteExams} setFavoriteExams={setFavoriteExams} />
+              <ExamRow key={exam._id} exam={exam} />
             ))}
           </div>
         )}

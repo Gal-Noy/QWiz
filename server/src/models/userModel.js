@@ -88,7 +88,7 @@ const deleteUsers = async function (next) {
   } catch (error) {
     next(error);
   }
-}
+};
 
 userSchema.pre("findOneAndDelete", deleteUser);
 userSchema.pre("deleteOne", deleteUser);

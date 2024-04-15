@@ -195,11 +195,10 @@ const examsController = {
 
   getFavoriteExams: async (req, res) => {
     try {
-      const user = await User.findById(req.user.user_id)
-        .populate({
-          path: "favorite_exams",
-        })
-        .select("-s3Key");
+      const user = await User.findById(req.user.user_id).populate({
+        path: "favorite_exams",
+        select: "-s3Key",
+      });
 
       return res.json(user.favorite_exams);
     } catch (error) {
