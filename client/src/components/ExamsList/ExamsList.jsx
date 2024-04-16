@@ -120,13 +120,15 @@ function ExamsList(props) {
                 prevExams
                   .slice()
                   .sort((a, b) =>
-                    !a.lecturers && !b.lecturers
+                    !a.lecturers.length && !b.lecturers.length
                       ? 0
-                      : !a.lecturers
+                      : !a.lecturers.length
                       ? 1
-                      : !b.lecturers
+                      : !b.lecturers.length
                       ? -1
-                      : (isAsc ? 1 : -1) * a.lecturers.localeCompare(b.lecturers)
+                      : isAsc
+                      ? a.lecturers[0].localeCompare(b.lecturers[0])
+                      : b.lecturers[0].localeCompare(a.lecturers[0])
                   )
               )
             }
@@ -195,6 +197,29 @@ function ExamsList(props) {
                       : b.difficultyRatings.length === 0
                       ? -1
                       : (isAsc ? 1 : -1) * (calcAvgRating(a.difficultyRatings) - calcAvgRating(b.difficultyRatings))
+                  )
+              )
+            }
+          />
+          <ListHeader
+            label="תגיות"
+            header="tags"
+            sortHeader={sortHeader}
+            setSortHeader={setSortHeader}
+            sortFunc={(isAsc) =>
+              setExams((prevExams) =>
+                prevExams
+                  .slice()
+                  .sort((a, b) =>
+                    !a.tags.length && !b.tags.length
+                      ? 0
+                      : !a.tags.length
+                      ? 1
+                      : !b.tags.length
+                      ? -1
+                      : isAsc
+                      ? a.tags[0].localeCompare(b.tags[0])
+                      : b.tags[0].localeCompare(a.tags[0])
                   )
               )
             }

@@ -43,6 +43,9 @@ examsRouter.delete("/favorites/:id", examsController.removeFavoriteExam);
 // POST: rate exam by id
 examsRouter.post("/:id/rate", examsController.rateExam);
 
+// POST: add tags to exam by id
+examsRouter.post("/:id/tags", examsController.addTags);
+
 // PUT: update exam by id
 examsRouter.put("/:id", authenticateAdmin, examsController.updateExam);
 

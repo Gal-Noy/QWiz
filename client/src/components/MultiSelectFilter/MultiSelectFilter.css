@@ -1,0 +1,80 @@
+.multi-select-filter-div {
+  position: relative;
+}
+
+.multi-select-filter-value-bar {
+  width: 15vw;
+  min-height: 2rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--cyan3);
+  font-size: 1.2rem;
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+
+  &.placeholder {
+    color: grey;
+  }
+
+  &.disabled,
+  &.pending {
+    background-color: #f0f0f0;
+    cursor: default;
+    opacity: 0.7;
+  }
+}
+
+.multi-select-filter-select {
+  position: absolute;
+  display: none;
+
+  &.show {
+    display: block;
+    z-index: 1;
+  }
+
+  ul {
+    width: 16vw;
+    padding: 0.5rem 0.5rem 1rem;
+    list-style: none;
+    background-color: white;
+    font-size: 1.2rem;
+    max-height: 30vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--cyan2) white;
+  }
+
+  li {
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      background-color: var(--cyan2);
+    }
+  }
+}
+
+.multi-select-input {
+  width: 90%;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  border: none;
+  border-bottom: 1px solid var(--cyan3);
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.add-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--cyan4);
+}

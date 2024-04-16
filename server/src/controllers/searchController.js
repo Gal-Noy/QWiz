@@ -14,12 +14,34 @@ const getQuerySubQueries = (queryParts) => {
 };
 
 const searchExams = async (subQuery) => {
+  const subQueryWords = subQuery
+    .split(" ")
+    .filter((word) => word.trim().length >= 3)
+    .map((word) => new RegExp(word.trim(), "i"));
+
+  if (subQueryWords.length === 0) {
+    return [];
+  }
+
   let foundExams = [];
 
-  // Course/Department search
-  const coursesMatch = await Course.find({ name: { $regex: subQuery, $options: "i" } });
-  const departmentsMatch = await Department.find({ name: { $regex: subQuery, $options: "i" } });
+  // Course search
+  const courseQuery = {
+    $or: subQueryWords.map((word) => ({
+      name: { $regex: word.source, $options: "i" },
+    })),
+  };
+  const coursesMatch = await Course.find({ $or: [courseQuery] });
 
+  // Department search
+  const departmentQuery = {
+    $or: subQueryWords.map((word) => ({
+      name: { $regex: word.source, $options: "i" },
+    })),
+  };
+  const departmentsMatch = await Department.find({ $or: [departmentQuery] });
+
+  // Find department or course matched exams (departments have higher priority than courses)
   if (departmentsMatch.length > 0) {
     const departmentsMatchedExams = await Exam.find({
       course: {
@@ -40,10 +62,12 @@ const searchExams = async (subQuery) => {
     }
   }
 
-  // Lecturers search
-  const lecturersMatchedExams = await Exam.find({ lecturers: { $regex: subQuery, $options: "i" } }).select("-s3Key");
-  if (lecturersMatchedExams.length > 0) {
-    for (const exam of lecturersMatchedExams) {
+  // Lecturers and tags search
+  const lecturersTagsMatchedExams = await Exam.find({
+    $or: [{ lecturers: { $in: subQueryWords } }, { tags: { $in: subQueryWords } }],
+  }).select("-s3Key");
+  if (lecturersTagsMatchedExams.length > 0) {
+    for (const exam of lecturersTagsMatchedExams) {
       if (!foundExams.includes(exam)) foundExams.push(exam);
     }
   }
@@ -110,7 +134,7 @@ const searchThreads = async (subQuery) => {
     .map((word) => new RegExp(word.trim(), "i"));
 
   if (subQueryWords.length === 0) {
-    return res.json([]);
+    return [];
   }
 
   const titleQuery = {

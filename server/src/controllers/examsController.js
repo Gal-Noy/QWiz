@@ -28,6 +28,7 @@ const examsController = {
       }
 
       const {
+        // Mandatory fields
         faculty,
         department,
         course,
@@ -36,8 +37,11 @@ const examsController = {
         term,
         type,
         grade,
+        // Optional fields
         lecturers,
+        tags,
         difficultyRating,
+        // User mandatory fields
         phone_number,
         id_number,
       } = examData;
@@ -68,19 +72,11 @@ const examsController = {
         return res.status(400).json({ type: "ExamExistsError", message: "Exam already exists" });
       }
 
-      // Upload file to S3
-      
-      const fileContent = file.buffer;
-      const fileType = file.mimetype;
-      const s3Key = `${faculty.name}/${department.name}/${course.name}/${course.code}-${year}-${semester}-${term}.${
-        fileType.split("/")[1]
-      }`;
-      await uploadFile(fileContent, s3Key, fileType);
-
       // Handle user
 
       const dbUser = await User.findById(req.user.user_id);
 
+      // Validate phone_number, id_number
       if (phone_number) {
         if (!phone_number.match(/^\+?\d{9,20}$/)) {
           return res.status(400).json({ type: "PhoneNumberError", message: "Invalid phone number" });
@@ -95,6 +91,7 @@ const examsController = {
         return res.status(400).json({ type: "IDNumberError", message: "Invalid ID number" });
       }
 
+      // Update user details if necessary
       if (
         !dbUser.phone_number ||
         !dbUser.id_number ||
@@ -103,9 +100,28 @@ const examsController = {
       ) {
         dbUser.phone_number = phone_number;
         dbUser.id_number = id_number;
+        await dbUser.save();
       }
 
-      await dbUser.save();
+      // Update course tags and lecturers if necessary
+
+      if (tags && tags.length > 0) {
+        existingCourse.tags = [...new Set([...existingCourse.tags, ...tags])];
+        await existingCourse.save();
+      }
+      if (lecturers && lecturers.length > 0) {
+        existingCourse.lecturers = [...new Set([...existingCourse.lecturers, ...lecturers])];
+        await existingCourse.save();
+      }
+
+      // Upload file to S3
+
+      const fileContent = file.buffer;
+      const fileType = file.mimetype;
+      const s3Key = `${faculty.name}/${department.name}/${course.name}/${course.code}-${year}-${semester}-${term}.${
+        fileType.split("/")[1]
+      }`;
+      await uploadFile(fileContent, s3Key, fileType);
 
       // Save exam
 
@@ -117,7 +133,8 @@ const examsController = {
         term,
         type,
         grade,
-        lecturers,
+        lecturers: lecturers ? lecturers : [],
+        tags: tags ? tags : [],
         difficultyRatings: difficultyRating > 0 ? [{ user: req.user.user_id, rating: difficultyRating }] : [],
         uploadedBy: req.user.user_id,
       });
@@ -275,6 +292,28 @@ const examsController = {
         exam.difficultyRatings.push({ user: req.user.user_id, rating });
       }
 
+      await exam.save();
+
+      return res.json(exam);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+
+  addTags: async (req, res) => {
+    try {
+      const { tags } = req.body;
+      const exam = await Exam.findById(req.params.id).select("-s3Key");
+
+      if (!exam) {
+        return res.status(404).json({ type: "ExamNotFoundError", message: "Exam not found" });
+      }
+
+      if (!tags || tags.length === 0) {
+        return res.status(400).json({ type: "MissingFieldsError", message: "Please provide tags" });
+      }
+
+      exam.tags = [...new Set([...exam.tags, ...tags])];
       await exam.save();
 
       return res.json(exam);

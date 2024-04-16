@@ -16,6 +16,10 @@ const usersController = {
     try {
       const user = await User.findById(req.params.id);
 
+      if (!user) {
+        return res.status(404).json({ type: "UserNotFoundError", message: "User not found" });
+      }
+
       return res.json(user);
     } catch (error) {
       return res.status(500).json({ message: error.message });
@@ -32,6 +36,7 @@ const usersController = {
         return res.status(400).json({ type: "MissingFieldsError", message: "At least one field must be filled" });
       }
 
+      // Validate email, name, phone_number, id_number, password
       if (
         email &&
         !email.match(
@@ -40,9 +45,11 @@ const usersController = {
       ) {
         return res.status(400).json({ type: "EmailError", message: "Invalid email" });
       }
+
       if (name && name.length < 2) {
         return res.status(400).json({ type: "NameLengthError", message: "Name must be at least 2 characters long." });
       }
+
       if (phone_number) {
         if (!phone_number.match(/^\+?\d{9,20}$/)) {
           return res.status(400).json({ type: "PhoneNumberError", message: "Invalid phone number" });
@@ -53,24 +60,26 @@ const usersController = {
             .json({ type: "PhoneNumberLengthError", message: "Phone number must be at least 9 digits long." });
         }
       }
+
       if (id_number && !id_number.match(/^\d{9}$/)) {
         return res.status(400).json({ type: "IDNumberError", message: "Invalid ID number" });
       }
 
-      if (newDetails.password) {
-        if (newDetails.password.length < 6) {
+      if (password) {
+        if (password.length < 6) {
           res
             .status(400)
             .json({ type: "PasswordLengthError", message: "Password must be at least 6 characters long." });
         }
-        const hashedPassword = await bcrypt.hash(newDetails.password, 10);
-        newDetails.password = hashedPassword;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        password = hashedPassword;
       }
 
       delete newDetails.password;
 
       const dbUser = await User.findById(req.params.id);
       dbUser.set(newDetails);
+
       await dbUser.save();
 
       return res.json(dbUser);

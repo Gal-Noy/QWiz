@@ -85,10 +85,6 @@ function ExamDetails({ examId }) {
                 <a className="exam-details-item-text">{exam.semester === "quiz" ? "בוחן" : "מבחן"}</a>
               </div>
               <div className="exam-details-item">
-                <a className="exam-details-item-header">מרצים:</a>
-                <a className="exam-details-item-text">{exam.lecturers}</a>
-              </div>
-              <div className="exam-details-item">
                 <a className="exam-details-item-header">דירוג קושי:</a>
                 <ExamRating exam={exam} editMode={false} />
               </div>
@@ -96,6 +92,29 @@ function ExamDetails({ examId }) {
                 <a className="exam-details-item-header">הועלה על ידי:</a>
                 <a className="exam-details-item-text">{exam.uploadedBy.name}</a>
               </div>
+              <div className="exam-details-item">
+                <a className="exam-details-item-header">מרצים:</a>
+                <div className="exam-details-item-text">
+                  {exam.lecturers.map((lecturer, index) => (
+                    <span key={index}>
+                      <a href={`/search/${lecturer}`}>{lecturer}</a>
+                      {index !== exam.lecturers.length - 1 && ", "}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="exam-details-item">
+                <a className="exam-details-item-header">תגיות:</a>
+                <div className="exam-details-item-text">
+                  {exam.tags.map((tag, index) => (
+                    <span className="thread-page-tag" key={index}>
+                      #<a href={`/search/${tag}`}>{tag}</a>
+                      {index !== exam.tags.length - 1 && ","}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <a className="exam-details-new-tags-label">ניתן להוסיף תגים חדשים בעת יצירת דיון חדש בפורום הבחינה.</a>
             </div>
           </div>
           <div className="exam-details-left-section">

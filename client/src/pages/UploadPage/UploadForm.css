@@ -97,8 +97,8 @@
     color: navy;
   }
 
-  input {
-    width: 15vw;
+  .upload-form-input {
+    width: 15.5vw;
     height: 2rem;
     padding: 0.5rem 1rem;
     border: 0.5px solid var(--cyan3);
@@ -111,6 +111,7 @@
 
     &:disabled {
       background: #f0f0f0;
+      opacity: 0.7;
     }
   }
 
@@ -237,32 +238,5 @@
 
   &:hover {
     color: var(--cyan2);
-  }
-}
-
-.lds-dual-ring {
-  margin-left: auto;
-  margin-right: auto;
-  width: 15px;
-  height: 15px;
-}
-
-.lds-dual-ring:after {
-  content: " ";
-  display: block;
-
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  border: 2px solid #fff;
-  border-color: #fff transparent #fff transparent;
-  animation: lds-dual-ring 1.2s linear infinite;
-}
-@keyframes lds-dual-ring {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
   }
 }

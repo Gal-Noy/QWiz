@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
-import { useNavigate } from "react-router-dom";
 import SelectFilter from "../../components/SelectFilter/SelectFilter";
+import MultiSelectFilter from "../../components/MultiSelectFilter/MultiSelectFilter";
 import { toast } from "react-custom-alert";
 import "./UploadForm.css";
 
@@ -24,10 +24,25 @@ function UploadForm() {
     term: 1, // 1, 2, 3
     type: "test", // quiz or test
     grade: 85, // optional, 0-100
-    lecturers: "", // optional
+    lecturers: [], // optional
+    tags: [], // optional
     difficultyRating: 0, // optional, 1-5
   });
   const [isPending, setIsPending] = useState(false);
+  const [selectLists, setSelectLists] = useState({
+    faculties: [],
+    departments: [],
+    courses: [],
+    tags: [],
+    lecturers: [],
+  });
+  const [selectListsPendings, setSelectListsPendings] = useState({
+    faculties: false,
+    departments: false,
+    courses: false,
+    tags: false,
+    lecturers: false,
+  });
 
   const createExam = async () => {
     setIsPending(true);
@@ -77,7 +92,7 @@ function UploadForm() {
           const { user: updatedUser, exam } = res.data;
           localStorage.setItem("user", JSON.stringify(updatedUser));
           toast.success("המבחן נוצר בהצלחה!");
-          setTimeout(() => (window.location.href = `exam/${exam._id}`), 1000);
+          setTimeout(() => (window.location.href = `exam/${exam._id}`), 2000);
         })
       )
       .catch((err) => handleError(err))
@@ -102,11 +117,17 @@ function UploadForm() {
       term: 1,
       type: "test",
       grade: 85,
-      lecturers: "",
+      lecturers: [],
+      tags: [],
       difficultyRating: 0,
     });
-    setDepartments([]);
-    setCourses([]);
+    setSelectLists({
+      ...selectLists,
+      departments: [],
+      courses: [],
+      tags: [],
+      lecturers: [],
+    });
     cancelFile();
 
     const stars = document.querySelectorAll(".radio-input");
@@ -115,42 +136,69 @@ function UploadForm() {
     });
   };
 
-  const [faculties, setFaculties] = useState([]);
-  const [departments, setDepartments] = useState([]);
-  const [courses, setCourses] = useState([]);
+  const fetchFaculties = async () => {
+    if (selectListsPendings.faculties) return;
+    setSelectListsPendings({ ...selectListsPendings, faculties: true });
 
-  const fetchFaculties = async () =>
     await axiosInstance
       .get(`/info/faculties`)
       .then((res) =>
         handleResult(res, 200, () => {
           const sortedFaculties = res.data.sort((a, b) => (a.name > b.name ? 1 : -1));
-          setFaculties(sortedFaculties);
+          setSelectLists({ ...selectLists, faculties: sortedFaculties });
         })
       )
-      .catch((err) => handleError(err, "שגיאה בטעינת הפקולטות, אנא נסה שנית."));
+      .catch((err) => handleError(err, "שגיאה בטעינת הפקולטות, אנא נסה שנית."))
+      .finally(() => setSelectListsPendings({ ...selectListsPendings, faculties: false }));
+  };
 
-  const fetchDepartmentsByFaculty = async (facultyId) =>
+  const fetchDepartmentsByFaculty = async (facultyId) => {
+    if (selectListsPendings.departments) return;
+    setSelectListsPendings({ ...selectListsPendings, departments: true });
+
     await axiosInstance
       .get(`/info/faculty/${facultyId}/departments`)
       .then((res) =>
         handleResult(res, 200, () => {
           const sortedDepartments = res.data.sort((a, b) => (a.name > b.name ? 1 : -1));
-          setDepartments(sortedDepartments);
+          setSelectLists({ ...selectLists, departments: sortedDepartments });
         })
       )
-      .catch((err) => handleError(err, "שגיאה בטעינת המחלקות, אנא נסה שנית."));
+      .catch((err) => handleError(err, "שגיאה בטעינת המחלקות, אנא נסה שנית."))
+      .finally(() => setSelectListsPendings({ ...selectListsPendings, departments: false }));
+  };
 
-  const fetchCoursesByDepartment = async (departmentId) =>
+  const fetchCoursesByDepartment = async (departmentId) => {
+    if (selectListsPendings.courses) return;
+    setSelectListsPendings({ ...selectListsPendings, courses: true });
+
     await axiosInstance
       .get(`/info/department/${departmentId}/courses`)
       .then((res) =>
         handleResult(res, 200, () => {
           const sortedCourses = res.data.sort((a, b) => (a.name > b.name ? 1 : -1));
-          setCourses(sortedCourses);
+          setSelectLists({ ...selectLists, courses: sortedCourses });
         })
       )
-      .catch((err) => handleError(err, "שגיאה בטעינת הקורסים, אנא נסה שנית."));
+      .catch((err) => handleError(err, "שגיאה בטעינת הקורסים, אנא נסה שנית."))
+      .finally(() => setSelectListsPendings({ ...selectListsPendings, courses: false }));
+  };
+
+  const fetchCourseAttributes = async (courseId) => {
+    if (selectListsPendings.tags || selectListsPendings.lecturers) return;
+    setSelectListsPendings({ ...selectListsPendings, tags: true, lecturers: true });
+
+    await axiosInstance
+      .get(`/info/course/${courseId}`)
+      .then((res) =>
+        handleResult(res, 200, () => {
+          const { tags, lecturers } = res.data;
+          setSelectLists({ ...selectLists, tags, lecturers });
+        })
+      )
+      .catch((err) => handleError(err, "שגיאה בטעינת התגיות והמרצים, אנא נסה שנית."))
+      .finally(() => setSelectListsPendings({ ...selectListsPendings, tags: false, lecturers: false }));
+  };
 
   useEffect(() => {
     fetchFaculties();
@@ -165,6 +213,11 @@ function UploadForm() {
     setExamDetails({ ...examDetails, course: null });
     if (examDetails.department) fetchCoursesByDepartment(examDetails.department._id);
   }, [examDetails.department]);
+
+  useEffect(() => {
+    setExamDetails({ ...examDetails, tags: [], lecturers: [] });
+    if (examDetails.course) fetchCourseAttributes(examDetails.course._id);
+  }, [examDetails.course]);
 
   const [file, setFile] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
@@ -205,15 +258,16 @@ function UploadForm() {
           <form className="upload-form-details">
             <div className="upload-form-attr">
               <label>שם מלא *</label>
-              <input type="text" name="name" value={studentDetails.name} disabled />
+              <input className="upload-form-input" type="text" name="name" value={studentDetails.name} disabled />
             </div>
             <div className="upload-form-attr">
               <label>אימייל *</label>
-              <input type="email" name="email" value={studentDetails.email} disabled />
+              <input className="upload-form-input" type="email" name="email" value={studentDetails.email} disabled />
             </div>
             <div className="upload-form-attr">
               <label>טלפון *</label>
               <input
+                className="upload-form-input"
                 type="text"
                 name="phone_number"
                 onChange={(e) => setStudentDetails({ ...studentDetails, phone_number: e.target.value })}
@@ -224,6 +278,7 @@ function UploadForm() {
             <div className="upload-form-attr">
               <label>תעודת זהות *</label>
               <input
+                className="upload-form-input"
                 type="text"
                 name="id_number"
                 onChange={(e) => setStudentDetails({ ...studentDetails, id_number: e.target.value })}
@@ -239,37 +294,50 @@ function UploadForm() {
             <div className="upload-form-attr">
               <label>פקולטה *</label>
               <SelectFilter
-                options={faculties.map((faculty) => ({ name: faculty.name, value: faculty }))}
-                onChange={(faculty) => setExamDetails({ ...examDetails, faculty, department: null, course: null })}
+                options={selectLists.faculties.map((faculty) => ({ name: faculty.name, value: faculty }))}
+                value={examDetails.faculty}
+                setValue={(faculty) => setExamDetails({ ...examDetails, faculty })}
                 placeholder="בחר פקולטה"
                 dependency={true} // always enabled
+                isPending={selectListsPendings.faculties}
               />
             </div>
             <div className="upload-form-attr">
               <label>מחלקה *</label>
               <SelectFilter
-                options={departments.map((department) => ({ name: department.name, value: department }))}
-                onChange={(department) => setExamDetails({ ...examDetails, department, course: null })}
+                options={selectLists.departments.map((department) => ({ name: department.name, value: department }))}
+                value={examDetails.department}
+                setValue={(department) => setExamDetails({ ...examDetails, department })}
                 placeholder="בחר מחלקה"
-                dependency={examDetails.faculty}
+                dependency={!!examDetails.faculty}
+                isPending={selectListsPendings.departments}
               />
             </div>
             <div className="upload-form-attr">
               <label>שם קורס *</label>
               <SelectFilter
-                options={courses.map((course) => ({ name: course.name, value: course }))}
-                onChange={(course) => setExamDetails({ ...examDetails, course })}
+                options={selectLists.courses.map((course) => ({ name: course.name, value: course }))}
+                value={examDetails.course}
+                setValue={(course) => setExamDetails({ ...examDetails, course })}
                 placeholder="בחר קורס"
-                dependency={examDetails.department}
+                dependency={!!examDetails.department}
+                isPending={selectListsPendings.courses}
               />
             </div>
             <div className="upload-form-attr">
               <label>מספר קורס *</label>
-              <input type="text" name="courseCode" value={examDetails.course ? examDetails.course.code : ""} disabled />
+              <input
+                className="upload-form-input"
+                type="text"
+                name="courseCode"
+                value={examDetails.course ? examDetails.course.code : ""}
+                disabled
+              />
             </div>
             <div className="upload-form-attr">
               <label>שנה *</label>
               <input
+                className="upload-form-input"
                 type="number"
                 name="year"
                 onChange={(e) => setExamDetails({ ...examDetails, year: e.target.value })}
@@ -312,6 +380,7 @@ function UploadForm() {
             <div className="upload-form-attr">
               <label>ציון</label>
               <input
+                className="upload-form-input"
                 type="number"
                 name="grade"
                 min={0}
@@ -322,13 +391,27 @@ function UploadForm() {
               />
             </div>
             <div className="upload-form-attr">
-              <label>מרצה/ים</label>
-              <input
-                type="text"
-                name="lecturers"
-                onChange={(e) => setExamDetails({ ...examDetails, lecturers: e.target.value })}
-                value={examDetails.lecturers}
-                {...(!examDetails.course ? { disabled: true } : {})}
+              <label htmlFor="lecturers">מרצה/ים</label>
+              <MultiSelectFilter
+                placeholder="בחר / הוסף מרצים"
+                options={selectLists.lecturers}
+                setOptions={(lecturers) => setSelectLists({ ...selectLists, lecturers })}
+                list={examDetails.lecturers}
+                setList={(lecturers) => setExamDetails({ ...examDetails, lecturers })}
+                dependency={!!examDetails.course}
+                isPending={selectListsPendings.lecturers}
+              />
+            </div>
+            <div className="upload-form-attr">
+              <label>תגיות</label>
+              <MultiSelectFilter
+                placeholder="בחר / הוסף תגיות"
+                options={selectLists.tags}
+                setOptions={(tags) => setSelectLists({ ...selectLists, tags })}
+                list={examDetails.tags}
+                setList={(tags) => setExamDetails({ ...examDetails, tags })}
+                dependency={!!examDetails.course}
+                isPending={selectListsPendings.tags}
               />
             </div>
             <div className="upload-form-attr">

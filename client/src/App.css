@@ -53,13 +53,13 @@ button {
 .lds-dual-ring:after {
   content: " ";
   display: block;
-
   width: 15px;
   height: 15px;
   border-radius: 50%;
   border: 2px solid #fff;
   border-color: #fff transparent #fff transparent;
   animation: lds-dual-ring 1.2s linear infinite;
+  cursor: default;
 }
 @keyframes lds-dual-ring {
   0% {

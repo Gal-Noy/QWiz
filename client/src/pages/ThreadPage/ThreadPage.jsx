@@ -76,7 +76,7 @@ function ThreadPage() {
         .then((res) =>
           handleResult(res, 201, () => {
             toast.success("התגובה נוספה בהצלחה");
-            setTimeout(() => window.location.reload(), 1000);
+            setTimeout(() => window.location.reload(), 2000);
           })
         )
         .catch((err) => handleError(err, "הוספת התגובה נכשלה"))
@@ -87,7 +87,7 @@ function ThreadPage() {
         .then((res) =>
           handleResult(res, 201, () => {
             toast.success("התגובה נוספה בהצלחה");
-            setTimeout(() => window.location.reload(), 1000);
+            setTimeout(() => window.location.reload(), 2000);
           })
         )
         .catch((err) => handleError(err, "הוספת התגובה נכשלה"))
@@ -121,7 +121,8 @@ function ThreadPage() {
             <div className="thread-page-tags">
               {thread.tags.map((tag, index) => (
                 <span className="thread-page-tag" key={index}>
-                  #<a href={`/search/${tag}`}>{tag}</a>,
+                  #<a href={`/search/${tag}`}>{tag}</a>
+                  {index !== thread.tags.length - 1 && ","}
                 </span>
               ))}
             </div>

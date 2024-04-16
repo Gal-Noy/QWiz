@@ -66,13 +66,14 @@ function ExamRow({ exam }) {
       </div>
       <div className="table-element course-num">{exam.course.code}</div>
       <div className="table-element course-name">{exam.course.name}</div>
-      <div className="table-element lecturers">{exam.lecturers}</div>
+      <div className="table-element lecturers">{exam.lecturers.join(", ")}</div>
       <div className="table-element type">{exam.type === "test" ? "מבחן" : "בוחן"}</div>
       <div className="table-element year">{exam.year}</div>
       <div className="table-element semester">{exam.semester === 1 ? "א'" : exam.semester === 2 ? "ב'" : "קיץ"}</div>
       <div className="table-element term">{exam.semester === 1 ? "א'" : exam.semester === 2 ? "ב'" : "ג'"}</div>
       <div className="table-element grade">{exam.grade}</div>
-      <ExamRating exam={exam} editMode={false} />
+      <ExamRating exam={exam} editMode={false}/>
+      <div className="table-element tags">{exam.tags.map((t) => `#${t}`).join(", ")}</div>
     </div>
   );
 }

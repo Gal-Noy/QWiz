@@ -121,7 +121,7 @@ function FilterBar(props) {
       if (!updatedAdvancedSearchLists.semesters.includes(examSemester)) {
         updatedAdvancedSearchLists.semesters.push(examSemester);
       }
-      const examTerm = exam.term === 1 ? "א" : exam.term === 2 ? "ב" : 
+      const examTerm = exam.term === 1 ? "א" : exam.term === 2 ? "ב" : "ג";
       if (!updatedAdvancedSearchLists.terms.includes(examTerm)) {
         updatedAdvancedSearchLists.terms.push(examTerm);
       }

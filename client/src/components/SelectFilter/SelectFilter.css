@@ -1,6 +1,9 @@
 .select-filter-div {
   position: relative;
-  cursor: pointer;
+}
+
+.select-filter-search-value {
+  position: relative;
 }
 
 .select-filter-select {
@@ -21,7 +24,7 @@
     font-size: 1.2rem;
     max-height: 30vh;
     overflow-y: auto;
-    scrollbar-width: thin; 
+    scrollbar-width: thin;
     scrollbar-color: var(--cyan2) white;
   }
 
@@ -34,4 +37,15 @@
       background-color: var(--cyan2);
     }
   }
+}
+
+#select-filter-loading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+#select-filter-loading:after {
+  border: 2px solid black;
+  border-color: black transparent black transparent;
 }

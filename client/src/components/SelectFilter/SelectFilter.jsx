@@ -2,21 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import "./SelectFilter.css";
 
 const SelectFilter = (props) => {
-  const { options, onChange, placeholder, dependency } = props;
+  const { options, value, setValue, placeholder, dependency, isPending } = props;
   const [showOptions, setShowOptions] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchedOptions, setSearchedOptions] = useState(options);
   const [disabled, setDisabled] = useState(false);
   const selectFilterRef = useRef(null);
-
-  useEffect(() => {
-    if (searchValue) {
-      const filteredOptions = options.filter((option) => option.name.includes(searchValue));
-      setSearchedOptions(filteredOptions);
-    } else {
-      onChange(null);
-    }
-  }, [searchValue]);
+  const isAvailable = !disabled && !isPending;
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -33,56 +25,58 @@ const SelectFilter = (props) => {
   }, []);
 
   useEffect(() => {
-    setSearchValue("");
-    setDisabled(!!!dependency);
+    setSearchedOptions(options);
+    if (!value) setSearchValue("");
+  }, [options]);
+
+  useEffect(() => {
+    setDisabled(!dependency);
   }, [dependency]);
+
+  useEffect(() => {
+    if (disabled) {
+      setSearchValue("");
+      setValue(null);
+      setShowOptions(false);
+    }
+  }, [disabled]);
+
+  useEffect(() => {
+    const filteredOptions = options.filter((option) => option.name.includes(searchValue));
+    setSearchedOptions(filteredOptions);
+    if (value) setValue(null);
+  }, [searchValue]);
 
   return (
     <div className="select-filter-div" ref={selectFilterRef}>
-      <div className="select-filter-search-value" onClick={() => setShowOptions(!showOptions)}>
+      <div className="select-filter-search-value">
         <input
-          placeholder={!disabled ? placeholder : ""}
-          className="select-search-input"
-          value={!disabled ? searchValue : ""}
-          onChange={(e) => {
-            setSearchValue(e.target.value);
-            const filteredOptions = options.filter((option) => option.name.includes(e.target.value));
-            setSearchedOptions(filteredOptions);
-            setShowOptions(true);
+          onFocus={() => {
+            if (isAvailable) setShowOptions(!showOptions);
           }}
-          disabled={disabled}
+          placeholder={isAvailable ? placeholder : ""}
+          className="upload-form-input"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+          disabled={!isAvailable}
         />
+        {isPending && <div className="lds-dual-ring" id="select-filter-loading"></div>}
       </div>
       <div className={"select-filter-select" + (showOptions ? " show" : "")}>
         <ul className="select-filter-options">
-          {searchValue &&
-            searchedOptions.map((option, index) => (
-              <li
-                className="select-filter-option"
-                key={index}
-                onClick={() => {
-                  onChange(option.value);
-                  setSearchValue(option.name);
-                  setShowOptions(false);
-                }}
-              >
-                {option.name}
-              </li>
-            ))}
-          {!searchValue &&
-            options.map((option, index) => (
-              <li
-                className="select-filter-option"
-                key={index}
-                onClick={() => {
-                  onChange(option.value);
-                  setSearchValue(option.name);
-                  setShowOptions(false);
-                }}
-              >
-                {option.name}
-              </li>
-            ))}
+          {searchedOptions.map((option, index) => (
+            <li
+              className="select-filter-option"
+              key={index}
+              onClick={() => {
+                setValue(option.value);
+                setSearchValue(option.name);
+                setShowOptions(false);
+              }}
+            >
+              {option.name}
+            </li>
+          ))}
         </ul>
       </div>
     </div>

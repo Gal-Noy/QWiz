@@ -22,7 +22,7 @@ function NavBar() {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
             window.location.href = "/";
-          }, 1000);
+          }, 2000);
         })
       )
       .catch((err) => handleError(err, null, () => setPendingLogout(false)));

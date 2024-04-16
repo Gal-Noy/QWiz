@@ -41,14 +41,16 @@ const examSchema = mongoose.Schema({
     min: 0,
     max: 100,
   },
-  lecturers: {
-    type: String,
-  },
-  uploadedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
+  lecturers: [
+    {
+      type: String,
+    },
+  ],
+  tags: [
+    {
+      type: String,
+    },
+  ],
   difficultyRatings: [
     {
       user: {
@@ -62,8 +64,13 @@ const examSchema = mongoose.Schema({
         max: 5,
         required: true,
       },
-    }
-  ]
+    },
+  ],
+  uploadedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
 });
 
 const deleteExam = async function (next) {
@@ -105,7 +112,7 @@ examSchema.pre("deleteMany", deleteExams);
 const populateExam = function (next) {
   this.populate({
     path: "course",
-    select: "name code",
+    select: "name code tags",
     populate: {
       path: "department",
       select: "name",

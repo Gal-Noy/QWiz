@@ -25,6 +25,14 @@ function FreeSearchExamBlock({ exam }) {
           <a className="secondary-details-pair-key">דירוג קושי: </a>
           <ExamRating exam={exam} editMode={false} />
         </div>
+        <div className="free-search-list-item-secondary-details-pair">
+          <a className="secondary-details-pair-key">מרצים: </a>
+          <a className="secondary-details-pair-value">{exam.lecturers.join(", ")}</a>
+        </div>
+        <div className="free-search-list-item-secondary-details-pair">
+          <a className="secondary-details-pair-key">תגיות: </a>
+          <a className="secondary-details-pair-value">{exam.tags.map((tag) => `#${tag}`).join(", ")}</a>
+        </div>
       </div>
     </li>
   );

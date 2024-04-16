@@ -1,6 +1,7 @@
 import { Thread, Comment } from "../models/threadModels.js";
 import { Exam } from "../models/examModel.js";
 import { User } from "../models/userModel.js";
+import { Course } from "../models/infoModels.js";
 
 const threadsController = {
   // Threads
@@ -56,6 +57,16 @@ const threadsController = {
         return res.status(404).json({ type: "ExamNotFoundError", message: "Exam not found" });
       }
 
+      // Update course and exam tags if necessary
+      if (tags && tags.length > 0) {
+        const course = await Course.findById(examObj.course);
+        course.tags = [...new Set([...course.tags, ...tags])];
+        await course.save();
+
+        examObj.tags = [...new Set([...examObj.tags, ...tags])];
+        await examObj.save();
+      }
+
       const newThread = {
         title,
         exam,
@@ -100,6 +111,7 @@ const threadsController = {
     }
   },
 
+  // New function to edit thread title
   editThread: async (req, res) => {
     try {
       const thread = await Thread.findById(req.params.id);

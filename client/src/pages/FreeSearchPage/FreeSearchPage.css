@@ -107,6 +107,10 @@
 .free-search-list-item-secondary-details-pair {
   display: flex;
   flex-direction: column;
+
+  .table-element.row.rate {
+    width: auto;
+  }
 }
 .secondary-details-pair-key {
   font-weight: bold;

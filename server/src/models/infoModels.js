@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Exam } from "./examModel.js";
 
 const facultySchema = mongoose.Schema({
   name: {
@@ -103,6 +104,16 @@ const courseSchema = mongoose.Schema({
     ref: "Department",
     required: true,
   },
+  tags: [
+    {
+      type: String,
+    },
+  ],
+  lecturers: [
+    {
+      type: String,
+    },
+  ],
 });
 
 const deleteCourse = async function (next) {
