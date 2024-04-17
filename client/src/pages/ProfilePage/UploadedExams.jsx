@@ -13,9 +13,16 @@ function UploadedExams() {
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  /**
+   * Fetches the uploaded exams.
+   *
+   * @async
+   * @function fetchUploadedExams
+   * @returns {Promise<void>} The result of the axios request.
+   */
+  const fetchUploadedExams = async () => {
     setIsPending(true);
-    axiosInstance
+    await axiosInstance
       .get("/exams/uploaded")
       .then((res) =>
         handleResult(res, 200, () => {
@@ -26,6 +33,11 @@ function UploadedExams() {
       )
       .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת הבחינות שהועלו, אנא נסה שנית.")))
       .finally(() => setIsPending(false));
+  };
+
+  // Initial fetch
+  useEffect(() => {
+    fetchUploadedExams();
   }, []);
 
   return (

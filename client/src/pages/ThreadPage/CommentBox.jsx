@@ -111,16 +111,16 @@ function CommentBox(props) {
    * Updates the comment.
    *
    * @async
-   * @function updateComment
+   * @function editComment
    * @returns {Promise<void>} The result of updating the comment.
    */
-  const updateComment = async () => {
+  const editComment = async () => {
     if (editedCommentTitle === title && editedCommentContent === content) {
       toggleEditMode();
       return;
     }
     await axiosInstance
-      .put(`/threads/comment/${_id}`, { title: editedCommentTitle, content: editedCommentContent })
+      .put(`/threads/comment/${_id}/edit`, { title: editedCommentTitle, content: editedCommentContent })
       .then((res) =>
         handleResult(res, 200, () => {
           toast.success("התגובה עודכנה בהצלחה");
@@ -208,7 +208,7 @@ function CommentBox(props) {
                       <button className="comment-button" onClick={toggleEditMode}>
                         בטל
                       </button>
-                      <button className="comment-button" onClick={updateComment}>
+                      <button className="comment-button" onClick={editComment}>
                         שמור
                       </button>
                     </>

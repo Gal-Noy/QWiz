@@ -23,18 +23,21 @@ function CreatedThreads() {
   const fetchThreads = async () => {
     setIsPending(true);
     await axiosInstance
-      .get("/threads/user")
+      .get("/threads/created")
       .then((res) =>
         handleResult(res, 200, () => {
           const fetchedThreads = res.data;
           setCreatedThreads(fetchedThreads);
         })
       )
-      .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת הדיונים שנוצרו")))
+      .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת הדיונים שנוצרו, אנא נסה שנית.")))
       .finally(() => setIsPending(false));
   };
 
-  useEffect(() => fetchThreads(), []); // Initial fetch
+  // Initial fetch
+  useEffect(() => {
+    fetchThreads();
+  }, []);
 
   return (
     <ThreadsList

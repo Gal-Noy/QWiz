@@ -3,11 +3,22 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+// Configure AWS
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 });
 
+/**
+ * Upload a file to S3
+ *
+ * @async
+ * @function uploadFile
+ * @param {Buffer} fileContent - The file content
+ * @param {string} fileName - The file name
+ * @param {string} fileType - The file type
+ * @returns {Promise<string>} - The file URL
+ */
 const uploadFile = async (fileContent, fileName, fileType) => {
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
@@ -26,6 +37,14 @@ const uploadFile = async (fileContent, fileName, fileType) => {
   });
 };
 
+/**
+ * Get a presigned URL for a file
+ *
+ * @async
+ * @function getPresignedUrl
+ * @param {string} fileName - The file name
+ * @returns {Promise<string>} - The presigned URL
+ */
 const getPresignedUrl = async (fileName) => {
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
@@ -43,6 +62,14 @@ const getPresignedUrl = async (fileName) => {
   });
 };
 
+/**
+ * Delete a file from S3
+ *
+ * @async
+ * @function deleteFile
+ * @param {string} fileName - The file name
+ * @returns {Promise<object>} - The S3 response
+ */
 const deleteFile = async (fileName) => {
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,

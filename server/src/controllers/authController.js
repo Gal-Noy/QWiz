@@ -14,6 +14,12 @@ const authController = {
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {User} The created user.
+   * @throws {MissingFieldsError} If not all fields are provided.
+   * @throws {UserExistError} If a user with the same email already exists.
+   * @throws {EmailError} If the email is invalid.
+   * @throws {PasswordLengthError} If the password is less than 6 characters long.
+   * @throws {PasswordsMismatchError} If the passwords do not match.
+   * @throws {Error} If an error occurs while creating the user.
    */
   register: async (req, res) => {
     try {
@@ -71,6 +77,10 @@ const authController = {
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Object} The user and token.
+   * @throws {MissingFieldsError} If not all fields are provided.
+   * @throws {UserActiveError} If the user is already logged in.
+   * @throws {InvalidCredentialsError} If the credentials are invalid.
+   * @throws {Error} If an error occurs while logging in the user.
    */
   login: async (req, res) => {
     try {
@@ -129,6 +139,7 @@ const authController = {
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Object} The result of logging out the user (message).
+   * @throws {Error} If an error occurs while logging out the user.
    */
   logout: async (req, res) => {
     try {

@@ -13,13 +13,13 @@ categoriesRouter.get("/faculties", categoriesController.getFaculties);
 // GET: get faculty by id
 categoriesRouter.get("/faculty/:id", categoriesController.getFacultyById);
 
-// POST: create a new faculty
+// POST: create a new faculty (ADMIN ONLY)
 categoriesRouter.post("/faculty", authenticateAdmin, categoriesController.createFaculty);
 
-// PUT: update faculty by id
+// PUT: update faculty by id (ADMIN ONLY)
 categoriesRouter.put("/faculty/:id", authenticateAdmin, categoriesController.updateFaculty);
 
-// DELETE: delete faculty by id
+// DELETE: delete faculty by id (ADMIN ONLY)
 categoriesRouter.delete("/faculty/:id", authenticateAdmin, categoriesController.deleteFaculty);
 
 // GET: get faculty's departments
@@ -33,13 +33,13 @@ categoriesRouter.get("/departments", categoriesController.getDepartments);
 // GET: get department by id
 categoriesRouter.get("/department/:id", categoriesController.getDepartmentById);
 
-// POST: create a new department
+// POST: create a new department (ADMIN ONLY)
 categoriesRouter.post("/department", authenticateAdmin, categoriesController.createDepartment);
 
-// PUT: update department by id
+// PUT: update department by id (ADMIN ONLY)
 categoriesRouter.put("/department/:id", authenticateAdmin, categoriesController.updateDepartment);
 
-// DELETE: delete department by id
+// DELETE: delete department by id (ADMIN ONLY)
 categoriesRouter.delete("/department/:id", authenticateAdmin, categoriesController.deleteDepartment);
 
 // GET: get department's courses
@@ -53,13 +53,13 @@ categoriesRouter.get("/courses", categoriesController.getCourses);
 // GET: get course by id
 categoriesRouter.get("/course/:id", categoriesController.getCourseById);
 
-// POST: create a new course
+// POST: create a new course (ADMIN ONLY)
 categoriesRouter.post("/course", authenticateAdmin, categoriesController.createCourse);
 
-// PUT: update course by id
+// PUT: update course by id (ADMIN ONLY)
 categoriesRouter.put("/course/:id", authenticateAdmin, categoriesController.updateCourse);
 
-// DELETE: delete course by id
+// DELETE: delete course by id (ADMIN ONLY)
 categoriesRouter.delete("/course/:id", authenticateAdmin, categoriesController.deleteCourse);
 
 export default categoriesRouter;

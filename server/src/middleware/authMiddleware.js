@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { User } from "../models/userModel.js";
 
-export const authenticateToken = async (req, res, next) => {
+const authenticateToken = async (req, res, next) => {
   const token = req.header("Authorization")?.split(" ")[1];
 
   if (!token) {
@@ -66,11 +66,13 @@ export const authenticateToken = async (req, res, next) => {
   }
 };
 
-export const authenticateAdmin = async (req, res, next) => {
+const authenticateAdmin = async (req, res, next) => {
   const user = await User.findById(req.user.user_id);
   if (user.role !== "admin") {
-    return res.status(403).json({ message: "Access denied. Admin only." });
+    return res.status(403).json({ type: "AccessDeniedError", message: "Access denied, admin only." });
   }
 
   next();
 };
+
+export { authenticateToken, authenticateAdmin };

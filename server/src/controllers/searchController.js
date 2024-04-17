@@ -1,156 +1,20 @@
-import { Thread } from "../models/threadModels.js";
-import { Exam } from "../models/examModel.js";
-import { Course, Department } from "../models/categoriesModels.js";
+import { getQuerySubQueries, searchExams, searchThreads, filterExams } from "../utils/freeSearchUtils.js";
 
-const getQuerySubQueries = (queryParts) => {
-  const subQueries = [];
-  for (let i = 0; i < queryParts.length; i++) {
-    for (let j = i + 1; j <= queryParts.length; j++) {
-      const subQuery = queryParts.slice(i, j);
-      if (subQuery.length > 0) subQueries.push(subQuery.join(" "));
-    }
-  }
-  return subQueries.sort((a, b) => b.length - a.length);
-};
-
-const searchExams = async (subQuery) => {
-  const subQueryWords = subQuery
-    .split(" ")
-    .filter((word) => word.trim().length >= 3)
-    .map((word) => new RegExp(word.trim(), "i"));
-
-  if (subQueryWords.length === 0) {
-    return [];
-  }
-
-  let foundExams = [];
-
-  // Course search
-  const courseQuery = {
-    $or: subQueryWords.map((word) => ({
-      name: { $regex: word.source, $options: "i" },
-    })),
-  };
-  const coursesMatch = await Course.find({ $or: [courseQuery] });
-
-  // Department search
-  const departmentQuery = {
-    $or: subQueryWords.map((word) => ({
-      name: { $regex: word.source, $options: "i" },
-    })),
-  };
-  const departmentsMatch = await Department.find({ $or: [departmentQuery] });
-
-  // Find department or course matched exams (departments have higher priority than courses)
-  if (departmentsMatch.length > 0) {
-    const departmentsMatchedExams = await Exam.find({
-      course: {
-        $in: (
-          await Course.find({ department: { $in: departmentsMatch.map((department) => department._id) } })
-        ).map((course) => course._id),
-      },
-    }).select("-s3Key");
-    for (const exam of departmentsMatchedExams) {
-      if (!foundExams.includes(exam)) foundExams.push(exam);
-    }
-  } else if (coursesMatch.length > 0) {
-    const coursesMatchedExams = await Exam.find({ course: { $in: coursesMatch.map((course) => course._id) } }).select(
-      "-s3Key"
-    );
-    for (const exam of coursesMatchedExams) {
-      if (!foundExams.includes(exam)) foundExams.push(exam);
-    }
-  }
-
-  // Lecturers and tags search
-  const lecturersTagsMatchedExams = await Exam.find({
-    $or: [{ lecturers: { $in: subQueryWords } }, { tags: { $in: subQueryWords } }],
-  }).select("-s3Key");
-  if (lecturersTagsMatchedExams.length > 0) {
-    for (const exam of lecturersTagsMatchedExams) {
-      if (!foundExams.includes(exam)) foundExams.push(exam);
-    }
-  }
-
-  return foundExams;
-};
-
-const filterExams = async (foundExams, subQuery) => {
-  // Year filter
-  const yearMatch = subQuery.match(/^\d{4}$/);
-  const year = yearMatch ? parseInt(yearMatch[0]) : null;
-  if (year) {
-    foundExams = foundExams.filter((exam) => exam.year === year);
-  }
-
-  // Semester filter
-  const semesterMapping = {
-    "סמסטר א": 1,
-    "סמסטר ב": 2,
-    "סמסטר קיץ": 3,
-  };
-
-  for (const semester of Object.keys(semesterMapping)) {
-    if (subQuery.includes(semester)) {
-      foundExams = foundExams.filter((exam) => exam.semester === semesterMapping[semester]);
-      break;
-    }
-  }
-
-  // Term filter
-  const termMapping = {
-    "מועד א": 1,
-    "מועד ב": 2,
-    "מועד ג": 3,
-  };
-
-  for (const term of Object.keys(termMapping)) {
-    if (subQuery.includes(term)) {
-      foundExams = foundExams.filter((exam) => exam.term === termMapping[term]);
-      break;
-    }
-  }
-
-  // Type filter
-  const typeMapping = {
-    בוחן: "quiz",
-    מבחן: "test",
-  };
-
-  for (const type of Object.keys(typeMapping)) {
-    if (subQuery.includes(type)) {
-      foundExams = foundExams.filter((exam) => exam.type === typeMapping[type]);
-      break;
-    }
-  }
-
-  return foundExams;
-};
-
-const searchThreads = async (subQuery) => {
-  const subQueryWords = subQuery
-    .split(" ")
-    .filter((word) => word.trim().length >= 3)
-    .map((word) => new RegExp(word.trim(), "i"));
-
-  if (subQueryWords.length === 0) {
-    return [];
-  }
-
-  const titleQuery = {
-    $or: subQueryWords.map((word) => ({
-      title: { $regex: word.source, $options: "i" },
-    })),
-  };
-
-  const threads = await Thread.find({
-    $or: [titleQuery, { tags: { $in: subQueryWords } }],
-  });
-
-  return threads;
-};
-
+/**
+ * Controller for the free search endpoint.
+ */
 const searchController = {
+  /**
+   * Search for exams and threads based on a query.
+   *
+   * @async
+   * @function freeSearch
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Object} - The search results (exams and threads).
+   * @throws {MissingFieldsError} - Missing search query.
+   * @throws {Error} - If an error occurred while searching.
+   */
   freeSearch: async (req, res) => {
     try {
       const queryParts = req.params.query.split(" ");
@@ -159,6 +23,9 @@ const searchController = {
         return res.status(400).json({ type: "MissingFieldsError", message: "Please enter a search query" });
       }
 
+      // Get sub-queries from the search query
+      // The sub-queries are all contiguous subarrays of the search query parts
+      // They are sorted by length in descending order, so that the longest sub-queries are searched first (more specific)
       const subQueries = getQuerySubQueries(queryParts);
 
       const searchResults = {
@@ -170,9 +37,9 @@ const searchController = {
 
       for (const subQuery of subQueries) {
         if (!examsFound) {
-          const foundExams = await searchExams(subQuery);
+          const foundExams = await searchExams(subQuery); // Search for faculty, course, lecturers and tags.
           if (foundExams.length > 0) {
-            const filteredExams = await filterExams(foundExams, subQuery);
+            const filteredExams = await filterExams(foundExams, subQuery); // Filter by year, semester, term and type.
             for (const exam of filteredExams) {
               if (!searchResults.exams.includes(exam)) searchResults.exams.push(exam);
             }
@@ -181,7 +48,7 @@ const searchController = {
         }
 
         if (!threadsFound) {
-          const foundThreads = await searchThreads(subQuery);
+          const foundThreads = await searchThreads(subQuery); // Search for threads by title and tags.
           if (foundThreads.length > 0) {
             for (const thread of foundThreads) {
               if (!searchResults.threads.includes(thread)) searchResults.threads.push(thread);
@@ -189,6 +56,8 @@ const searchController = {
             threadsFound = true;
           }
         }
+
+        if (examsFound && threadsFound) break;
       }
 
       return res.json(searchResults);

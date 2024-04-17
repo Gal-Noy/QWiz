@@ -1,7 +1,20 @@
 import { User } from "../models/userModel.js";
 import bcrypt from "bcrypt";
 
+/**
+ * Controller for handling user-related operations
+ */
 const usersController = {
+  /**
+   * Get all users
+   * Only admins can access this route
+   *
+   * @async
+   * @function getAllUsers
+   * @param {Request} req - Express request object
+   * @param {Response} res - Express response object
+   * @returns {User[]} - Array of all users
+   */
   getAllUsers: async (req, res) => {
     try {
       const users = await User.find({});
@@ -12,6 +25,17 @@ const usersController = {
     }
   },
 
+  /**
+   * Get a user by ID
+   *
+   * @async
+   * @function getUserById
+   * @param {Request} req - Express request object
+   * @param {Response} res - Express response object
+   * @returns {User} - User object
+   * @throws {UserNotFoundError} - User not found
+   * @throws {Error} - Server error
+   */
   getUserById: async (req, res) => {
     try {
       const user = await User.findById(req.params.id);
@@ -26,7 +50,80 @@ const usersController = {
     }
   },
 
+  /**
+   * Update a user by ID
+   * Only admins can access this route
+   *
+   * @async
+   * @function updateUserById
+   * @param {Request} req - Express request object
+   * @param {Response} res - Express response object
+   * @returns {User} - Updated user object
+   * @throws {UserNotFoundError} - User not found
+   * @throws {Error} - Server error
+   */
   updateUserById: async (req, res) => {
+    try {
+      const user = await User.findById(req.params.id);
+
+      if (!user) {
+        return res.status(404).json({ type: "UserNotFoundError", message: "User not found" });
+      }
+
+      user.set(req.body);
+      await user.save();
+
+      return res.json(user);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+
+  /**
+   * Delete a user by ID
+   * Only admins can access this route
+   *
+   * @async
+   * @function deleteUserById
+   * @param {Request} req - Express request object
+   * @param {Response} res - Express response object
+   * @returns {User} - Deleted user object
+   * @throws {UserNotFoundError} - User not found
+   * @throws {Error} - Server error
+   */
+  deleteUserById: async (req, res) => {
+    try {
+      const deletedUser = await User.findByIdAndDelete(req.params.id);
+
+      if (!deletedUser) {
+        return res.status(404).json({ type: "UserNotFoundError", message: "User not found" });
+      }
+
+      return res.json(deletedUser);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+
+  /**
+   * Edit user's details
+   * User can edit their email, password, name, phone number, and ID number
+   *
+   * @async
+   * @function editUserDetails
+   * @param {Request} req - Express request object
+   * @param {Response} res - Express response object
+   * @returns {User} - Updated user object
+   * @throws {MissingFieldsError} - At least one field must be filled
+   * @throws {EmailError} - Invalid email
+   * @throws {NameLengthError} - Name must be at least 2 characters long
+   * @throws {PhoneNumberError} - Invalid phone number
+   * @throws {PhoneNumberLengthError} - Phone number must be at least 9 digits long
+   * @throws {IDNumberError} - Invalid ID number
+   * @throws {PasswordLengthError} - Password must be at least 6 characters long
+   * @throws {Error} - Server error
+   */
+  editUserDetails: async (req, res) => {
     try {
       const newDetails = req.body;
 
@@ -83,20 +180,6 @@ const usersController = {
       await dbUser.save();
 
       return res.json(dbUser);
-    } catch (error) {
-      return res.status(500).json({ message: error.message });
-    }
-  },
-
-  deleteUserById: async (req, res) => {
-    try {
-      const deletedUser = await User.findByIdAndDelete(req.params.id);
-
-      if (!deletedUser) {
-        return res.status(404).json({ type: "UserNotFoundError", message: "User not found" });
-      }
-
-      return res.json(deletedUser);
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }

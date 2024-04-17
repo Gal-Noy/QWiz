@@ -115,6 +115,25 @@ function UploadForm() {
       .finally(() => setIsPending(false));
   };
 
+  /**
+   * Clears the star rating.
+   *
+   * @function clearRating
+   * @returns {void} The result of clearing the star rating.
+   */
+  const clearRating = () => {
+    const stars = document.querySelectorAll(".radio-input");
+    stars.forEach((star) => {
+      star.checked = false;
+    });
+  };
+
+  /**
+   * Clears the form.
+   *
+   * @function clearForm
+   * @returns {void} The result of clearing the form.
+   */
   const clearForm = () => {
     const user = JSON.parse(localStorage.getItem("user"));
 
@@ -145,12 +164,7 @@ function UploadForm() {
       lecturers: [],
     });
     cancelFile();
-
-    // Clear the star rating
-    const stars = document.querySelectorAll(".radio-input");
-    stars.forEach((star) => {
-      star.checked = false;
-    });
+    clearRating();
   };
 
   /**
@@ -256,17 +270,23 @@ function UploadForm() {
   // Fetch departments and courses according to the chosen faculty
   useEffect(() => {
     setExamDetails({ ...examDetails, department: null, course: null });
+    cancelFile();
+    clearRating();
     if (examDetails.faculty) fetchDepartmentsByFaculty(examDetails.faculty._id);
   }, [examDetails.faculty]);
 
   useEffect(() => {
     setExamDetails({ ...examDetails, course: null });
+    cancelFile();
+    clearRating();
     if (examDetails.department) fetchCoursesByDepartment(examDetails.department._id);
   }, [examDetails.department]);
 
   // Fetch the course attributes by course
   useEffect(() => {
     setExamDetails({ ...examDetails, tags: [], lecturers: [] });
+    cancelFile();
+    clearRating();
     if (examDetails.course) fetchCourseAttributes(examDetails.course._id);
   }, [examDetails.course]);
 

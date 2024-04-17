@@ -13,8 +13,16 @@ function StarredThreads() {
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    axiosInstance
+  /**
+   * Fetches the starred threads.
+   *
+   * @async
+   * @function fetchStarredThreads
+   * @returns {Promise<void>} The result of the axios request.
+   */
+  const fetchStarredThreads = async () => {
+    setIsPending(true);
+    await axiosInstance
       .get("/threads/starred")
       .then((res) =>
         handleResult(res, 200, () => {
@@ -25,6 +33,11 @@ function StarredThreads() {
       )
       .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת הדיונים המועדפים, אנא נסה שנית.")))
       .finally(() => setIsPending(false));
+  };
+
+  // Initial fetch
+  useEffect(() => {
+    fetchStarredThreads();
   }, []);
 
   return (

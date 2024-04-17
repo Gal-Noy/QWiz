@@ -1,27 +1,49 @@
 import express from "express";
 import threadsController from "../controllers/threadsController.js";
 import { authenticateToken, authenticateAdmin } from "../middleware/authMiddleware.js";
+import { validateIdParam } from "../middleware/threadsMiddleware.js";
 
 const threadsRouter = express.Router();
 threadsRouter.use(authenticateToken);
 
-// GET: get all threads
+///////////////////////// THREADS CRUD /////////////////////////
+
+// GET: get all threads (ADMIN ONLY)
 threadsRouter.get("/", authenticateAdmin, threadsController.getAllThreads);
+
+// GET: get thread by id
+threadsRouter.get("/:id", validateIdParam, threadsController.getThreadById);
+
+// POST: create a new thread
+threadsRouter.post("/", threadsController.createThread);
+
+// PUT: update thread by id (ADMIN ONLY)
+threadsRouter.put("/:id", authenticateAdmin, threadsController.updateThread);
+
+// DELETE: delete thread by id (ADMIN ONLY)
+threadsRouter.delete("/:id", authenticateAdmin, threadsController.deleteThread);
+
+///////////////////////// THREADS SEARCH /////////////////////////
 
 // GET: get threads by exam
 threadsRouter.get("/exam/:id", threadsController.getThreadsByExam);
 
-// GET: get threads by user (my threads)
-threadsRouter.get("/user", threadsController.getThreadsByUser);
+// GET: get threads by user id (ADMIN ONLY)
+threadsRouter.get("/user/:id", authenticateAdmin, threadsController.getThreadsByUserId);
+
+// GET: get threads created by user
+threadsRouter.get("/created", threadsController.getCreatedThreads);
 
 // GET: get starred threads
 threadsRouter.get("/starred", threadsController.getStarredThreads);
 
-// GET: get thread by id
-threadsRouter.get("/:id", threadsController.getThreadById);
+///////////////////////// THREADS ACTIONS /////////////////////////
 
-// POST: create a new thread
-threadsRouter.post("/", threadsController.createThread);
+// PUT: edit title of a thread
+threadsRouter.put("/:id/edit", threadsController.editThreadTitle);
+
+// POST: toggle thread closed status
+threadsRouter.post("/:id/toggle", threadsController.toggleThreadClosed);
 
 // POST: star a thread
 threadsRouter.post("/:id/star", threadsController.starThread);
@@ -29,23 +51,21 @@ threadsRouter.post("/:id/star", threadsController.starThread);
 // DELETE: unstar a thread
 threadsRouter.delete("/:id/star", threadsController.unstarThread);
 
-// PUT: update thread by id
-threadsRouter.put("/:id", authenticateAdmin, threadsController.updateThread);
-
-// PUT: edit title of a thread
-threadsRouter.put("/:id/edit", threadsController.editThread);
-
-// DELETE: delete thread by id
-threadsRouter.delete("/:id", authenticateAdmin, threadsController.deleteThread);
-
-// GET: get threads by user id
-threadsRouter.get("/user/:id", authenticateAdmin, threadsController.getThreadsByUserId);
-
-// POST: toggle thread closed status
-threadsRouter.post("/:id/toggle", threadsController.toggleThreadClosed);
+///////////////////////// COMMENTS CRUD /////////////////////////
 
 // GET: get comment by id
-threadsRouter.get("/comment/:id", authenticateAdmin, threadsController.getCommentById);
+threadsRouter.get("/comment/:id", threadsController.getCommentById);
+
+// POST: create a new comment (ADMIN ONLY)
+threadsRouter.post("/:id/comment", authenticateAdmin, threadsController.createComment);
+
+// PUT: update comment by id (ADMIN ONLY)
+threadsRouter.put("/comment/:id", authenticateAdmin, threadsController.updateComment);
+
+// DELETE: delete comment by id (ADMIN ONLY)
+threadsRouter.delete("/comment/:id", authenticateAdmin, threadsController.deleteComment);
+
+///////////////////////// COMMENTS ACTIONS /////////////////////////
 
 // POST: add a new comment to a thread
 threadsRouter.post("/:id/comment", threadsController.addCommentToThread);
@@ -53,13 +73,10 @@ threadsRouter.post("/:id/comment", threadsController.addCommentToThread);
 // POST: add a new reply to a comment
 threadsRouter.post("/:threadId/comment/:commentId/reply", threadsController.addReplyToComment);
 
-// PUT: update comment
-threadsRouter.put("/comment/:id", threadsController.updateComment);
+// PUT: edit a comment
+threadsRouter.put("/comment/:id/edit", threadsController.editComment);
 
 // PUT: toggle like on a comment
 threadsRouter.put("/comment/:id/like", threadsController.toggleLikeComment);
-
-// DELETE: delete a comment
-threadsRouter.delete("/comment/:id", authenticateAdmin, threadsController.deleteComment);
 
 export default threadsRouter;

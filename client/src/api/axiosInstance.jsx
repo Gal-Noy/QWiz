@@ -119,6 +119,10 @@ export const handleError = (error, defaultMessage, callback) => {
             toast.error("מספר תעודת זהות לא חוקי");
             break;
           }
+          case "InvalidIDError": {
+            toast.error("מזהה לא חוקי");
+            break;
+          }
           default: {
             toast.error("בקשה לא חוקית");
             break;

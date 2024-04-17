@@ -28,7 +28,10 @@ function FavoriteExams() {
       .finally(() => setIsPending(false));
   };
 
-  useEffect(() => fetchFavoriteExams(), []); // Initial fetch
+  // Initial fetch
+  useEffect(() => {
+    fetchFavoriteExams();
+  }, []);
 
   return (
     <ExamsList

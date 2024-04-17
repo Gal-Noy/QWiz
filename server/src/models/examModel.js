@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
-import { deleteFile } from "../utils/s3.js";
-import { Thread } from "./threadModels.js";
-import { User } from "./userModel.js";
+import { deleteExam, deleteExams, populateExam } from "../middleware/examsMiddleware.js";
 
 const examSchema = mongoose.Schema({
   s3Key: {
@@ -73,61 +71,9 @@ const examSchema = mongoose.Schema({
   },
 });
 
-const deleteExam = async function (next) {
-  const examToDelete = await this.model.findOne(this.getQuery());
-  const { _id: examId, s3Key } = examToDelete;
-
-  try {
-    await deleteFile(s3Key);
-
-    await Thread.deleteMany({ exam: examId });
-
-    await User.updateMany({ favorite_exams: examId }, { $pull: { favorite_exams: examId } });
-
-    next();
-  } catch (error) {
-    next(error);
-  }
-};
-
-const deleteExams = async function (next) {
-  const examsToDelete = await this.model.find(this.getQuery());
-  const examIds = examsToDelete.map((exam) => exam._id);
-
-  try {
-    await Thread.deleteMany({ exam: { $in: examIds } });
-
-    await User.updateMany({ favorite_exams: { $in: examIds } }, { $pull: { favorite_exams: { $in: examIds } } });
-
-    next();
-  } catch (error) {
-    next(error);
-  }
-};
-
 examSchema.pre("findOneAndDelete", deleteExam);
 examSchema.pre("deleteOne", deleteExam);
 examSchema.pre("deleteMany", deleteExams);
-
-const populateExam = function (next) {
-  this.populate({
-    path: "course",
-    select: "name code tags",
-    populate: {
-      path: "department",
-      select: "name",
-      populate: {
-        path: "faculty",
-        select: "name",
-      },
-    },
-  });
-  this.populate({
-    path: "uploadedBy",
-    select: "name",
-  });
-  next();
-};
 
 examSchema.pre("findOne", populateExam);
 examSchema.pre("find", populateExam);

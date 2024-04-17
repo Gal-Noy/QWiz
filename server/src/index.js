@@ -4,7 +4,6 @@ import cors from "cors";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import router from "./routes/index.js";
-import multer from "multer";
 
 const app = express();
 

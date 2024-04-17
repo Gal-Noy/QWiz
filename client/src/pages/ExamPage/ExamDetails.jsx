@@ -16,7 +16,7 @@ import { mapTags } from "../../utils/generalUtils";
  */
 function ExamDetails({ examId }) {
   const [exam, setExam] = useState(null);
-  const [isPending, setIsPending] = useState(true);
+  const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState(null);
   const [filePath, setFilePath] = useState(null);
   const [pdfLoaded, setPdfLoaded] = useState(false);
@@ -51,7 +51,10 @@ function ExamDetails({ examId }) {
       .then((res) => handleResult(res, 200, () => setFilePath(res.data.presignedUrl)))
       .catch((err) => handleError(err));
 
-  useEffect(() => fetchExam(), [examId]); // Initial fetch
+  // Initial fetch
+  useEffect(() => {
+    fetchExam();
+  }, [examId]);
 
   useEffect(() => {
     if (exam) getPresignedUrl();

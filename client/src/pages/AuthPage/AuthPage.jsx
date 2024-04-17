@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import Login from "./Login";
-import Signup from "./Signup";
+import Register from "./Register";
 import "./AuthPage.css";
 
 /**
@@ -19,7 +19,7 @@ function AuthPage() {
         <label id="auth-logo-row-1">QWiz</label>
         <label id="auth-logo-row-2">פורטל המבחנים החדש</label>
       </div>
-      <div className="auth-side-form">{formType === "login" ? <Login /> : <Signup />}</div>
+      <div className="auth-side-form">{formType === "login" ? <Login /> : <Register />}</div>
     </div>
   );
 }

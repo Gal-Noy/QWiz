@@ -4,22 +4,22 @@ import axiosInstance, { handleError, handleResult } from "../../api/axiosInstanc
 import { toast } from "react-custom-alert";
 
 /**
- * The signup component.
+ * The register component.
  *
  * @component
- * @returns {JSX.Element} The rendered Signup component.
+ * @returns {JSX.Element} The rendered Register component.
  */
-function Signup() {
-  const [signupData, setSignupData] = useState({ name: "", email: "", password: "", confirmPassword: "" });
-  const [passwordsMatch, setPasswordsMatch] = useState(signupData.password === signupData.confirmPassword);
+function Register() {
+  const [registerData, setRegisterData] = useState({ name: "", email: "", password: "", confirmPassword: "" });
+  const [passwordsMatch, setPasswordsMatch] = useState(registerData.password === registerData.confirmPassword);
   const [isPending, setIsPending] = useState(false);
 
   useEffect(() => {
-    setPasswordsMatch(signupData.password === signupData.confirmPassword);
-  }, [signupData.confirmPassword, signupData.password]);
+    setPasswordsMatch(registerData.password === registerData.confirmPassword);
+  }, [registerData.confirmPassword, registerData.password]);
 
   /**
-   * Handle the signup event.
+   * Handle the register event.
    *
    * @async
    * @function
@@ -32,7 +32,7 @@ function Signup() {
     e.preventDefault();
     setIsPending(true);
 
-    const { name, email, password, confirmPassword } = signupData;
+    const { name, email, password, confirmPassword } = registerData;
 
     if (!name || !email || !password || !confirmPassword) {
       toast.warning("יש למלא כל השדות");
@@ -47,7 +47,7 @@ function Signup() {
     }
 
     await axiosInstance
-      .post("/auth/register", signupData)
+      .post("/auth/register", registerData)
       .then((res) => {
         handleResult(res, 201, () => {
           toast.success("נרשמת בהצלחה");
@@ -67,21 +67,21 @@ function Signup() {
           type="text"
           name="name"
           placeholder="שם מלא"
-          onChange={(e) => setSignupData({ ...signupData, name: e.target.value })}
+          onChange={(e) => setRegisterData({ ...registerData, name: e.target.value })}
           required
         />
         <input
           type="email"
           name="email"
           placeholder="אימייל"
-          onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
+          onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
           required
         />
         <input
           type="password"
           name="password"
           placeholder="סיסמה"
-          onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
+          onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
           required
         />
         <input
@@ -89,7 +89,7 @@ function Signup() {
           name="confirmPassword"
           placeholder="אימות סיסמה"
           className={`${passwordsMatch ? "" : "passwords-mismatch"}`}
-          onChange={(e) => setSignupData({ ...signupData, confirmPassword: e.target.value })}
+          onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
           required
         />
         <button type="submit" className="auth-submit-button">
@@ -104,4 +104,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default Register;

@@ -14,6 +14,7 @@ const categoriesController = {
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Faculty[]} The faculties.
+   *
    */
   getFaculties: async (req, res) => {
     try {
@@ -33,6 +34,8 @@ const categoriesController = {
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Faculty} The faculty.
+   * @throws {FacultyNotFoundError} If the faculty is not found.
+   * @throws {Error} If an error occurs while fetching the faculty.
    */
   getFacultyById: async (req, res) => {
     try {
@@ -50,12 +53,14 @@ const categoriesController = {
 
   /**
    * Creates a faculty.
+   * Only admins can create faculties.
    *
    * @async
    * @function createFaculty
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Faculty} The created faculty.
+   * @throws {Error} If an error occurs while creating the faculty.
    */
   createFaculty: async (req, res) => {
     try {
@@ -70,12 +75,15 @@ const categoriesController = {
 
   /**
    * Updates a faculty.
+   * Only admins can update faculties.
    *
    * @async
    * @function updateFaculty
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Faculty} The updated faculty.
+   * @throws {FacultyNotFoundError} If the faculty is not found.
+   * @throws {Error} If an error occurs while updating the faculty.
    */
   updateFaculty: async (req, res) => {
     try {
@@ -96,12 +104,15 @@ const categoriesController = {
 
   /**
    * Deletes a faculty.
+   * Only admins can delete faculties.
    *
    * @async
    * @function deleteFaculty
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Object} The result of deleting the faculty (message).
+   * @throws {FacultyNotFoundError} If the faculty is not found.
+   * @throws {Error} If an error occurs while deleting the faculty.
    */
   deleteFaculty: async (req, res) => {
     try {
@@ -125,6 +136,8 @@ const categoriesController = {
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Department[]} The departments of the faculty.
+   * @throws {Error} If an error occurs while fetching the departments.
+   * @throws {FacultyNotFoundError} If the faculty is not found.
    */
   getFacultyDepartments: async (req, res) => {
     try {
@@ -146,6 +159,8 @@ const categoriesController = {
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Department[]} The departments.
+   * @throws {DepartmentNotFoundError} If the department is not found.
+   * @throws {Error} If an error occurs while fetching the departments.
    */
   getDepartments: async (req, res) => {
     try {
@@ -165,6 +180,8 @@ const categoriesController = {
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Department} The department.
+   * @throws {DepartmentNotFoundError} If the department is not found.
+   * @throws {Error} If an error occurs while fetching the department.
    */
   getDepartmentById: async (req, res) => {
     try {
@@ -182,12 +199,14 @@ const categoriesController = {
 
   /**
    * Creates a department.
+   * Only admins can create departments.
    *
    * @async
    * @function createDepartment
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Department} The created department.
+   * @throws {Error} If an error occurs while creating the department.
    */
   createDepartment: async (req, res) => {
     try {
@@ -203,12 +222,15 @@ const categoriesController = {
 
   /**
    * Updates a department.
+   * Only admins can update departments.
    *
    * @async
    * @function updateDepartment
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Department} The updated department.
+   * @throws {DepartmentNotFoundError} If the department is not found.
+   * @throws {Error} If an error occurs while updating the department.
    */
   updateDepartment: async (req, res) => {
     try {
@@ -229,12 +251,15 @@ const categoriesController = {
 
   /**
    * Deletes a department.
+   * Only admins can delete departments.
    *
    * @async
    * @function deleteDepartment
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Object} The result of deleting the department (message).
+   * @throws {DepartmentNotFoundError} If the department is not found.
+   * @throws {Error} If an error occurs while deleting the department.
    */
   deleteDepartment: async (req, res) => {
     try {
@@ -258,6 +283,7 @@ const categoriesController = {
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Course[]} The courses of the department.
+   * @throws {Error} If an error occurs while fetching the courses.
    */
   getDepartmentCourses: async (req, res) => {
     try {
@@ -279,6 +305,7 @@ const categoriesController = {
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Course[]} The courses.
+   * @throws {Error} If an error occurs while fetching the courses.
    */
   getCourses: async (req, res) => {
     try {
@@ -298,6 +325,8 @@ const categoriesController = {
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Course} The course.
+   * @throws {CourseNotFoundError} If the course is not found.
+   * @throws {Error} If an error occurs while fetching the course.
    */
   getCourseById: async (req, res) => {
     try {
@@ -315,12 +344,14 @@ const categoriesController = {
 
   /**
    * Creates a course.
+   * Only admins can create courses.
    *
    * @async
    * @function createCourse
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Course} The created course.
+   * @throws {Error} If an error occurs while creating the course.
    */
   createCourse: async (req, res) => {
     try {
@@ -336,12 +367,15 @@ const categoriesController = {
 
   /**
    * Updates a course.
+   * Only admins can update courses.
    *
    * @async
    * @function updateCourse
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Course} The updated course.
+   * @throws {CourseNotFoundError} If the course is not found.
+   * @throws {Error} If an error occurs while updating the course.
    */
   updateCourse: async (req, res) => {
     try {
@@ -362,12 +396,15 @@ const categoriesController = {
 
   /**
    * Deletes a course.
+   * Only admins can delete courses.
    *
    * @async
    * @function deleteCourse
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Object} The result of deleting the course (message).
+   * @throws {CourseNotFoundError} If the course is not found.
+   * @throws {Error} If an error occurs while deleting the course.
    */
   deleteCourse: async (req, res) => {
     try {
