@@ -11,7 +11,7 @@ function ThreadRow({ thread, exam, isProfilePage }) {
       }}
     >
       <div className="table-element starred row" onClick={(e) => e.stopPropagation()}>
-        <StarToggle thread={thread} />
+        <StarToggle threadId={thread._id} />
       </div>
       <div className="table-element isClosed row">
         {thread.isClosed ? (

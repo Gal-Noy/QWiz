@@ -1,6 +1,6 @@
-import { Faculty, Department, Course } from "../models/infoModels.js";
+import { Faculty, Department, Course } from "../models/categoriesModels.js";
 
-const infoController = {
+const categoriesController = {
   // Faculties
 
   getFaculties: async (req, res) => {
@@ -230,4 +230,4 @@ const infoController = {
   },
 };
 
-export default infoController;
+export default categoriesController;

@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import "./FavoriteToggle.css";
 
-function FavoriteToggle({ exam }) {
+function FavoriteToggle({ examId }) {
   const user = JSON.parse(localStorage.getItem("user"));
   const [isPending, setIsPending] = useState(false);
 
   const addToFavorites = async () =>
     await axiosInstance
-      .post(`/exams/favorites/${exam._id}`)
+      .post(`/exams/favorites/${examId}`)
       .then((res) =>
         handleResult(res, 200, () =>
           localStorage.setItem("user", JSON.stringify({ ...user, favorite_exams: res.data }))
@@ -19,7 +19,7 @@ function FavoriteToggle({ exam }) {
 
   const removeFromFavorites = async () =>
     await axiosInstance
-      .delete(`/exams/favorites/${exam._id}`)
+      .delete(`/exams/favorites/${examId}`)
       .then((res) =>
         handleResult(res, 200, () =>
           localStorage.setItem("user", JSON.stringify({ ...user, favorite_exams: res.data }))
@@ -44,12 +44,12 @@ function FavoriteToggle({ exam }) {
     <div className="lds-dual-ring" id="loading-favorite"></div>
   ) : (
     <div className="checkbox-wrapper-22">
-      <label className="switch" htmlFor={`checkbox-${exam._id}`}>
+      <label className="switch" htmlFor={`checkbox-${examId}`}>
         <input
           type="checkbox"
-          id={`checkbox-${exam._id}`}
+          id={`checkbox-${examId}`}
           onChange={handleFavoritesChange}
-          checked={user.favorite_exams.includes(exam._id)}
+          checked={user.favorite_exams.includes(examId)}
         />
         <div className="slider round"></div>
       </label>

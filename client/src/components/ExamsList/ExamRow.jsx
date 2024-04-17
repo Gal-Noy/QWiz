@@ -12,7 +12,7 @@ function ExamRow({ exam, isProfilePage }) {
       }}
     >
       <div className="table-element favorite" onClick={(e) => e.stopPropagation()}>
-        <FavoriteToggle exam={exam} />
+        <FavoriteToggle examId={exam._id} />
       </div>
       <div className="table-element course-num">{exam.course.code}</div>
       <div className="table-element course-name">{exam.course.name}</div>

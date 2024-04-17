@@ -153,4 +153,13 @@ const populateCourse = function (next) {
 courseSchema.pre("findOne", populateCourse);
 courseSchema.pre("find", populateCourse);
 
+courseSchema.pre("save", async function (next) {
+  const course = this;
+
+  course.tags = course.tags.sort();
+  course.lecturers = course.lecturers.sort();
+
+  next();
+});
+
 export const Course = mongoose.model("Course", courseSchema);

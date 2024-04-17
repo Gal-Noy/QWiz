@@ -132,4 +132,13 @@ const populateExam = function (next) {
 examSchema.pre("findOne", populateExam);
 examSchema.pre("find", populateExam);
 
+examSchema.pre("save", async function (next) {
+  const exam = this;
+
+  exam.lecturers = exam.lecturers.sort();
+  exam.tags = exam.tags.sort();
+
+  next();
+});
+
 export const Exam = mongoose.model("Exam", examSchema);

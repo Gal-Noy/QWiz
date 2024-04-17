@@ -100,6 +100,14 @@ const populateThread = function (next) {
 threadSchema.pre("findOne", populateThread);
 threadSchema.pre("find", populateThread);
 
+threadSchema.pre("save", async function (next) {
+  const thread = this;
+
+  thread.tags = thread.tags.sort();
+
+  next();
+});
+
 export const Thread = mongoose.model("Thread", threadSchema);
 
 const commentSchema = new mongoose.Schema({

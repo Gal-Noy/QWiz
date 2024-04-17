@@ -141,7 +141,7 @@ function UploadForm() {
     setSelectListsPendings({ ...selectListsPendings, faculties: true });
 
     await axiosInstance
-      .get(`/info/faculties`)
+      .get(`/categories/faculties`)
       .then((res) =>
         handleResult(res, 200, () => {
           const sortedFaculties = res.data.sort((a, b) => (a.name > b.name ? 1 : -1));
@@ -157,7 +157,7 @@ function UploadForm() {
     setSelectListsPendings({ ...selectListsPendings, departments: true });
 
     await axiosInstance
-      .get(`/info/faculty/${facultyId}/departments`)
+      .get(`/categories/faculty/${facultyId}/departments`)
       .then((res) =>
         handleResult(res, 200, () => {
           const sortedDepartments = res.data.sort((a, b) => (a.name > b.name ? 1 : -1));
@@ -173,7 +173,7 @@ function UploadForm() {
     setSelectListsPendings({ ...selectListsPendings, courses: true });
 
     await axiosInstance
-      .get(`/info/department/${departmentId}/courses`)
+      .get(`/categories/department/${departmentId}/courses`)
       .then((res) =>
         handleResult(res, 200, () => {
           const sortedCourses = res.data.sort((a, b) => (a.name > b.name ? 1 : -1));
@@ -189,7 +189,7 @@ function UploadForm() {
     setSelectListsPendings({ ...selectListsPendings, tags: true, lecturers: true });
 
     await axiosInstance
-      .get(`/info/course/${courseId}`)
+      .get(`/categories/course/${courseId}`)
       .then((res) =>
         handleResult(res, 200, () => {
           const { tags, lecturers } = res.data;

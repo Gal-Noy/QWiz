@@ -1,7 +1,7 @@
 import { Thread, Comment } from "../models/threadModels.js";
 import { Exam } from "../models/examModel.js";
 import { User } from "../models/userModel.js";
-import { Course } from "../models/infoModels.js";
+import { Course } from "../models/categoriesModels.js";
 
 const threadsController = {
   // Threads

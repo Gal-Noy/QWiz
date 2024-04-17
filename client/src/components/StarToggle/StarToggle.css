@@ -1,44 +1,48 @@
 .starred-checkbox input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
-  }
-  
-  .starred-checkbox {
-    display: block;
-    position: relative;
-    cursor: pointer;
-  }
-  
-  .starred-checkbox svg {
-    position: relative;
-    top: 0;
-    left: 0;
-    height: 50px;
-    width: 50px;
-    transition: all 0.3s;
-    fill: #666;
-  }
-  
-  .starred-checkbox svg:hover {
-    transform: scale(1.1);
-  }
-  
-  .starred-checkbox input:checked ~ svg {
-    fill: var(--red1);
-  }
-  
-  #loading-starred {
-    width: auto;
-    height: auto;
-  }
-  #loading-starred:after {
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    border: 3px solid var(--red1);
-    border-color: var(--red1) transparent var(--red1) transparent;
-  }
-  
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.starred-checkbox {
+  display: block;
+  position: relative;
+  cursor: pointer;
+}
+
+.starred-checkbox svg {
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 50px;
+  width: 50px;
+  transition: all 0.3s;
+  fill: #666;
+}
+
+.starred-checkbox svg:hover {
+  transform: scale(1.1);
+}
+
+.starred-checkbox input:checked ~ svg {
+  fill: var(--red1);
+}
+
+#loading-starred {
+  width: auto;
+  height: auto;
+  min-height: 50px;
+  min-width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#loading-starred:after {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 3px solid var(--red1);
+  border-color: var(--red1) transparent var(--red1) transparent;
+}

@@ -1,6 +1,6 @@
 import { Thread } from "../models/threadModels.js";
 import { Exam } from "../models/examModel.js";
-import { Course, Department } from "../models/infoModels.js";
+import { Course, Department } from "../models/categoriesModels.js";
 
 const getQuerySubQueries = (queryParts) => {
   const subQueries = [];

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import ExamDetails from "./ExamDetails";
 import ExamForum from "./ExamForum";
+import FavoriteToggle from "../../components/FavoriteToggle/FavoriteToggle";
 import "./ExamPage.css";
 
 function ExamPage() {
@@ -28,6 +29,10 @@ function ExamPage() {
           </a>
         </div>
         {tab === "details" ? <ExamDetails examId={examId} /> : <ExamForum examId={examId} />}
+      <div className="exam-details-favorite">
+        <a className="exam-details-favorite-label">הוספת בחינה למועדפים:</a>
+        <FavoriteToggle examId={examId} />
+      </div>
       </div>
     </div>
   ) : null;

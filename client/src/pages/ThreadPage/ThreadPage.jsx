@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import CommentBox from "./CommentBox";
 import NewComment from "./NewComment";
+import StarToggle from "../../components/StarToggle/StarToggle";
 import { examToString, sumComments, isTextRTL } from "../../utils/generalUtils";
 import { toast } from "react-custom-alert";
 import "./ThreadPage.css";
@@ -17,7 +18,6 @@ function ThreadPage() {
   const [expandAll, setExpandAll] = useState(true);
   const [isClosed, setIsClosed] = useState(false);
   const [isClosedPending, setIsClosedPending] = useState(false);
-  const [starredThreads, setStarredThreads] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
   const isAdmin = user && thread?.creator._id === user._id;
 
@@ -104,6 +104,9 @@ function ThreadPage() {
       {!isPending && !error && thread && (
         <div className="thread-page-content">
           <div className="thread-page-header">
+            <div className="thread-page-star-toggle">
+              <StarToggle threadId={threadId} />
+            </div>
             <div className="thread-page-exam-details">
               {isClosed ? <span className="material-symbols-outlined">lock</span> : ""}
               {examToString(thread.exam)}

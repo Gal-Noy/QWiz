@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Faculty, Department, Course } from "../src/models/infoModels.js";
+import { Faculty, Department, Course } from "../src/models/categoriesModels.js";
 import dotenv from "dotenv";
 import fs from "fs";
 

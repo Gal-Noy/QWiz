@@ -19,20 +19,6 @@ function ExamsList(props) {
 
   useEffect(() => {
     if (showExams) {
-      axiosInstance
-        .get("/exams/favorites")
-        .then((res) =>
-          handleResult(res, 200, () => {
-            const favoriteExamsIds = res.data.map((exam) => exam._id);
-            localStorage.setItem("user", JSON.stringify({ ...user, favorite_exams: favoriteExamsIds }));
-          })
-        )
-        .catch((err) => handleError(err, "שגיאה בטעינת הבחינות המועדפות."));
-    }
-  }, []);
-
-  useEffect(() => {
-    if (showExams) {
       window.scrollTo({
         top: document.body.scrollHeight,
         behavior: "smooth",

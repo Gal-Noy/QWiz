@@ -58,7 +58,7 @@ function FilterBar(props) {
     setDropdownPendings({ faculties: true, departments: false, courses: false, advancedFilters: false });
 
     await axiosInstance
-      .get("/info/faculties")
+      .get("/categories/faculties")
       .then((res) =>
         handleResult(res, 200, () => {
           const faculties = res.data;
@@ -76,7 +76,7 @@ function FilterBar(props) {
     setDropdownPendings({ faculties: false, departments: true, courses: false, advancedFilters: false });
 
     await axiosInstance
-      .get(`/info/faculty/${facultyId}/departments`)
+      .get(`/categories/faculty/${facultyId}/departments`)
       .then((res) =>
         handleResult(res, 200, () => {
           const departments = res.data;
@@ -94,7 +94,7 @@ function FilterBar(props) {
     setDropdownPendings({ faculties: false, departments: false, courses: true, advancedFilters: false });
 
     await axiosInstance
-      .get(`/info/department/${departmentId}/courses`)
+      .get(`/categories/department/${departmentId}/courses`)
       .then((res) =>
         handleResult(res, 200, () => {
           const courses = res.data;
@@ -114,7 +114,7 @@ function FilterBar(props) {
 
     // Fetch course attributes (lecturers, tags)
     await axiosInstance
-      .get(`/info/course/${courseId}`)
+      .get(`/categories/course/${courseId}`)
       .then((res) =>
         handleResult(res, 200, () => {
           const { lecturers, tags } = res.data;
