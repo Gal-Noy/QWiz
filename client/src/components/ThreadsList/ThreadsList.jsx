@@ -3,13 +3,27 @@ import ListHeader from "../ListHeader/ListHeader";
 import ThreadRow from "./ThreadRow";
 import "./ThreadsList.css";
 
+/**
+ * A list of threads component.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {Array} props.threads - The threads to display.
+ * @param {Function} props.setThreads - The function to update the threads.
+ * @param {boolean} props.isProfilePage - Indicates if the list is on the profile page.
+ * @param {boolean} props.isPending - Indicates if the threads are pending.
+ * @param {string} props.error - The error message, if any.
+ * @returns {JSX.Element} The rendered ThreadsList component.
+ */
 function ThreadsList(props) {
   const { threads, setThreads, isProfilePage, isPending, error } = props;
-  const user = JSON.parse(localStorage.getItem("user"));
+
+  const starredThreads = JSON.parse(localStorage.getItem("user")).starred_threads;
   const [sortHeader, setSortHeader] = useState("");
+
+  // Pagination
   const [numPages, setNumPages] = useState(threads.length > 0 ? Math.ceil(threads.length / 10) : 0);
   const [currentPage, setCurrentPage] = useState(1);
-
   const threadsPerPage = 10;
   const lastThreadIndex = currentPage * threadsPerPage;
   const firstThreadIndex = lastThreadIndex - threadsPerPage;
@@ -24,6 +38,7 @@ function ThreadsList(props) {
       <label className="threads-list-count">סה"כ דיונים נמצאו: {threads.length}</label>
       {!isPending && !error && numPages > 1 && (
         <div className="threads-list-pagination">
+          {/* Pagination */}
           <span
             className={"material-symbols-outlined navigation-arrow" + (currentPage > 1 ? " enabled" : "")}
             onClick={() => {
@@ -45,6 +60,7 @@ function ThreadsList(props) {
       )}
       <div className={"threads-list-container" + (isProfilePage ? " is-profile-page" : "")}>
         <div className={"threads-list-headers-row" + (isProfilePage ? " is-profile-page" : "")}>
+          {/* Headers */}
           <ListHeader
             label="מועדפים"
             header="starred"
@@ -52,7 +68,7 @@ function ThreadsList(props) {
             setSortHeader={setSortHeader}
             sortFunc={(isAsc) =>
               setThreads((prevThreads) =>
-                prevThreads.slice().sort((a, b) => (user.starred_threads.includes(a._id) ? -1 : 1) * (isAsc ? 1 : -1))
+                prevThreads.slice().sort((a, b) => (starredThreads.includes(a._id) ? -1 : 1) * (isAsc ? 1 : -1))
               )
             }
           />

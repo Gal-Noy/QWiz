@@ -2,6 +2,12 @@ import React, { useState, useEffect } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import ExamsList from "../../components/ExamsList/ExamsList";
 
+/**
+ * The favorite exams component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered FavoriteExams component.
+ */
 function FavoriteExams() {
   const [favoriteExams, setFavoriteExams] = useState([]);
   const [isPending, setIsPending] = useState(false);

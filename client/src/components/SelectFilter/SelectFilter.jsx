@@ -2,8 +2,22 @@ import React, { useState, useEffect, useRef } from "react";
 import { handleClickOutside } from "../../utils/generalUtils";
 import "./SelectFilter.css";
 
+/**
+ * A select filter component.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {Array} props.options - The available options for the filter.
+ * @param {Object} props.value - The selected option for the filter.
+ * @param {Function} props.setValue - The function to update the selected option.
+ * @param {string} props.placeholder - The placeholder for the filter.
+ * @param {boolean} props.dependency - The dependency for the filter.
+ * @param {boolean} props.isPending - Indicates if the filter is in a pending state.
+ * @returns {JSX.Element} The rendered SelectFilter component.
+ */
 const SelectFilter = (props) => {
   const { options, value, setValue, placeholder, dependency, isPending } = props;
+
   const [showOptions, setShowOptions] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchedOptions, setSearchedOptions] = useState(options);

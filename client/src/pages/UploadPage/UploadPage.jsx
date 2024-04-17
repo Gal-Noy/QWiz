@@ -3,6 +3,12 @@ import PageHeader from "../../components/PageHeader/PageHeader";
 import UploadForm from "./UploadForm";
 import "./UploadPage.css";
 
+/**
+ * The upload page component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered UploadPage component.
+ */
 function UploadPage() {
   const paragraphs = [
     "אנא וודאו שהמבחן שאתם מעלים נכון ומלא כדי להבטיח את איכות המאגר.",

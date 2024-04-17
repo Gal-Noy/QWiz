@@ -1,8 +1,20 @@
 import React from "react";
-import { formatDate, isTextRTL } from "../../utils/generalUtils";
+import { formatDate, mapTags } from "../../utils/generalUtils";
 import StarToggle from "../StarToggle/StarToggle";
 
-function ThreadRow({ thread, exam, isProfilePage }) {
+/**
+ * Renders a row for a thread in the threads list.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {Object} props.thread - The thread object.
+ * @param {Object} props.exam - The exam object.
+ * @param {boolean} props.isProfilePage - Indicates whether the component is rendered on the profile page.
+ * @returns {JSX.Element} The rendered ThreadRow component.
+ */
+function ThreadRow(props) {
+  const { thread, exam, isProfilePage } = props;
+
   return (
     <div
       className={"thread-row" + (isProfilePage ? " is-profile-page" : "")}
@@ -46,16 +58,7 @@ function ThreadRow({ thread, exam, isProfilePage }) {
         {thread.comments.length > 0 && <a>{thread.comments[thread.comments.length - 1].sender.name}</a>}
         {thread.comments.length > 0 && <a>{formatDate(thread.comments[thread.comments.length - 1].createdAt)}</a>}
       </div>
-      <div className="table-element tags">
-        {thread.tags.map((tag, index) => (
-          <span className="thread-page-tag" key={index}>
-            <a href={`/search/${tag}`}>
-              {isTextRTL(tag) ? <span dir="rtl">#{tag}</span> : <span dir="ltr">{tag}#</span>}
-            </a>
-            {index !== thread.tags.length - 1 && ", "}
-          </span>
-        ))}
-      </div>
+      <div className="table-element tags">{mapTags(thread.tags)}</div>
     </div>
   );
 }

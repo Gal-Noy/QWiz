@@ -4,12 +4,25 @@ import defaultAvatar from "../../assets/default-avatar.jpg";
 import { toast } from "react-custom-alert";
 import "./NavBar.css";
 
+/**
+ * A navigation bar component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered NavBar component.
+ */
 function NavBar() {
-  const user = JSON.parse(localStorage.getItem("user"));
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [freeSearchValue, setFreeSearchValue] = useState("");
   const [pendingLogout, setPendingLogout] = useState(false);
+  const userName = JSON.parse(localStorage.getItem("user")).name;
 
+  /**
+   * Handle the logout event.
+   *
+   * @async
+   * @function
+   * @returns {void}
+   */
   const handleLogout = async () => {
     if (pendingLogout) return;
     setPendingLogout(true);
@@ -19,15 +32,22 @@ function NavBar() {
         handleResult(res, 200, () => {
           toast.success("התנתקת בהצלחה");
           setTimeout(() => {
+            // Clear the local storage and redirect to the home page
             localStorage.removeItem("token");
             localStorage.removeItem("user");
-            window.location.href = "/";
+            window.location.href = "/home";
           }, 1000);
         })
       )
       .catch((err) => handleError(err, null, () => setPendingLogout(false)));
   };
 
+  /**
+   * Handle the free search event.
+   *
+   * @function
+   * @returns {void}
+   */
   const freeSearch = () => {
     if (!freeSearchValue) return;
     setShowUserMenu(false);
@@ -37,15 +57,17 @@ function NavBar() {
 
   return (
     <div className="navbar-container">
+      {/* Logo */}
       <div
         className="navbar-logo"
         onClick={() => {
           setShowUserMenu(false);
-          window.location.href = "/";
+          window.location.href = "/home";
         }}
       >
         QWiz
       </div>
+      {/* Free Search */}
       <div className="navbar-free-search-div">
         <input
           className="navbar-free-search-input"
@@ -58,6 +80,7 @@ function NavBar() {
           search
         </span>
       </div>
+      {/* User Profile */}
       <div className="navbar-profile">
         <img
           className={"avatar-pic" + (showUserMenu ? " active" : "")}
@@ -65,8 +88,9 @@ function NavBar() {
           alt="profile"
           onClick={() => setShowUserMenu(!showUserMenu)}
         />
-        <label className="hello-user-navbar-label">{user.name}</label>
+        <label className="hello-user-navbar-label">{userName}</label>
       </div>
+      {/* User Menu */}
       {showUserMenu && (
         <div className="user-menu">
           <button

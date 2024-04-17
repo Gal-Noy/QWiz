@@ -1,5 +1,13 @@
 import React from "react";
 
+/**
+ * The profile sidebar component.
+ *
+ * @component
+ * @param {Object} props The component props.
+ * @param {string} props.tab The current tab.
+ * @returns {JSX.Element} The rendered ProfileSidebar component.
+ */
 function ProfileSidebar({ tab }) {
   const setTab = (tab) => {
     window.location.href = `/profile/${tab}`;

@@ -1,17 +1,30 @@
 import React, { useState, useEffect } from "react";
-import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import { calcAvgRating } from "../../utils/generalUtils";
 import ExamRow from "./ExamRow";
 import ListHeader from "../ListHeader/ListHeader";
 import "./ExamsList.css";
 
+/**
+ * Renders a list of exams.
+ *
+ * @param {Object} props - The component props.
+ * @param {Array} props.exams - The list of exams to display.
+ * @param {Function} props.setExams - The function to update the list of exams.
+ * @param {boolean} props.showExams - Flag indicating whether to show the exams.
+ * @param {boolean} props.isProfilePage - Flag indicating whether it's the profile page.
+ * @param {boolean} props.isPending - Flag indicating whether the exams are pending.
+ * @param {string} props.error - The error message, if any.
+ * @returns {JSX.Element|null} The rendered component.
+ */
 function ExamsList(props) {
   const { exams, setExams, showExams, isProfilePage, isPending, error } = props;
-  const user = JSON.parse(localStorage.getItem("user"));
+
+  const favoriteExams = JSON.parse(localStorage.getItem("user")).favorite_exams;
   const [sortHeader, setSortHeader] = useState("");
+
+  // Pagination
   const [numPages, setNumPages] = useState(exams.length > 0 ? Math.ceil(exams.length / 10) : 0);
   const [currentPage, setCurrentPage] = useState(1);
-
   const examsPerPage = 10;
   const lastExamIndex = currentPage * examsPerPage;
   const firstExamIndex = lastExamIndex - examsPerPage;
@@ -37,6 +50,7 @@ function ExamsList(props) {
       <label className="exams-list-count">סה"כ בחינות נמצאו: {exams.length}</label>
       {!isPending && !error && numPages > 1 && (
         <div className="exams-list-pagination">
+          {/* Pagination */}
           <span
             className={"material-symbols-outlined navigation-arrow" + (currentPage > 1 ? " enabled" : "")}
             onClick={() => {
@@ -58,6 +72,7 @@ function ExamsList(props) {
       )}
       <div className={"exams-list-container" + (isProfilePage ? " is-profile-page" : "")}>
         <div className={"exams-list-headers-row" + (isProfilePage ? " is-profile-page" : "")}>
+          {/* Table headers */}
           <ListHeader
             label="מועדפים"
             header="favorite"
@@ -65,7 +80,7 @@ function ExamsList(props) {
             setSortHeader={setSortHeader}
             sortFunc={(isAsc) =>
               setExams((prevExams) =>
-                prevExams.slice().sort((a, b) => (user.favorite_exams.includes(a._id) ? -1 : 1) * (isAsc ? 1 : -1))
+                prevExams.slice().sort((a, b) => (favoriteExams.includes(a._id) ? -1 : 1) * (isAsc ? 1 : -1))
               )
             }
           />
@@ -213,7 +228,8 @@ function ExamsList(props) {
         </div>
         {isPending && !error && <div className="lds-dual-ring" id="exams-loading"></div>}
         {error && <div className="exams-list-error">{error}</div>}
-
+        
+        {/* Display the exams */}
         {!isPending && !error && (
           <div className="exams-list-rows">
             {currentExams.map((exam) => (

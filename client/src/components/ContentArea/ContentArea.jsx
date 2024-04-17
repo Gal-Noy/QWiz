@@ -3,7 +3,19 @@ import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import "./ContentArea.css";
 
-function ContentArea({ content, setContent }) {
+/**
+ * Renders a content area component with a Quill editor.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {string} props.content - The initial content of the editor.
+ * @param {Function} props.setContent - A function to update the content of the editor.
+ * @returns {JSX.Element} The rendered ContentArea component.
+ */
+function ContentArea(props) {
+  const { content, setContent } = props;
+
+  // Quill editor instance
   const editorRef = useRef(null);
   const [editor, setEditor] = useState(null);
 
@@ -31,6 +43,7 @@ function ContentArea({ content, setContent }) {
         setContent(newEditor.root.innerHTML);
       });
 
+      // Add event listener to change direction to right when text area is clicked
       const rightAlignDirection = () => {
         newEditor.format("direction", "rtl");
         newEditor.format("align", "right");
@@ -38,6 +51,7 @@ function ContentArea({ content, setContent }) {
       };
       editorRef.current.addEventListener("click", rightAlignDirection);
 
+      // Set content passed from parent component (if any, e.g. when editing a comment)
       newEditor.container.firstChild.innerHTML = content;
 
       setEditor(newEditor);

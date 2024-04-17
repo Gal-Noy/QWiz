@@ -5,6 +5,12 @@ import FreeSearchThreadBlock from "./FreeSearchThreadBlock";
 import FreeSearchExamBlock from "./FreeSearchExamBlock";
 import "./FreeSearchPage.css";
 
+/**
+ * The free search page component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered FreeSearchPage component.
+ */
 function FreeSearchPage() {
   const { query } = useParams();
   const [searchResults, setSearchResults] = useState({ exams: [], threads: [] });

@@ -4,6 +4,12 @@ import Login from "./Login";
 import Signup from "./Signup";
 import "./AuthPage.css";
 
+/**
+ * The authentication page component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered AuthPage component.
+ */
 function AuthPage() {
   const { formType } = useParams();
 

@@ -57,11 +57,20 @@ const authController = {
 
       const { email, password } = req.body;
 
-      const user = await User.findOne({ email }).exec();
+      const user = await User.findOne({ email: email.toLowerCase() }).exec();
 
       if (user && (await bcrypt.compare(password, user.password))) {
-        if (user.isActive)
-          return res.status(400).json({ type: "UserActiveError", message: "User is already logged in." });
+        if (user.isActive) {
+          const inactivityTimeoutThreshold = 30 * 60 * 1000; // 30 minutes
+          const userInactivityTime = Date.now() - user.lastActivity;
+
+          if (userInactivityTime <= inactivityTimeoutThreshold) {
+            // if user is already logged in and was active in the last 30 minutes
+            return res.status(400).json({ type: "UserActiveError", message: "User is already logged in." });
+
+            // if user is already logged in but was inactive for more than 30 minutes, they are considered logged out and can log in again
+          }
+        }
 
         const token = jwt.sign({ user_id: user._id, email }, process.env.TOKEN_KEY, { expiresIn: "1h" });
 

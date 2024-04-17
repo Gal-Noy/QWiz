@@ -4,8 +4,16 @@ import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 import ExamRating from "../../components/ExamRating/ExamRating";
 import "./ExamDetails.css";
-import { isTextRTL } from "../../utils/generalUtils";
+import { mapTags } from "../../utils/generalUtils";
 
+/**
+ * The exam details component.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {string} props.examId - The ID of the exam.
+ * @returns {JSX.Element} The rendered ExamDetails component.
+ */
 function ExamDetails({ examId }) {
   const [exam, setExam] = useState(null);
   const [isPending, setIsPending] = useState(true);
@@ -106,16 +114,7 @@ function ExamDetails({ examId }) {
               </div>
               <div className="exam-details-item">
                 <a className="exam-details-item-header">תגיות:</a>
-                <div className="exam-details-item-text">
-                  {exam.tags.map((tag, index) => (
-                    <span className="thread-page-tag" key={index}>
-                      <a href={`/search/${tag}`}>
-                        {isTextRTL(tag) ? <span dir="rtl">#{tag}</span> : <span dir="ltr">{tag}#</span>}
-                      </a>
-                      {index !== exam.tags.length - 1 && ", "}
-                    </span>
-                  ))}
-                </div>
+                <div className="exam-details-item-text">{mapTags(exam.tags)}</div>
               </div>
               <a className="exam-details-new-tags-label">ניתן להוסיף תגיות חדשות בעת יצירת דיון חדש בפורום הבחינה.</a>
             </div>

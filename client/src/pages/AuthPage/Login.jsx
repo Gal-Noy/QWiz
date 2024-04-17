@@ -3,10 +3,24 @@ import { Link } from "react-router-dom";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import { toast } from "react-custom-alert";
 
+/**
+ * The login component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered Login component.
+ */
 function Login() {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [isPending, setIsPending] = useState(false);
 
+  /**
+   * Handle the login event.
+   *
+   * @async
+   * @function
+   * @param {Event} e - The event object.
+   * @returns {void}
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsPending(true);
@@ -19,6 +33,7 @@ function Login() {
       return;
     }
 
+    // Clear the local storage before logging in
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
@@ -28,7 +43,7 @@ function Login() {
         handleResult(res, 200, () => {
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("user", JSON.stringify(res.data.user));
-          window.location.href = "/";
+          window.location.href = "/home";
         })
       )
       .catch((err) => handleError(err, null, () => setIsPending(false)));

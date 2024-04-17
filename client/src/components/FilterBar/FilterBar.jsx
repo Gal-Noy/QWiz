@@ -5,10 +5,20 @@ import { calcAvgRating } from "../../utils/generalUtils";
 import { toast } from "react-custom-alert";
 import "./FilterBar.css";
 
+/**
+ * Represents the FilterBar component.
+ * @component
+ * @param {Object} props - The component props.
+ * @param {Function} props.setFilteredExams - The function to set the filtered exams.
+ * @param {Function} props.setShowExams - The function to set the visibility of exams.
+ * @param {Function} props.setError - The function to set the error message.
+ * @returns {JSX.Element} The FilterBar component.
+ */
 function FilterBar(props) {
   const { setFilteredExams, setShowExams, setError } = props;
+
   const [courseExams, setCourseExams] = useState([]);
-  const [isPending, setIsPending] = useState(false);
+  const [examsPending, setExamsPending] = useState(false);
   const [dropdownPendings, setDropdownPendings] = useState({
     faculties: false,
     departments: false,
@@ -54,6 +64,13 @@ function FilterBar(props) {
     tags: [],
   });
 
+  /**
+   * Fetches the faculties from the server.
+   *
+   * @async
+   * @function fetchFaculties
+   * @returns {Promise<void>} A Promise that resolves when the faculties are fetched.
+   */
   const fetchFaculties = async () => {
     setDropdownPendings({ faculties: true, departments: false, courses: false, advancedFilters: false });
 
@@ -72,6 +89,14 @@ function FilterBar(props) {
       );
   };
 
+  /**
+   * Fetches the departments of a faculty from the server.
+   *
+   * @async
+   * @function fetchDepartmentsByFaculty
+   * @param {string} facultyId - The ID of
+   * @returns {Promise<void>} A Promise that resolves when the departments are fetched.
+   */
   const fetchDepartmentsByFaculty = async (facultyId) => {
     setDropdownPendings({ faculties: false, departments: true, courses: false, advancedFilters: false });
 
@@ -90,6 +115,14 @@ function FilterBar(props) {
       );
   };
 
+  /**
+   * Fetches the courses of a department from the server.
+   *
+   * @async
+   * @function fetchCoursesByDepartment
+   * @param {string} departmentId - The ID of the department.
+   * @returns {Promise<void>} A Promise that resolves when the courses are fetched.
+   */
   const fetchCoursesByDepartment = async (departmentId) => {
     setDropdownPendings({ faculties: false, departments: false, courses: true, advancedFilters: false });
 
@@ -108,8 +141,16 @@ function FilterBar(props) {
       );
   };
 
+  /**
+   * Fetches course attributes (lecturers, tags) and course exams for a given courseId.
+   *
+   * @async
+   * @function fetchCourseAttributesAndExams
+   * @param {string} courseId - The ID of the course.
+   * @returns {Promise<void>} - A Promise that resolves when the data is fetched successfully.
+   */
   const fetchCourseAttributesAndExams = async (courseId) => {
-    setIsPending(true);
+    setExamsPending(true);
     setDropdownPendings({ faculties: false, departments: false, courses: false, advancedFilters: true });
 
     // Fetch course attributes (lecturers, tags)
@@ -130,6 +171,12 @@ function FilterBar(props) {
       .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת מבחני הקורס, אנא נסה שנית.")));
   };
 
+  /**
+   * Updates the advanced search lists based on the fetched course exams.
+   *
+   * @function updateAdvancedSearchLists
+   * @returns {void}
+   */
   const updateAdvancedSearchLists = () => {
     let updatedAdvancedSearchLists = { ...advancedSearchLists };
 
@@ -169,10 +216,16 @@ function FilterBar(props) {
       setAdvancedSearchLists(updatedAdvancedSearchLists);
 
       setDropdownPendings({ faculties: false, departments: false, courses: false, advancedFilters: false });
-      setIsPending(false);
+      setExamsPending(false);
     });
   };
 
+  /**
+   * Clears the advanced search filters.
+   *
+   * @function clearAdvancedFilters
+   * @returns {void}
+   */
   const clearAdvancedFilters = () => {
     setAdvancedSearchChoices({
       type: null,
@@ -197,14 +250,27 @@ function FilterBar(props) {
     setFreeText("");
   };
 
+  /**
+   * Clears all filters.
+   *
+   * @function clearFilters
+   * @returns {void}
+   */
   const clearFilters = () => {
     setCategoriesLists({ ...categoriesLists, departments: [], courses: [] });
     setChosenCategories({ faculty: null, department: null, course: null });
     clearAdvancedFilters();
   };
 
+  /**
+   * Filters and searches the exams based on the chosen filters.
+   *
+   * @function filterAndSearchExams
+   * @returns {void}
+   */
   const filterAndSearchExams = () => {
-    if (isPending) return;
+    if (examsPending) return;
+
     // Exams are already filtered by faculty, department, and course
     if (!chosenCategories.faculty || !chosenCategories.department || !chosenCategories.course) {
       toast.warning("יש לבחור פקולטה, מחלקה וקורס לפני החיפוש");
@@ -279,6 +345,8 @@ function FilterBar(props) {
     setShowExams(true);
   };
 
+  // Fetch faculties, departments, and courses according to the chosen filters
+
   useEffect(() => {
     fetchFaculties();
   }, []);
@@ -302,6 +370,7 @@ function FilterBar(props) {
     }
   }, [chosenCategories.department]);
 
+  // Fetch course attributes and exams according to the chosen course
   useEffect(() => {
     if (chosenCategories.course) {
       fetchCourseAttributesAndExams(chosenCategories.course._id);
@@ -310,6 +379,7 @@ function FilterBar(props) {
     }
   }, [chosenCategories.course]);
 
+  // Update advanced search lists based on the fetched course exams
   useEffect(() => {
     updateAdvancedSearchLists();
   }, [courseExams]);
@@ -317,6 +387,7 @@ function FilterBar(props) {
   return (
     <div className="filter-bar">
       <div id="mandatory-filters-row" className="filter-bar-row">
+        {/* Mandatory filters */}
         <FilterDropdown
           label="פקולטה"
           options={categoriesLists.faculties}
@@ -349,6 +420,7 @@ function FilterBar(props) {
         />
       </div>
       <div className="bottom-filters-container">
+        {/* Optional filters */}
         <div className={"advanced-filters" + (showAdvancedFilters ? " show" : "")}>
           <FilterDropdown
             label="שנה"
@@ -437,6 +509,7 @@ function FilterBar(props) {
           />
         </div>
         <div className="filter-bar-buttons-row">
+          {/* Filter buttons */}
           <div className="filter-bar-button" onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}>
             חיפוש מתקדם
             <span className="material-symbols-outlined filter-dropdown-arrow">
@@ -454,11 +527,11 @@ function FilterBar(props) {
             onChange={(e) => setFreeText(e.target.value)}
           />
           <div
-            className={"filter-bar-button" + (isPending ? " pending" : "")}
+            className={"filter-bar-button" + (examsPending ? " pending" : "")}
             id="filter-bar-search-button"
             onClick={filterAndSearchExams}
           >
-            {isPending ? <div className="lds-dual-ring"></div> : "חיפוש מבחנים"}
+            {examsPending ? <div className="lds-dual-ring"></div> : "חיפוש מבחנים"}
           </div>
         </div>
       </div>

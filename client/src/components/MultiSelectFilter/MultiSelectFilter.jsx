@@ -2,8 +2,24 @@ import React, { useState, useEffect, useRef } from "react";
 import { handleClickOutside } from "../../utils/generalUtils";
 import "../MultiSelectFilter/MultiSelectFilter.css";
 
+/**
+ * A multi-select filter component.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {Array} props.options - The available options for the filter.
+ * @param {Function} props.setOptions - The function to update the options.
+ * @param {Array} props.list - The selected options for the filter.
+ * @param {Function} props.setList - The function to update the selected options.
+ * @param {string} props.placeholder - The placeholder for the filter.
+ * @param {boolean} props.dependency - The dependency for the filter.
+ * @param {boolean} props.isPending - Indicates if the filter is in a pending state.
+ * @param {boolean} props.newThreadPage - Indicates if the filter is on the new thread page.
+ * @returns {JSX.Element} The rendered MultiSelectFilter component.
+ */
 function MultiSelectFilter(props) {
   const { options, setOptions, list, setList, placeholder, dependency, isPending, newThreadPage } = props;
+
   const [showOptions, setShowOptions] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchedOptions, setSearchedOptions] = useState(options);
@@ -36,6 +52,7 @@ function MultiSelectFilter(props) {
   }, [disabled]);
 
   useEffect(() => {
+    // Sort the options based on appearance in the list.
     setOptions(
       [...options].sort((a, b) =>
         list.includes(a) && !list.includes(b) ? -1 : !list.includes(a) && list.includes(b) ? 1 : 0
@@ -43,6 +60,13 @@ function MultiSelectFilter(props) {
     );
   }, [list]);
 
+  /**
+   * Handle the selection of an option.
+   *
+   * @function
+   * @param {string} option - The selected option.
+   * @returns {void}
+   */
   const handleSelectOption = (option) => {
     if (!options.includes(option)) {
       setOptions([...options, option]);

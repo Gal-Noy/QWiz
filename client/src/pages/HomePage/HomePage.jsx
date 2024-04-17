@@ -3,8 +3,13 @@ import { Link } from "react-router-dom";
 import HomePageInfoBlock from "./HomePageInfoBlock";
 import "./HomePage.css";
 
+/**
+ * The home page component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered HomePage component.
+ */
 function HomePage() {
-
   return (
     <div className="homepage-div">
       <div className="homepage-main-div">

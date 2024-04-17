@@ -4,6 +4,12 @@ import FilterBar from "../../components/FilterBar/FilterBar";
 import PageHeader from "../../components/PageHeader/PageHeader";
 import "./ExamsSearchPage.css";
 
+/**
+ * The exams search page component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered ExamsSearchPage component.
+ */
 function ExamsSearchPage() {
   const [filteredExams, setFilteredExams] = useState([]);
   const [showExams, setShowExams] = useState(false);

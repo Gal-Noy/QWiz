@@ -4,10 +4,16 @@ import axiosInstance, { handleError, handleResult } from "../../utils/axiosInsta
 import CommentBox from "./CommentBox";
 import NewComment from "./NewComment";
 import StarToggle from "../../components/StarToggle/StarToggle";
-import { examToString, sumComments, isTextRTL } from "../../utils/generalUtils";
+import { examToString, mapTags, sumComments } from "../../utils/generalUtils";
 import { toast } from "react-custom-alert";
 import "./ThreadPage.css";
 
+/**
+ * The thread page component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered ThreadPage component.
+ */
 function ThreadPage() {
   const { threadId, commentId } = useParams();
   const [thread, setThread] = useState(null);
@@ -44,6 +50,13 @@ function ThreadPage() {
       .finally(() => setIsPending(false));
   }, [threadId]);
 
+  /**
+   * Toggles the thread closed status.
+   *
+   * @async
+   * @function toggleThreadClosed
+   * @returns {Promise<void>} The result of toggling the thread closed status.
+   */
   const toggleThreadClosed = async () => {
     if (isClosedPending) return;
     setIsClosedPending(true);
@@ -58,6 +71,14 @@ function ThreadPage() {
     if (thread) setIsClosed(thread.isClosed);
   }, [thread]);
 
+  /**
+   * Adds a comment to the thread.
+   *
+   * @async
+   * @function addComment
+   * @param {Function} setIsPendingCallback The setIsPending function.
+   * @returns {Promise<void>} The result of adding the comment.
+   */
   const addComment = async (setIsPendingCallback) => {
     if (isClosed) {
       toast.warning("הדיון נעול ולא ניתן להוסיף תגובות");
@@ -122,16 +143,7 @@ function ThreadPage() {
             <button className="go-to-exam-button" onClick={() => (window.location.href = `/exam/${thread.exam._id}`)}>
               לעמוד המבחן
             </button>
-            <div className="thread-page-tags">
-              {thread.tags.map((tag, index) => (
-                <span className="thread-page-tag" key={index}>
-                  <a href={`/search/${tag}`}>
-                    {isTextRTL(tag) ? <span dir="rtl">#{tag}</span> : <span dir="ltr">{tag}#</span>}
-                  </a>
-                  {index !== thread.tags.length - 1 && ", "}
-                </span>
-              ))}
-            </div>
+            <div className="thread-page-tags">{mapTags(thread.tags)}</div>
             <div className="thread-header-bottom-buttons">
               <button className="thread-header-bottom-button" onClick={() => setExpandAll(!expandAll)}>
                 {expandAll ? "כווץ הכל" : "הרחב הכל"}

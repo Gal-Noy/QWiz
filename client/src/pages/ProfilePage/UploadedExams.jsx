@@ -2,6 +2,12 @@ import React, { useState, useEffect } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import ExamsList from "../../components/ExamsList/ExamsList";
 
+/**
+ * The uploaded exams component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered UploadedExams component.
+ */
 function UploadedExams() {
   const [uploadedExams, setUploadedExams] = useState([]);
   const [isPending, setIsPending] = useState(false);

@@ -7,6 +7,12 @@ import MultiSelectFilter from "../../components/MultiSelectFilter/MultiSelectFil
 import { toast } from "react-custom-alert";
 import "./UploadForm.css";
 
+/**
+ * The upload form component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered UploadForm component.
+ */
 function UploadForm() {
   const user = JSON.parse(localStorage.getItem("user"));
   const [studentDetails, setStudentDetails] = useState({
@@ -44,6 +50,13 @@ function UploadForm() {
     lecturers: false,
   });
 
+  /**
+   * Handles the result of the API call.
+   *
+   * @async
+   * @function createExam
+   * @returns {Promise<void>} The result of the API call.
+   */
   const createExam = async () => {
     setIsPending(true);
 
@@ -92,7 +105,7 @@ function UploadForm() {
           const { user: updatedUser, exam } = res.data;
           localStorage.setItem("user", JSON.stringify(updatedUser));
           toast.success("המבחן נוצר בהצלחה!");
-          setTimeout(() => (window.location.href = `exam/${exam._id}`), 1000);
+          setTimeout(() => (window.location.href = `/exam/${exam._id}`), 1000);
         })
       )
       .catch((err) => handleError(err))
@@ -136,6 +149,13 @@ function UploadForm() {
     });
   };
 
+  /**
+   * Fetches the faculties from the API.
+   *
+   * @async
+   * @function fetchFaculties
+   * @returns {Promise<void>} The result of fetching the faculties.
+   */
   const fetchFaculties = async () => {
     if (selectListsPendings.faculties) return;
     setSelectListsPendings({ ...selectListsPendings, faculties: true });
@@ -152,6 +172,14 @@ function UploadForm() {
       .finally(() => setSelectListsPendings({ ...selectListsPendings, faculties: false }));
   };
 
+  /**
+   * Fetches the departments by faculty from the API.
+   *
+   * @async
+   * @function fetchDepartmentsByFaculty
+   * @param {string} facultyId The faculty
+   * @returns {Promise<void>} The result of fetching the departments.
+   */
   const fetchDepartmentsByFaculty = async (facultyId) => {
     if (selectListsPendings.departments) return;
     setSelectListsPendings({ ...selectListsPendings, departments: true });
@@ -168,6 +196,14 @@ function UploadForm() {
       .finally(() => setSelectListsPendings({ ...selectListsPendings, departments: false }));
   };
 
+  /**
+   * Fetches the courses by department from the API.
+   *
+   * @async
+   * @function fetchCoursesByDepartment
+   * @param {string} departmentId The department
+   * @returns {Promise<void>} The result of fetching the courses.
+   */
   const fetchCoursesByDepartment = async (departmentId) => {
     if (selectListsPendings.courses) return;
     setSelectListsPendings({ ...selectListsPendings, courses: true });
@@ -184,6 +220,14 @@ function UploadForm() {
       .finally(() => setSelectListsPendings({ ...selectListsPendings, courses: false }));
   };
 
+  /**
+   * Fetches the course attributes from the API.
+   *
+   * @async
+   * @function fetchCourseAttributes
+   * @param {string} courseId The course
+   * @returns {Promise<void>} The result of fetching the course attributes.
+   */
   const fetchCourseAttributes = async (courseId) => {
     if (selectListsPendings.tags || selectListsPendings.lecturers) return;
     setSelectListsPendings({ ...selectListsPendings, tags: true, lecturers: true });
@@ -219,10 +263,19 @@ function UploadForm() {
     if (examDetails.course) fetchCourseAttributes(examDetails.course._id);
   }, [examDetails.course]);
 
+  // File states and handlers
   const [file, setFile] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [numPages, setNumPages] = useState(null);
 
+  /**
+   * Handles the file change event.
+   *
+   * @async
+   * @function handleFileChange
+   * @param {Object} e The event object
+   * @returns {void} The result of handling the file change event.
+   */
   const handleFileChange = async (e) => {
     if (e.target.files && e.target.files.length > 0) {
       const selectedFile = e.target.files[0];
@@ -236,6 +289,12 @@ function UploadForm() {
     }
   };
 
+  /**
+   * Cancels the file upload.
+   *
+   * @function cancelFile
+   * @returns {void} The result of canceling the file upload.
+   */
   const cancelFile = () => {
     setFile(null);
     setNumPages(null);

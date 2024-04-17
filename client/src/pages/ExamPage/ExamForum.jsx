@@ -3,6 +3,14 @@ import axiosInstance, { handleError, handleResult } from "../../utils/axiosInsta
 import ThreadsList from "../../components/ThreadsList/ThreadsList";
 import "./ExamForum.css";
 
+/**
+ * The exam forum component.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {string} props.examId - The ID of the exam.
+ * @returns {JSX.Element} The rendered ExamForum component.
+ */
 function ExamForum({ examId }) {
   const [threads, setThreads] = useState([]);
   const [isPending, setIsPending] = useState(true);

@@ -3,6 +3,12 @@ import axiosInstance, { handleError, handleResult } from "../../utils/axiosInsta
 import defaultAvatar from "../../assets/default-avatar.jpg";
 import { toast } from "react-custom-alert";
 
+/**
+ * The personal details component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered PersonalDetails component.
+ */
 function PersonalDetails() {
   const user = JSON.parse(localStorage.getItem("user"));
   const [editMode, setEditMode] = useState(false);
@@ -14,6 +20,13 @@ function PersonalDetails() {
   });
   const [isPending, setIsPending] = useState(false);
 
+  /**
+   * Saves the changes made to the user's details.
+   *
+   * @async
+   * @function saveChanges
+   * @returns {Promise<void>} The result of saving the changes.
+   */
   const saveChanges = async () => {
     if (isPending) return;
 

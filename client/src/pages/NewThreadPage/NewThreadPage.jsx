@@ -8,6 +8,12 @@ import { examToStringVerbose } from "../../utils/generalUtils";
 import { toast } from "react-custom-alert";
 import "./NewThreadPage.css";
 
+/**
+ * The new thread component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered NewThread component.
+ */
 function NewThread() {
   const { examId } = useParams();
   const [exam, setExam] = useState(null);
@@ -36,6 +42,13 @@ function NewThread() {
       .finally(() => setExamPending(false));
   }, [examId]);
 
+  /**
+   * Create a new thread.
+   *
+   * @async
+   * @function createNewThread
+   * @returns {void}
+   */
   const createNewThread = async () => {
     if (!threadDetails.title || !threadContent) {
       toast.warning("אנא מלא/י כותרת ותוכן");
@@ -61,10 +74,6 @@ function NewThread() {
       )
       .catch((err) => handleError(err, "יצירת הדיון נכשלה"))
       .finally(() => setIsPending(false));
-  };
-
-  const cancelNewThread = () => {
-    window.location.href = `/exam/${examId}/forum`;
   };
 
   return (
@@ -115,7 +124,7 @@ function NewThread() {
           <button className="new-thread-button" onClick={createNewThread}>
             {isPending ? <div className="lds-dual-ring" /> : "צור דיון"}
           </button>
-          <button className="new-thread-button" onClick={cancelNewThread}>
+          <button className="new-thread-button" onClick={() => (window.location.href = `/exam/${examId}/forum`)}>
             בטל
           </button>
         </div>

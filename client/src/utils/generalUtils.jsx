@@ -17,7 +17,6 @@ const examToString = (exam) => {
 };
 
 const examToStringVerbose = (exam) => {
-  console.log(exam);
   return exam
     ? `${exam.course.name} - ${exam.year} - ${exam.type === "test" ? "מבחן" : "בוחן"} - ${
         exam.semester === 1 ? "סמסטר א" : exam.semester === 2 ? "סמסטר ב" : "סמסטר קיץ"
@@ -53,13 +52,22 @@ const isTextRTL = (text) => {
 const calcAvgRating = (difficultyRatings) =>
   difficultyRatings.reduce((acc, curr) => acc + curr.rating, 0) / difficultyRatings.length;
 
+const mapTags = (tags) =>
+  tags.map((tag, index) => (
+    <span key={index}>
+      <a href={`/search/${tag}`}>{isTextRTL(tag) ? <span dir="rtl">#{tag}</span> : <span dir="ltr">{tag}#</span>}</a>
+      {index !== tags.length - 1 && ", "}
+    </span>
+  ));
+
 export {
   formatDate,
   formatDateAndTime,
   examToString,
   examToStringVerbose,
   sumComments,
-  calcAvgRating,
   handleClickOutside,
   isTextRTL,
+  calcAvgRating,
+  mapTags,
 };

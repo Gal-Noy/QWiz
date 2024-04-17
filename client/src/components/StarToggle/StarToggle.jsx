@@ -2,10 +2,25 @@ import React, { useState } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import "./StarToggle.css";
 
+/**
+ * A star toggle component.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {string} props.threadId - The thread ID.
+ * @returns {JSX.Element} The rendered StarToggle component.
+ */
 function StarToggle({ threadId }) {
   const user = JSON.parse(localStorage.getItem("user"));
   const [isPending, setIsPending] = useState(false);
 
+  /**
+   * Star the thread.
+   *
+   * @async
+   * @function starThread
+   * @returns {Promise<void>} A Promise that resolves when the thread is starred.
+   */
   const starThread = async () =>
     await axiosInstance
       .post(`threads/${threadId}/star`)
@@ -17,6 +32,13 @@ function StarToggle({ threadId }) {
       .catch((err) => handleError(err, "שגיאה בהוספת הדיון למועדפים, אנא נסה שנית."))
       .finally(() => setIsPending(false));
 
+  /**
+   * Unstar the thread.
+   *
+   * @async
+   * @function unstarThread
+   * @returns {Promise<void>} A Promise that resolves when the thread is unstarred.
+   */
   const unstarThread = async () =>
     await axiosInstance
       .delete(`threads/${threadId}/star`)
@@ -28,6 +50,13 @@ function StarToggle({ threadId }) {
       .catch((err) => handleError(err, "שגיאה בהסרת הדיון ממועדפים, אנא נסה שנית."))
       .finally(() => setIsPending(false));
 
+  /**
+   * Handle the starred change event.
+   *
+   * @function handleStarredChange
+   * @param {Object} e - The event object.
+   * @returns {void}
+   */
   const handleStarredChange = (e) => {
     if (isPending) return;
 

@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import { toast } from "react-custom-alert";
 
+/**
+ * The signup component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered Signup component.
+ */
 function Signup() {
   const [signupData, setSignupData] = useState({ name: "", email: "", password: "", confirmPassword: "" });
   const [passwordsMatch, setPasswordsMatch] = useState(signupData.password === signupData.confirmPassword);
@@ -12,6 +18,14 @@ function Signup() {
     setPasswordsMatch(signupData.password === signupData.confirmPassword);
   }, [signupData.confirmPassword, signupData.password]);
 
+  /**
+   * Handle the signup event.
+   *
+   * @async
+   * @function
+   * @param {Event} e - The event object.
+   * @returns {void}
+   */
   const handleSubmit = async (e) => {
     if (isPending) return;
 

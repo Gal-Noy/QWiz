@@ -8,6 +8,24 @@ import ContentArea from "../../components/ContentArea/ContentArea";
 import { toast } from "react-custom-alert";
 import "./CommentBox.css";
 
+/**
+ * The comment box component.
+ *
+ * @component
+ * @param {Object} props The component props.
+ * @param {string} props.threadId The thread ID.
+ * @param {Object} props.comment The comment object.
+ * @param {string} props.currReplied The current replied comment ID.
+ * @param {Function} props.setCurrReplied The function to set the current replied comment ID.
+ * @param {Object} props.newComment The new comment object.
+ * @param {Function} props.setNewComment The function to set the new comment object.
+ * @param {Function} props.addComment The function to add a new comment.
+ * @param {number} props.nest The comment nest level.
+ * @param {boolean} props.expand The comment expand status.
+ * @param {boolean} props.isClosed The thread closed status.
+ * @param {string} props.replyTo The comment replied to ID.
+ * @returns {JSX.Element} The rendered CommentBox component.
+ */
 function CommentBox(props) {
   const {
     threadId,
@@ -34,6 +52,13 @@ function CommentBox(props) {
     setIsExpanded(expand);
   }, [expand]);
 
+  /**
+   * Toggles the like status of the comment.
+   *
+   * @async
+   * @function toggleLikeComment
+   * @returns {Promise<void>} The result of toggling the like status.
+   */
   const toggleLikeComment = async () => {
     if (likePending) return;
     setLikePending(true);
@@ -49,6 +74,12 @@ function CommentBox(props) {
       .finally(() => setLikePending(false));
   };
 
+  /**
+   * Allows to reply to the comment.
+   *
+   * @function allowReply
+   * @returns {void} The result of allowing to reply to the comment.
+   */
   const allowReply = () => {
     if (isClosed) {
       toast.warning("הדיון נעול ולא ניתן להוסיף תגובות");
@@ -58,16 +89,30 @@ function CommentBox(props) {
     setCurrReplied(_id);
   };
 
+  // Edit mode states and functions
   const [editMode, setEditMode] = useState(false);
   const [editedCommentContent, setEditedCommentContent] = useState(content);
   const [editedCommentTitle, setEditedCommentTitle] = useState(title);
 
+  /**
+   * Toggles the edit mode of the comment.
+   *
+   * @function toggleEditMode
+   * @returns {void} The result of toggling the edit mode of the comment.
+   */
   const toggleEditMode = () => {
     setEditMode(!editMode);
     setEditedCommentContent(content);
     setEditedCommentTitle(title);
   };
 
+  /**
+   * Updates the comment.
+   *
+   * @async
+   * @function updateComment
+   * @returns {Promise<void>} The result of updating the comment.
+   */
   const updateComment = async () => {
     if (editedCommentTitle === title && editedCommentContent === content) {
       toggleEditMode();
@@ -84,6 +129,12 @@ function CommentBox(props) {
       .catch((err) => handleError(err, "אירעה שגיאה בעת עדכון התגובה"));
   };
 
+  /**
+   * Copies the comment link to the clipboard.
+   *
+   * @function copyLinkToClipboard
+   * @returns {void} The result of copying the comment link to the clipboard.
+   */
   const copyLinkToClipboard = () => {
     const link = `${window.location.origin}/thread/${threadId}/comment/${_id}`;
     navigator.clipboard.writeText(link);
@@ -182,6 +233,7 @@ function CommentBox(props) {
           addComment={addComment}
         />
       )}
+      {/* Replies section */}
       {replies.map((reply) => (
         <CommentBox
           key={reply._id}

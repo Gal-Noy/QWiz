@@ -1,12 +1,8 @@
-
-#rate_exam {
-  justify-content: center;
-}
-
 .exam-rating {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
 }
 
@@ -55,6 +51,12 @@
   color: darkgoldenrod;
 }
 
+.average-rating-div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .average-rating {
   position: relative;
   color: transparent;
@@ -63,6 +65,7 @@
   vertical-align: baseline;
   font-size: 1.8rem;
   line-height: 1;
+  overflow: hidden;
 }
 
 .average-rating::before {

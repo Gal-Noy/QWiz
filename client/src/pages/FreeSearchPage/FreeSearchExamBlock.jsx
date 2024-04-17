@@ -1,7 +1,15 @@
 import React from "react";
 import ExamRating from "../../components/ExamRating/ExamRating";
-import { examToStringVerbose, isTextRTL } from "../../utils/generalUtils";
+import { examToStringVerbose } from "../../utils/generalUtils";
 
+/**
+ * A component for displaying an exam block in the free search page.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {Object} props.exam - The exam object.
+ * @returns {JSX.Element} The FreeSearchExamBlock component.
+ */
 function FreeSearchExamBlock({ exam }) {
   return (
     <li className="free-search-list-item" key={exam._id} onClick={() => (window.location.href = `/exam/${exam._id}`)}>
@@ -31,16 +39,7 @@ function FreeSearchExamBlock({ exam }) {
         </div>
         <div className="free-search-list-item-secondary-details-pair">
           <a className="secondary-details-pair-key">תגיות: </a>
-          <a className="secondary-details-pair-value">
-            {exam.tags.map((tag, index) => (
-              <span className="thread-page-tag" key={index}>
-                <a href={`/search/${tag}`}>
-                  {isTextRTL(tag) ? <span dir="rtl">#{tag}</span> : <span dir="ltr">{tag}#</span>}
-                </a>
-                {index !== exam.tags.length - 1 && ", "}
-              </span>
-            ))}
-          </a>
+          <a className="secondary-details-pair-value">{mapTags(exam.tags)}</a>
         </div>
       </div>
     </li>

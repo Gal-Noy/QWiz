@@ -2,6 +2,12 @@ import React, { useState, useEffect } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import ThreadsList from "../../components/ThreadsList/ThreadsList";
 
+/**
+ * The starred threads component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered StarredThreads component.
+ */
 function StarredThreads() {
   const [starredThreads, setStarredThreads] = useState([]);
   const [isPending, setIsPending] = useState(true);

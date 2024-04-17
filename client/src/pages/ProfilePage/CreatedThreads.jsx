@@ -2,6 +2,12 @@ import React, { useState, useEffect } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import ThreadsList from "../../components/ThreadsList/ThreadsList";
 
+/**
+ * The created threads component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered CreatedThreads component.
+ */
 function CreatedThreads() {
   const [createdThreads, setCreatedThreads] = useState([]);
   const [isPending, setIsPending] = useState(true);
@@ -16,7 +22,7 @@ function CreatedThreads() {
           setCreatedThreads(fetchedThreads);
         })
       )
-      .catch((err) => handleError(err, "שגיאה בטעינת הדיונים שנוצרו, אנא נסה שנית."))
+      .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת הדיונים שנוצרו")))
       .finally(() => setIsPending(false));
   }, []);
 

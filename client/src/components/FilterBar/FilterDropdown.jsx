@@ -2,9 +2,27 @@ import React, { useState, useEffect, useRef } from "react";
 import { handleClickOutside } from "../../utils/generalUtils";
 import "./FilterBar.css";
 
+/**
+ * A dropdown component used for filtering options.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {string} props.label - The label for the dropdown.
+ * @param {Array} props.options - The available options for the dropdown.
+ * @param {Function} props.setOptions - The function to update the options.
+ * @param {any} props.value - The selected value(s) for the dropdown.
+ * @param {Function} props.setValue - The function to update the selected value(s).
+ * @param {boolean} props.isAvailable - Indicates if the dropdown is available for interaction.
+ * @param {string} props.size - The size of the dropdown.
+ * @param {boolean} props.isPending - Indicates if the dropdown is in a pending state.
+ * @param {boolean} props.isSearchable - Indicates if the dropdown is searchable.
+ * @param {boolean} props.isMultiChoice - Indicates if the dropdown supports multiple choices.
+ * @returns {JSX.Element} The rendered FilterDropdown component.
+ */
 function FilterDropdown(props) {
   const { label, options, setOptions, value, setValue, isAvailable, size, isPending, isSearchable, isMultiChoice } =
     props;
+    
   const [isOpen, setIsOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [filteredOptions, setFilteredOptions] = useState(options);
@@ -44,6 +62,13 @@ function FilterDropdown(props) {
     }
   }, [value]);
 
+  /**
+   * Handles the selection of an option in the dropdown.
+   *
+   * @function handleSelectOption
+   * @param {any} option - The selected option.
+   * @returns {void}
+   */
   const handleSelectOption = (option) => {
     if (isMultiChoice) {
       if (!value.includes(option)) {

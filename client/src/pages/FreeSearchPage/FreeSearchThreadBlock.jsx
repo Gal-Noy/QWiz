@@ -1,6 +1,14 @@
 import React from "react";
-import { formatDate, isTextRTL } from "../../utils/generalUtils";
+import { formatDate } from "../../utils/generalUtils";
 
+/**
+ * A component for displaying a thread block in the free search page.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {Object} props.thread - The thread object.
+ * @returns {JSX.Element} The FreeSearchThreadBlock component.
+ */
 function FreeSearchThreadBlock({ thread }) {
   return (
     <li
@@ -32,16 +40,7 @@ function FreeSearchThreadBlock({ thread }) {
         </div>
         <div className="free-search-list-item-secondary-details-pair">
           <a className="secondary-details-pair-key">תגיות: </a>
-          <a className="secondary-details-pair-value">
-            {thread.tags.map((tag, index) => (
-              <span className="thread-page-tag" key={index}>
-                <a href={`/search/${tag}`}>
-                  {isTextRTL(tag) ? <span dir="rtl">#{tag}</span> : <span dir="ltr">{tag}#</span>}
-                </a>
-                {index !== thread.tags.length - 1 && ", "}
-              </span>
-            ))}
-          </a>
+          <a className="secondary-details-pair-value">{mapTags(thread.tags)}</a>
         </div>
       </div>
     </li>

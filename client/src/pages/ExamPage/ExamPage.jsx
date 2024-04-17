@@ -5,6 +5,12 @@ import ExamForum from "./ExamForum";
 import FavoriteToggle from "../../components/FavoriteToggle/FavoriteToggle";
 import "./ExamPage.css";
 
+/**
+ * The exam page component.
+ *
+ * @component
+ * @returns {JSX.Element|null} The rendered ExamPage component.
+ */
 function ExamPage() {
   const { examId, tab } = useParams();
   if (!tab) window.location.replace(`/exam/${examId}/details`);
@@ -29,10 +35,10 @@ function ExamPage() {
           </a>
         </div>
         {tab === "details" ? <ExamDetails examId={examId} /> : <ExamForum examId={examId} />}
-      <div className="exam-details-favorite">
-        <a className="exam-details-favorite-label">הוספת בחינה למועדפים:</a>
-        <FavoriteToggle examId={examId} />
-      </div>
+        <div className="exam-details-favorite">
+          <a className="exam-details-favorite-label">הוספת בחינה למועדפים:</a>
+          <FavoriteToggle examId={examId} />
+        </div>
       </div>
     </div>
   ) : null;
