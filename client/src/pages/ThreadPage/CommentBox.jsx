@@ -102,11 +102,14 @@ function CommentBox(props) {
    * @returns {void} The result of toggling the edit mode of the comment.
    */
   const toggleEditMode = () => {
+    if (isClosed) {
+      toast.warning("הדיון נעול ולא ניתן לערוך תגובות");
+      return;
+    }
     setEditMode(!editMode);
     setEditedCommentContent(content);
     setEditedCommentTitle(title);
   };
-
   /**
    * Updates the comment.
    *
@@ -115,12 +118,16 @@ function CommentBox(props) {
    * @returns {Promise<void>} The result of updating the comment.
    */
   const editComment = async () => {
+    if (editedCommentContent === "") {
+      toast.warning("אנא הכנס/י תוכן לתגובה");
+      return;
+    }
     if (editedCommentTitle === title && editedCommentContent === content) {
       toggleEditMode();
       return;
     }
     await axiosInstance
-      .put(`/threads/comment/${_id}/edit`, { title: editedCommentTitle, content: editedCommentContent })
+      .put(`/threads/${threadId}/comment/${_id}/edit`, { title: editedCommentTitle, content: editedCommentContent })
       .then((res) =>
         handleResult(res, 200, () => {
           toast.success("התגובה עודכנה בהצלחה");

@@ -74,7 +74,7 @@ threadsRouter.post("/:id/comment", threadsController.addCommentToThread);
 threadsRouter.post("/:threadId/comment/:commentId/reply", threadsController.addReplyToComment);
 
 // PUT: edit a comment
-threadsRouter.put("/comment/:id/edit", threadsController.editComment);
+threadsRouter.put("/:threadId/comment/:commentId/edit", threadsController.editComment);
 
 // PUT: toggle like on a comment
 threadsRouter.put("/comment/:id/like", threadsController.toggleLikeComment);

@@ -237,6 +237,6 @@
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  border: 3px solid var(--orange1);
-  border-color: var(--orange1) transparent var(--orange1) transparent;
+  border: 3px solid var(--red1);
+  border-color: var(--red1) transparent var(--red1) transparent;
 }

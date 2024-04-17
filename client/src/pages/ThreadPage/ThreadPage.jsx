@@ -17,13 +17,18 @@ import "./ThreadPage.css";
 function ThreadPage() {
   const { threadId, commentId } = useParams();
   const [thread, setThread] = useState(null);
-  const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState(null);
   const [newComment, setNewComment] = useState("");
   const [currReplied, setCurrReplied] = useState(null);
   const [expandAll, setExpandAll] = useState(true);
   const [isClosed, setIsClosed] = useState(false);
-  const [isClosedPending, setIsClosedPending] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [showEditTitle, setShowEditTitle] = useState(false);
+  const [pendings, setPendings] = useState({
+    thread: false,
+    isClosed: false,
+    changeTitle: false,
+  });
   const user = JSON.parse(localStorage.getItem("user"));
   const isAdmin = user && thread?.creator._id === user._id;
 
@@ -34,7 +39,7 @@ function ThreadPage() {
   }
 
   const fetchThread = async () => {
-    setIsPending(true);
+    setPendings({ ...pendings, thread: true });
     await axiosInstance
       .get(`/threads/${threadId}`)
       .then((res) =>
@@ -42,10 +47,11 @@ function ThreadPage() {
           const fetchedThread = res.data;
           setThread(fetchedThread);
           setCurrReplied(null);
+          setNewTitle(fetchedThread.title);
         })
       )
       .catch((err) => handleError(err, null, () => setError("אירעה שגיאה בעת טעינת הדיון")))
-      .finally(() => setIsPending(false));
+      .finally(() => setPendings({ ...pendings, thread: false }));
   };
 
   // Initial fetch
@@ -61,13 +67,16 @@ function ThreadPage() {
    * @returns {Promise<void>} The result of toggling the thread closed status.
    */
   const toggleThreadClosed = async () => {
-    if (isClosedPending) return;
-    setIsClosedPending(true);
+    if (pendings.isClosed) return;
+    setPendings({ ...pendings, isClosed: true });
     await axiosInstance
       .post(`/threads/${threadId}/toggle`)
       .then((res) => handleResult(res, 200, () => setThread(res.data)))
       .catch((err) => handleError(err, "שגיאה בשינוי סטטוס הדיון"))
-      .finally(() => setIsClosedPending(false));
+      .finally(() => setPendings({ ...pendings, isClosed: false }));
+
+    setNewTitle(thread.title);
+    setShowEditTitle(false);
   };
 
   // Update the isClosed state when the thread is fetched
@@ -123,21 +132,94 @@ function ThreadPage() {
     }
   };
 
+  /**
+   * Changes the thread title.
+   *
+   * @async
+   * @function changeThreadTitle
+   * @returns {Promise<void>} The result of changing the thread title.
+   */
+  const changeThreadTitle = async () => {
+    if (!newTitle) return toast.warning("אנא הכנס/י כותרת חדשה");
+
+    if (isClosed) {
+      toast.warning("הדיון נעול ולא ניתן לשנות את הכותרת");
+      return;
+    }
+
+    if (newTitle === thread.title) {
+      setShowEditTitle(false);
+      return;
+    }
+
+    if (pendings.changeTitle) return;
+    setPendings({ ...pendings, changeTitle: true });
+
+    await axiosInstance
+      .put(`/threads/${threadId}/edit`, { title: newTitle })
+      .then((res) =>
+        handleResult(res, 200, () => {
+          toast.success("הכותרת עודכנה בהצלחה");
+          setTimeout(() => window.location.reload(), 1000);
+        })
+      )
+      .catch((err) => handleError(err, "אירעה שגיאה בעת עדכון הכותרת"))
+      .finally(() => setPendings({ ...pendings, changeTitle: false }));
+  };
+
   return (
     <div className="thread-page">
-      {isPending && <div className="lds-dual-ring" id="thread-page-loading"></div>}
+      {pendings.thread && <div className="lds-dual-ring" id="thread-page-loading"></div>}
       {error && <div className="thread-page-error">{error}</div>}
 
-      {!isPending && !error && thread && (
+      {!pendings.thread && !error && thread && (
         <div className="thread-page-content">
           <div className="thread-page-header">
             <div className="thread-page-star-toggle">
               <StarToggle threadId={threadId} />
             </div>
-            <div className="thread-page-exam-details">
-              {isClosed ? <span className="material-symbols-outlined">lock</span> : ""}
-              {examToString(thread.exam)}
-            </div>
+
+            {isClosed ? (
+              <div className="thread-page-title">
+                <span className="material-symbols-outlined">lock</span> {thread.title}
+              </div>
+            ) : (
+              isAdmin &&
+              (showEditTitle ? (
+                <div className="thread-page-title">
+                  <input
+                    className="edit-title-input"
+                    type="text"
+                    value={newTitle}
+                    onChange={(e) => setNewTitle(e.target.value)}
+                  />
+                  {pendings.changeTitle ? (
+                    <div className="lds-dual-ring" id="change-title-loading"></div>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined edit-title-button" onClick={changeThreadTitle}>
+                        check
+                      </span>
+                      <span
+                        className="material-symbols-outlined edit-title-button"
+                        onClick={() => setShowEditTitle(false)}
+                      >
+                        clear
+                      </span>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <div className="thread-page-title">
+                  {thread.title}
+                  <span className="material-symbols-outlined edit-title-button" onClick={() => setShowEditTitle(true)}>
+                    edit
+                  </span>
+                </div>
+              ))
+            )}
+
+            <div className="thread-page-exam-details">{examToString(thread.exam)}</div>
             <div className="thread-page-views-and-comments">
               <div className="thread-page-views">
                 {thread.views} <span className="material-symbols-outlined">visibility</span>
@@ -156,8 +238,13 @@ function ThreadPage() {
               </button>
               {isAdmin && (
                 <button className="thread-header-bottom-button" onClick={toggleThreadClosed}>
-                  {isClosedPending && <div className="lds-dual-ring" id="isClosed-loading"></div>}
-                  {!isClosedPending && (isClosed ? "פתח דיון" : "נעל דיון")}
+                  {pendings.isClosed ? (
+                    <div className="lds-dual-ring" id="isClosed-loading"></div>
+                  ) : isClosed ? (
+                    "פתח דיון"
+                  ) : (
+                    "נעל דיון"
+                  )}
                 </button>
               )}
             </div>

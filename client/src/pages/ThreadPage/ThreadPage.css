@@ -33,13 +33,41 @@
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  width: 30vw;
+  width: 40vw;
   border: 1px solid var(--grey1);
   border-radius: 1rem;
   padding: 1rem;
   background-color: var(--grey3);
   box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.1);
   position: relative;
+}
+.thread-page-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.edit-title-button {
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+.edit-title-input {
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: none;
+  width: 20vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0.25rem;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .thread-page-exam-details {
@@ -154,15 +182,13 @@
 #isClosed-loading {
   margin-left: 1rem;
 }
-#isClosed-loading:after {
+#isClosed-loading:after,
+#new-comment-loading:after,
+#change-title-loading:after {
   border: 2px solid black;
   border-color: black transparent black transparent;
 }
 
-#new-comment-loading:after {
-  border: 2px solid black;
-  border-color: black transparent black transparent;
-}
 .thread-page-star-toggle {
   position: absolute;
   left: 0;

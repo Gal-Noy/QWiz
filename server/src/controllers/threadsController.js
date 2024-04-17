@@ -300,6 +300,9 @@ const threadsController = {
       if (thread.creator._id.toString() !== req.user.user_id) {
         return res.status(403).json({ type: "AccessDeniedError", message: "Access denied, creator only" });
       }
+      if (thread.isClosed) {
+        return res.status(403).json({ type: "AccessDeniedError", message: "Thread is closed" });
+      }
 
       const { title } = req.body;
 
@@ -309,6 +312,13 @@ const threadsController = {
 
       thread.title = title;
       await thread.save();
+
+      // Update the main comment title as well
+      if (thread.comments.length > 0) {
+        const mainComment = await Comment.findById(thread.comments[0]);
+        mainComment.title = title;
+        await mainComment.save();
+      }
 
       return res.json(thread);
     } catch (error) {
@@ -632,7 +642,16 @@ const threadsController = {
    */
   editComment: async (req, res) => {
     try {
-      const comment = await Comment.findById(req.params.id);
+      const thread = await Thread.findById(req.params.threadId);
+
+      if (!thread) {
+        return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
+      }
+      if (thread.isClosed) {
+        return res.status(403).json({ type: "AccessDeniedError", message: "Thread is closed" });
+      }
+
+      const comment = await Comment.findById(req.params.commentId);
 
       if (!comment) {
         return res.status(404).json({ type: "CommentNotFoundError", message: "Comment not found" });
@@ -642,7 +661,15 @@ const threadsController = {
       }
 
       const { title, content } = req.body;
-      if (title) comment.title = title;
+      if (title) {
+        comment.title = title;
+
+        // Update the thread title if necessary
+        if (thread.comments[0]._id.toString() === comment._id.toString()) {
+          thread.title = title;
+          await thread.save();
+        }
+      }
       if (content) comment.content = content;
 
       await comment.save();

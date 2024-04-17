@@ -13,7 +13,7 @@ import "./NavBar.css";
 function NavBar() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [freeSearchValue, setFreeSearchValue] = useState("");
-  const [pendingLogout, setPendingLogout] = useState(false);
+  const [logoutPending, setLogoutPending] = useState(false);
   const userName = JSON.parse(localStorage.getItem("user")).name;
 
   /**
@@ -24,8 +24,8 @@ function NavBar() {
    * @returns {void}
    */
   const handleLogout = async () => {
-    if (pendingLogout) return;
-    setPendingLogout(true);
+    if (logoutPending) return;
+    setLogoutPending(true);
     await axiosInstance
       .post("/auth/logout", {})
       .then((res) =>
@@ -39,7 +39,7 @@ function NavBar() {
           }, 1000);
         })
       )
-      .catch((err) => handleError(err, null, () => setPendingLogout(false)));
+      .catch((err) => handleError(err, null, () => setLogoutPending(false)));
   };
 
   /**
@@ -103,7 +103,7 @@ function NavBar() {
             הפרופיל שלי
           </button>
           <button className="user-menu-item" onClick={handleLogout}>
-            {pendingLogout ? <div className="lds-dual-ring" id="logout-loading"></div> : "התנתקות"}
+            {logoutPending ? <div className="lds-dual-ring" id="logout-loading"></div> : "התנתקות"}
           </button>
         </div>
       )}
