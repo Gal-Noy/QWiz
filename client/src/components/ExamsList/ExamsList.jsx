@@ -71,7 +71,7 @@ function ExamsList(props) {
         </div>
       )}
       <div className={"exams-list-container" + (isProfilePage ? " is-profile-page" : "")}>
-        <div className="exams-list-headers-row">
+        <div className={"exams-list-headers-row" + (isProfilePage ? " is-profile-page" : "")}>
           <ListHeader
             label="מועדפים"
             header="favorite"
@@ -231,7 +231,7 @@ function ExamsList(props) {
         {!isPending && !error && (
           <div className="exams-list-rows">
             {currentExams.map((exam) => (
-              <ExamRow key={exam._id} exam={exam} />
+              <ExamRow key={exam._id} exam={exam} isProfilePage={isProfilePage} />
             ))}
           </div>
         )}

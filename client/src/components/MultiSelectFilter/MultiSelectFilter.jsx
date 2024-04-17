@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { handleClickOutside } from "../../utils/generalUtils";
 import "../MultiSelectFilter/MultiSelectFilter.css";
 
 function MultiSelectFilter(props) {
@@ -10,18 +11,8 @@ function MultiSelectFilter(props) {
   const multiSelectFilterRef = useRef(null);
 
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (multiSelectFilterRef.current && !multiSelectFilterRef.current.contains(e.target)) {
-        setShowOptions(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+    handleClickOutside(multiSelectFilterRef, () => setShowOptions(false));
+  }, [showOptions]);
 
   useEffect(() => {
     setSearchedOptions(options);
@@ -103,7 +94,12 @@ function MultiSelectFilter(props) {
           )}
           {searchedOptions.map((option, index) => (
             <li className="multi-select-filter-option" key={index} onClick={() => handleSelectOption(option)}>
-              {list.includes(option) && <span className="multi-select-filter-option-check">&#10003; </span>}
+              <input
+                className="multi-select-filter-checkbox"
+                type="checkbox"
+                checked={list.includes(option)}
+                readOnly
+              />
               {option}
             </li>
           ))}

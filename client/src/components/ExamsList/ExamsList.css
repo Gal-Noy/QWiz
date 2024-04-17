@@ -34,7 +34,7 @@
   top: 0;
   display: flex;
   align-items: center;
-  width: 120vw;
+  width: 130vw;
   padding: 1% 2%;
   gap: 4rem;
   font-weight: 500;
@@ -42,13 +42,17 @@
   border-bottom: 1px solid var(--orange1);
   box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.1);
   z-index: 1;
+
+  &.is-profile-page {
+    width: 110vw;
+  }
 }
 
 .exam-row {
   height: 6rem;
   display: flex;
   align-items: center;
-  width: 120vw;
+  width: 130vw;
   padding: 1% 2%;
   gap: 4rem;
   border-bottom: 1px solid var(--orange1);
@@ -69,6 +73,10 @@
 
   &:active {
     background: var(--orange3);
+  }
+
+  &.is-profile-page {
+    width: 110vw;
   }
 }
 

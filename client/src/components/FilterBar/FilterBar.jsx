@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import FilterDropdown from "./FilterDropdown";
-import "./FilterBar.css";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import { calcAvgRating } from "../../utils/generalUtils";
 import { toast } from "react-custom-alert";
+import "./FilterBar.css";
 
 function FilterBar(props) {
   const { setFilteredExams, setShowExams, setError } = props;
@@ -13,6 +13,7 @@ function FilterBar(props) {
     faculties: false,
     departments: false,
     courses: false,
+    advancedFilters: false,
   });
 
   // Mandatory filters
@@ -28,29 +29,33 @@ function FilterBar(props) {
   });
 
   // Optional filters (Advanced search)
+  const [freeText, setFreeText] = useState("");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [advancedSearchLists, setAdvancedSearchLists] = useState({
-    lecturers: [],
     years: [],
     semesters: [],
     terms: [],
     types: [],
     minGrades: [],
     difficultyRatings: [],
+    lecturers: [],
+    tags: [],
   });
   const [advancedSearchChoices, setAdvancedSearchChoices] = useState({
-    lecturers: null,
-    year: null,
-    semester: null,
-    term: null,
+    // single choice
     type: null,
     minGrade: null,
     difficultyRating: null,
+    // multiple choices
+    years: [],
+    semesters: [],
+    terms: [],
+    lecturers: [],
+    tags: [],
   });
-  const [freeText, setFreeText] = useState("");
 
   const fetchFaculties = async () => {
-    setDropdownPendings({ faculties: true, departments: false, courses: false });
+    setDropdownPendings({ faculties: true, departments: false, courses: false, advancedFilters: false });
 
     await axiosInstance
       .get("/info/faculties")
@@ -62,11 +67,13 @@ function FilterBar(props) {
         })
       )
       .catch((err) => handleError(err))
-      .finally(() => setDropdownPendings({ faculties: false, departments: false, courses: false }));
+      .finally(() =>
+        setDropdownPendings({ faculties: false, departments: false, courses: false, advancedFilters: false })
+      );
   };
 
   const fetchDepartmentsByFaculty = async (facultyId) => {
-    setDropdownPendings({ faculties: false, departments: true, courses: false });
+    setDropdownPendings({ faculties: false, departments: true, courses: false, advancedFilters: false });
 
     await axiosInstance
       .get(`/info/faculty/${facultyId}/departments`)
@@ -78,11 +85,13 @@ function FilterBar(props) {
         })
       )
       .catch((err) => handleError(err))
-      .finally(() => setDropdownPendings({ faculties: false, departments: false, courses: false }));
+      .finally(() =>
+        setDropdownPendings({ faculties: false, departments: false, courses: false, advancedFilters: false })
+      );
   };
 
   const fetchCoursesByDepartment = async (departmentId) => {
-    setDropdownPendings({ faculties: false, departments: false, courses: true });
+    setDropdownPendings({ faculties: false, departments: false, courses: true, advancedFilters: false });
 
     await axiosInstance
       .get(`/info/department/${departmentId}/courses`)
@@ -94,26 +103,37 @@ function FilterBar(props) {
         })
       )
       .catch((err) => handleError(err))
-      .finally(() => setDropdownPendings({ faculties: false, departments: false, courses: false }));
+      .finally(() =>
+        setDropdownPendings({ faculties: false, departments: false, courses: false, advancedFilters: false })
+      );
   };
 
-  const fetchCourseExams = async (courseId) => {
+  const fetchCourseAttributesAndExams = async (courseId) => {
     setIsPending(true);
+    setDropdownPendings({ faculties: false, departments: false, courses: false, advancedFilters: true });
 
+    // Fetch course attributes (lecturers, tags)
+    await axiosInstance
+      .get(`/info/course/${courseId}`)
+      .then((res) =>
+        handleResult(res, 200, () => {
+          const { lecturers, tags } = res.data;
+          setAdvancedSearchLists({ ...advancedSearchLists, lecturers, tags });
+        })
+      )
+      .catch((err) => handleError(err));
+
+    // Fetch course exams
     await axiosInstance
       .get(`/exams/course/${courseId}`)
       .then((res) => handleResult(res, 200, () => setCourseExams(res.data)))
-      .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת המבחנים, אנא נסה שנית.")))
-      .finally(() => setIsPending(false));
+      .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת מבחני הקורס, אנא נסה שנית.")));
   };
 
   const updateAdvancedSearchLists = () => {
     let updatedAdvancedSearchLists = { ...advancedSearchLists };
 
     courseExams.forEach((exam) => {
-      if (!updatedAdvancedSearchLists.lecturers.includes(exam.lecturers)) {
-        updatedAdvancedSearchLists.lecturers.push(exam.lecturers);
-      }
       if (!updatedAdvancedSearchLists.years.includes(exam.year)) {
         updatedAdvancedSearchLists.years.push(exam.year);
       }
@@ -139,7 +159,6 @@ function FilterBar(props) {
       }
 
       // Sort lists
-      updatedAdvancedSearchLists.lecturers.sort();
       updatedAdvancedSearchLists.years.sort();
       updatedAdvancedSearchLists.semesters.sort();
       updatedAdvancedSearchLists.terms.sort();
@@ -148,29 +167,34 @@ function FilterBar(props) {
       updatedAdvancedSearchLists.difficultyRatings.sort();
 
       setAdvancedSearchLists(updatedAdvancedSearchLists);
+
+      setDropdownPendings({ faculties: false, departments: false, courses: false, advancedFilters: false });
+      setIsPending(false);
     });
   };
 
   const clearAdvancedFilters = () => {
     setAdvancedSearchChoices({
-      lecturers: null,
-      year: null,
-      semester: null,
-      term: null,
       type: null,
       minGrade: null,
       difficultyRating: null,
+      years: [],
+      semesters: [],
+      terms: [],
+      lecturers: [],
+      tags: [],
     });
     setAdvancedSearchLists({
-      lecturers: [],
       years: [],
       semesters: [],
       terms: [],
       types: [],
       minGrades: [],
       difficultyRatings: [],
+      lecturers: [],
+      tags: [],
     });
-    setFreeText;
+    setFreeText("");
   };
 
   const clearFilters = () => {
@@ -189,41 +213,66 @@ function FilterBar(props) {
 
     let filteredExams = courseExams;
 
+    // Filter by free text
     if (freeText) {
       filteredExams = filteredExams.filter(
         (exam) =>
-          exam.lecturers.includes(freeText) ||
           exam.year === freeText ||
           exam.semester === freeText ||
           exam.term === freeText ||
           exam.type === freeText ||
           exam.grade === freeText ||
           Math.floor(exam.grade / 10) * 10 === freeText ||
-          Math.floor(calcAvgRating(exam.difficultyRatings)) === freeText
+          Math.floor(calcAvgRating(exam.difficultyRatings)) === freeText ||
+          exam.lecturers.includes(freeText) ||
+          exam.tags.includes(freeText)
       );
     }
 
-    advancedSearchChoices.lecturers &&
-      (filteredExams = filteredExams.filter((exam) => exam.lecturers === advancedSearchChoices.lecturers));
-    advancedSearchChoices.year &&
-      (filteredExams = filteredExams.filter((exam) => exam.year === advancedSearchChoices.year));
-    const examSemesterFilter =
-      advancedSearchChoices.semester === "'א" ? 1 : advancedSearchChoices.semester === "'ב" ? 2 : 3;
-    advancedSearchChoices.semester &&
-      (filteredExams = filteredExams.filter((exam) => exam.semester === examSemesterFilter));
-    const examTermFilter = advancedSearchChoices.term === "'א" ? 1 : advancedSearchChoices.term === "'ב" ? 2 : 3;
-    advancedSearchChoices.term && (filteredExams = filteredExams.filter((exam) => exam.term === examTermFilter));
-    const examTypeFilter = advancedSearchChoices.type === "מבחן" ? "test" : "quiz";
-    advancedSearchChoices.type && (filteredExams = filteredExams.filter((exam) => exam.type === examTypeFilter));
-    const minGradeFilter = advancedSearchChoices.minGrade ? parseInt(advancedSearchChoices.minGrade.slice(0, -1)) : 0;
+    // Filter by advanced search choices
+
+    // Single choice filters
+    advancedSearchChoices.type &&
+      (filteredExams = filteredExams.filter((exam) =>
+        advancedSearchChoices.type === "מבחן" ? exam.type === "test" : exam.type === "quiz"
+      ));
     advancedSearchChoices.minGrade &&
-      (filteredExams = filteredExams.filter((exam) => Math.floor(exam.grade / 10) * 10 >= minGradeFilter));
-    const difficultyRatingFilter = advancedSearchChoices.difficultyRating
-      ? parseInt(advancedSearchChoices.difficultyRating.slice(0, -1))
-      : 0;
+      (filteredExams = filteredExams.filter(
+        (exam) => Math.floor(exam.grade / 10) * 10 >= parseInt(advancedSearchChoices.minGrade.slice(0, -1))
+      ));
     advancedSearchChoices.difficultyRating &&
       (filteredExams = filteredExams.filter(
-        (exam) => Math.floor(calcAvgRating(exam.difficultyRatings)) >= difficultyRatingFilter
+        (exam) =>
+          Math.floor(calcAvgRating(exam.difficultyRatings)) >=
+          parseInt(advancedSearchChoices.difficultyRating.slice(0, -1))
+      ));
+
+    // Multiple choice filters
+    advancedSearchChoices.years.length > 0 &&
+      (filteredExams = filteredExams.filter((exam) => advancedSearchChoices.years.some((year) => exam.year === year)));
+
+    advancedSearchChoices.semesters.length > 0 &&
+      (filteredExams = filteredExams.filter((exam) =>
+        advancedSearchChoices.semesters
+          .map((semester) => (semester === "א" ? 1 : semester === "ב" ? 2 : 3))
+          .some((semester) => exam.semester === semester)
+      ));
+
+    advancedSearchChoices.terms.length > 0 &&
+      (filteredExams = filteredExams.filter((exam) =>
+        advancedSearchChoices.terms
+          .map((term) => (term === "א" ? 1 : term === "ב" ? 2 : 3))
+          .some((term) => exam.term === term)
+      ));
+
+    advancedSearchChoices.lecturers.length > 0 &&
+      (filteredExams = filteredExams.filter((exam) =>
+        advancedSearchChoices.lecturers.some((lecturer) => exam.lecturers.includes(lecturer))
+      ));
+
+    advancedSearchChoices.tags.length > 0 &&
+      (filteredExams = filteredExams.filter((exam) =>
+        advancedSearchChoices.tags.some((tag) => exam.tags.includes(tag))
       ));
 
     setFilteredExams(filteredExams);
@@ -255,7 +304,7 @@ function FilterBar(props) {
 
   useEffect(() => {
     if (chosenCategories.course) {
-      fetchCourseExams(chosenCategories.course._id);
+      fetchCourseAttributesAndExams(chosenCategories.course._id);
     } else {
       clearAdvancedFilters();
     }
@@ -300,46 +349,40 @@ function FilterBar(props) {
         />
       </div>
       <div className="bottom-filters-container">
-        <div className={"advanced-filters-rows" + (showAdvancedFilters ? " show" : "")}>
-          <FilterDropdown
-            label="מרצים"
-            options={advancedSearchLists.lecturers}
-            value={advancedSearchChoices.lecturers}
-            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, lecturers: val })}
-            isAvailable={advancedSearchLists.lecturers.length > 0}
-            size={"m"}
-            isPending={dropdownPendings.advancedFilters}
-            isSearchable={false}
-          />
+        <div className={"advanced-filters" + (showAdvancedFilters ? " show" : "")}>
           <FilterDropdown
             label="שנה"
             options={advancedSearchLists.years}
-            value={advancedSearchChoices.year}
-            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, year: val })}
+            setOptions={(options) => setAdvancedSearchLists({ ...advancedSearchLists, years: options })}
+            value={advancedSearchChoices.years}
+            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, years: val })}
             isAvailable={advancedSearchLists.years.length > 0}
-            size={"m"}
+            size={"s"}
             isPending={dropdownPendings.advancedFilters}
-            isSearchable={false}
+            isSearchable={true}
+            isMultiChoice={true}
           />
           <FilterDropdown
             label="סמסטר"
             options={advancedSearchLists.semesters}
-            value={advancedSearchChoices.semester}
-            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, semester: val })}
+            setOptions={(options) => setAdvancedSearchLists({ ...advancedSearchLists, semesters: options })}
+            value={advancedSearchChoices.semesters}
+            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, semesters: val })}
             isAvailable={advancedSearchLists.semesters.length > 0}
-            size={"m"}
+            size={"s"}
             isPending={dropdownPendings.advancedFilters}
-            isSearchable={false}
+            isMultiChoice={true}
           />
           <FilterDropdown
             label="מועד"
             options={advancedSearchLists.terms}
-            value={advancedSearchChoices.term}
-            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, term: val })}
+            setOptions={(options) => setAdvancedSearchLists({ ...advancedSearchLists, terms: options })}
+            value={advancedSearchChoices.terms}
+            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, terms: val })}
             isAvailable={advancedSearchLists.terms.length > 0}
             size={"s"}
             isPending={dropdownPendings.advancedFilters}
-            isSearchable={false}
+            isMultiChoice={true}
           />
           <FilterDropdown
             label="סוג"
@@ -349,7 +392,6 @@ function FilterBar(props) {
             isAvailable={advancedSearchLists.types.length > 0}
             size={"s"}
             isPending={dropdownPendings.advancedFilters}
-            isSearchable={false}
           />
           <FilterDropdown
             label="ציון מינימלי"
@@ -359,7 +401,6 @@ function FilterBar(props) {
             isAvailable={advancedSearchLists.minGrades.length > 0}
             size={"s"}
             isPending={dropdownPendings.advancedFilters}
-            isSearchable={false}
           />
           <FilterDropdown
             label="דרגת קושי"
@@ -369,7 +410,30 @@ function FilterBar(props) {
             isAvailable={advancedSearchLists.difficultyRatings.length > 0}
             size={"s"}
             isPending={dropdownPendings.advancedFilters}
-            isSearchable={false}
+          />
+          <FilterDropdown
+            label="מרצים"
+            options={advancedSearchLists.lecturers}
+            setOptions={(options) => setAdvancedSearchLists({ ...advancedSearchLists, lecturers: options })}
+            value={advancedSearchChoices.lecturers}
+            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, lecturers: val })}
+            isAvailable={advancedSearchLists.lecturers.length > 0}
+            size={"m"}
+            isPending={dropdownPendings.advancedFilters}
+            isSearchable={true}
+            isMultiChoice={true}
+          />
+          <FilterDropdown
+            label="תגיות"
+            options={advancedSearchLists.tags}
+            setOptions={(options) => setAdvancedSearchLists({ ...advancedSearchLists, tags: options })}
+            value={advancedSearchChoices.tags}
+            setValue={(val) => setAdvancedSearchChoices({ ...advancedSearchChoices, tags: val })}
+            isAvailable={advancedSearchLists.tags.length > 0}
+            size={"m"}
+            isPending={dropdownPendings.advancedFilters}
+            isSearchable={true}
+            isMultiChoice={true}
           />
         </div>
         <div className="filter-bar-buttons-row">

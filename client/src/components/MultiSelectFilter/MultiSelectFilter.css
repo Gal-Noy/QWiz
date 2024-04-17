@@ -3,7 +3,7 @@
 }
 
 .multi-select-filter-value-bar {
-  width: 15vw;
+  width: 15.5vw;
   min-height: 2rem;
   padding: 0.5rem 1rem;
   border: 1px solid var(--cyan3);
@@ -52,6 +52,9 @@
     padding: 0.5rem;
     cursor: pointer;
     transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 
     &:hover {
       background-color: var(--cyan2);
@@ -77,4 +80,14 @@
   justify-content: space-between;
   align-items: center;
   background-color: var(--cyan4);
+}
+
+.multi-select-filter-checkbox {
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+  border: none;
+  background-color: white;
+  --webkit-appearance: none;
+  accent-color: var(--cyan2);
 }

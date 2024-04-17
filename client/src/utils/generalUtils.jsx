@@ -28,7 +28,27 @@ const sumComments = (comments) => {
   return sum;
 };
 
+const handleClickOutside = (ref, callback) => {
+  const handleClick = (e) => {
+    if (ref.current && !ref.current.contains(e.target)) {
+      callback();
+    }
+  };
+  document.addEventListener("mousedown", handleClick);
+  return () => {
+    document.removeEventListener("mousedown", handleClick);
+  };
+};
+
 const calcAvgRating = (difficultyRatings) =>
   difficultyRatings.reduce((acc, curr) => acc + curr.rating, 0) / difficultyRatings.length;
 
-export { formatDate, formatDateAndTime, examToString, examToStringVerbose, sumComments, calcAvgRating };
+export {
+  formatDate,
+  formatDateAndTime,
+  examToString,
+  examToStringVerbose,
+  sumComments,
+  calcAvgRating,
+  handleClickOutside,
+};

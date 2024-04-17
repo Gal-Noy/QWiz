@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { handleClickOutside } from "../../utils/generalUtils";
 import "./SelectFilter.css";
 
 const SelectFilter = (props) => {
@@ -11,23 +12,19 @@ const SelectFilter = (props) => {
   const isAvailable = !disabled && !isPending;
 
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (selectFilterRef.current && !selectFilterRef.current.contains(e.target)) {
-        setShowOptions(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+    handleClickOutside(selectFilterRef, () => setShowOptions(false));
+  }, [showOptions]);
 
   useEffect(() => {
     setSearchedOptions(options);
     if (!value) setSearchValue("");
   }, [options]);
+
+  useEffect(() => {
+    const filteredOptions = options.filter((option) => option.name.includes(searchValue));
+    setSearchedOptions(filteredOptions);
+    if (value) setValue(null);
+  }, [searchValue]);
 
   useEffect(() => {
     setDisabled(!dependency);
@@ -40,12 +37,6 @@ const SelectFilter = (props) => {
       setShowOptions(false);
     }
   }, [disabled]);
-
-  useEffect(() => {
-    const filteredOptions = options.filter((option) => option.name.includes(searchValue));
-    setSearchedOptions(filteredOptions);
-    if (value) setValue(null);
-  }, [searchValue]);
 
   return (
     <div className="select-filter-div" ref={selectFilterRef}>
@@ -69,8 +60,8 @@ const SelectFilter = (props) => {
               className="select-filter-option"
               key={index}
               onClick={() => {
-                setValue(option.value);
                 setSearchValue(option.name);
+                setValue(option);
                 setShowOptions(false);
               }}
             >

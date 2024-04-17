@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axiosInstance, { handleResult, handleError } from "../../utils/axiosInstance";
 import ExamRating from "../ExamRating/ExamRating";
 
-function ExamRow({ exam }) {
+function ExamRow({ exam, isProfilePage }) {
   const user = JSON.parse(localStorage.getItem("user"));
   const [isFavoritePending, setIsFavoritePending] = useState(false);
 
@@ -42,7 +42,7 @@ function ExamRow({ exam }) {
 
   return (
     <div
-      className="exam-row"
+      className={"exam-row" + (isProfilePage ? " is-profile-page" : "")}
       onClick={() => {
         window.location.href = `/exam/${exam._id}`;
       }}

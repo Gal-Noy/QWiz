@@ -114,7 +114,7 @@ function ExamDetails({ examId }) {
                   ))}
                 </div>
               </div>
-              <a className="exam-details-new-tags-label">ניתן להוסיף תגים חדשים בעת יצירת דיון חדש בפורום הבחינה.</a>
+              <a className="exam-details-new-tags-label">ניתן להוסיף תגיות חדשות בעת יצירת דיון חדש בפורום הבחינה.</a>
             </div>
           </div>
           <div className="exam-details-left-section">

@@ -294,7 +294,7 @@ function UploadForm() {
             <div className="upload-form-attr">
               <label>פקולטה *</label>
               <SelectFilter
-                options={selectLists.faculties.map((faculty) => ({ name: faculty.name, value: faculty }))}
+                options={selectLists.faculties}
                 value={examDetails.faculty}
                 setValue={(faculty) => setExamDetails({ ...examDetails, faculty })}
                 placeholder="בחר פקולטה"
@@ -305,7 +305,7 @@ function UploadForm() {
             <div className="upload-form-attr">
               <label>מחלקה *</label>
               <SelectFilter
-                options={selectLists.departments.map((department) => ({ name: department.name, value: department }))}
+                options={selectLists.departments}
                 value={examDetails.department}
                 setValue={(department) => setExamDetails({ ...examDetails, department })}
                 placeholder="בחר מחלקה"
@@ -316,7 +316,7 @@ function UploadForm() {
             <div className="upload-form-attr">
               <label>שם קורס *</label>
               <SelectFilter
-                options={selectLists.courses.map((course) => ({ name: course.name, value: course }))}
+                options={selectLists.courses}
                 value={examDetails.course}
                 setValue={(course) => setExamDetails({ ...examDetails, course })}
                 placeholder="בחר קורס"
