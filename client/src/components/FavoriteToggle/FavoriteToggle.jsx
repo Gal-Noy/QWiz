@@ -1,0 +1,60 @@
+import React, { useState } from "react";
+import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import "./FavoriteToggle.css";
+
+function FavoriteToggle({ exam }) {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [isPending, setIsPending] = useState(false);
+
+  const addToFavorites = async () =>
+    await axiosInstance
+      .post(`/exams/favorites/${exam._id}`)
+      .then((res) =>
+        handleResult(res, 200, () =>
+          localStorage.setItem("user", JSON.stringify({ ...user, favorite_exams: res.data }))
+        )
+      )
+      .catch((err) => handleError(err, "שגיאה בהוספת הבחינה למועדפים, אנא נסה שנית."))
+      .finally(() => setIsPending(false));
+
+  const removeFromFavorites = async () =>
+    await axiosInstance
+      .delete(`/exams/favorites/${exam._id}`)
+      .then((res) =>
+        handleResult(res, 200, () =>
+          localStorage.setItem("user", JSON.stringify({ ...user, favorite_exams: res.data }))
+        )
+      )
+      .catch((err) => handleError(err, "שגיאה בהסרת הבחינה מהמועדפים, אנא נסה שנית."))
+      .finally(() => setIsPending(false));
+
+  const handleFavoritesChange = (e) => {
+    if (isPending) return;
+
+    setIsPending(true);
+
+    if (e.target.checked) {
+      addToFavorites();
+    } else {
+      removeFromFavorites();
+    }
+  };
+
+  return isPending ? (
+    <div className="lds-dual-ring" id="loading-favorite"></div>
+  ) : (
+    <div className="checkbox-wrapper-22">
+      <label className="switch" htmlFor={`checkbox-${exam._id}`}>
+        <input
+          type="checkbox"
+          id={`checkbox-${exam._id}`}
+          onChange={handleFavoritesChange}
+          checked={user.favorite_exams.includes(exam._id)}
+        />
+        <div className="slider round"></div>
+      </label>
+    </div>
+  );
+}
+
+export default FavoriteToggle;

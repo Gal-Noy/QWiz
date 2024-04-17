@@ -17,7 +17,7 @@ function StarredThreads() {
           setStarredThreads(sortedThreads);
         })
       )
-      .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת הדיונים המסומנים בכוכב, אנא נסה שנית.")))
+      .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת הדיונים המועדפים, אנא נסה שנית.")))
       .finally(() => setIsPending(false));
   }, []);
 

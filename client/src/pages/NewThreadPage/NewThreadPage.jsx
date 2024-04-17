@@ -56,7 +56,7 @@ function NewThread() {
       .then((res) =>
         handleResult(res, 201, () => {
           toast.success("הדיון נוצר בהצלחה");
-          setTimeout(() => (window.location.href = `/thread/${res.data._id}`), 2000);
+          setTimeout(() => (window.location.href = `/thread/${res.data._id}`), 1000);
         })
       )
       .catch((err) => handleError(err, "יצירת הדיון נכשלה"))

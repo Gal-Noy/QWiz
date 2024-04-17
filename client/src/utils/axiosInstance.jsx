@@ -130,7 +130,7 @@ export const handleError = (error, defaultMessage, callback) => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         toast.error("תוקף ההתחברות פג, אנא התחבר מחדש");
-        setTimeout(() => (window.location.href = "/auth/login"), 2000);
+        setTimeout(() => (window.location.href = "/auth/login"), 1000);
         break;
       }
       case 403: {

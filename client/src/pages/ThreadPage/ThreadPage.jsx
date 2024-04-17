@@ -17,6 +17,7 @@ function ThreadPage() {
   const [expandAll, setExpandAll] = useState(true);
   const [isClosed, setIsClosed] = useState(false);
   const [isClosedPending, setIsClosedPending] = useState(false);
+  const [starredThreads, setStarredThreads] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
   const isAdmin = user && thread?.creator._id === user._id;
 
@@ -76,7 +77,7 @@ function ThreadPage() {
         .then((res) =>
           handleResult(res, 201, () => {
             toast.success("התגובה נוספה בהצלחה");
-            setTimeout(() => window.location.reload(), 2000);
+            setTimeout(() => window.location.reload(), 1000);
           })
         )
         .catch((err) => handleError(err, "הוספת התגובה נכשלה"))
@@ -87,7 +88,7 @@ function ThreadPage() {
         .then((res) =>
           handleResult(res, 201, () => {
             toast.success("התגובה נוספה בהצלחה");
-            setTimeout(() => window.location.reload(), 2000);
+            setTimeout(() => window.location.reload(), 1000);
           })
         )
         .catch((err) => handleError(err, "הוספת התגובה נכשלה"))

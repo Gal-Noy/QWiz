@@ -92,7 +92,7 @@ function UploadForm() {
           const { user: updatedUser, exam } = res.data;
           localStorage.setItem("user", JSON.stringify(updatedUser));
           toast.success("המבחן נוצר בהצלחה!");
-          setTimeout(() => (window.location.href = `exam/${exam._id}`), 2000);
+          setTimeout(() => (window.location.href = `exam/${exam._id}`), 1000);
         })
       )
       .catch((err) => handleError(err))

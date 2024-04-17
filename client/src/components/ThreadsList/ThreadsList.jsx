@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import ListHeader from "../ListHeader/ListHeader";
 import ThreadRow from "./ThreadRow";
 import "./ThreadsList.css";
@@ -15,18 +14,6 @@ function ThreadsList(props) {
   const lastThreadIndex = currentPage * threadsPerPage;
   const firstThreadIndex = lastThreadIndex - threadsPerPage;
   const currentThreads = threads.slice(firstThreadIndex, lastThreadIndex);
-
-  useEffect(() => {
-    axiosInstance
-      .get("/threads/starred")
-      .then((res) =>
-        handleResult(res, 200, () => {
-          const starredThreadsIds = res.data.map((thread) => thread._id);
-          localStorage.setItem("user", JSON.stringify({ ...user, starred_threads: starredThreadsIds }));
-        })
-      )
-      .catch((err) => handleError(err, "שגיאה בטעינת הדיונים המסומנים בכוכב, אנא נסה שנית."));
-  }, []);
 
   useEffect(() => {
     setNumPages(Math.ceil(threads.length / threadsPerPage));
@@ -59,7 +46,7 @@ function ThreadsList(props) {
       <div className={"threads-list-container" + (isProfilePage ? " is-profile-page" : "")}>
         <div className={"threads-list-headers-row" + (isProfilePage ? " is-profile-page" : "")}>
           <ListHeader
-            label="מסומן בכוכב"
+            label="מועדפים"
             header="starred"
             sortHeader={sortHeader}
             setSortHeader={setSortHeader}

@@ -78,7 +78,7 @@ function CommentBox(props) {
       .then((res) =>
         handleResult(res, 200, () => {
           toast.success("התגובה עודכנה בהצלחה");
-          setTimeout(() => window.location.reload(), 2000);
+          setTimeout(() => window.location.reload(), 1000);
         })
       )
       .catch((err) => handleError(err, "אירעה שגיאה בעת עדכון התגובה"));

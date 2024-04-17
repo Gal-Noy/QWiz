@@ -39,7 +39,7 @@ function Signup() {
           toast.success("נרשמת בהצלחה");
           setTimeout(() => {
             window.location.href = "/auth/login";
-          }, 2000);
+          }, 1000);
         });
       })
       .catch((err) => handleError(err, null, () => setIsPending(false)));
