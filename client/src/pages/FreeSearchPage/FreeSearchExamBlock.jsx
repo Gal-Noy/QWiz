@@ -1,6 +1,6 @@
 import React from "react";
 import ExamRating from "../../components/ExamRating/ExamRating";
-import { examToStringVerbose } from "../../utils/generalUtils";
+import { examToStringVerbose, isTextRTL } from "../../utils/generalUtils";
 
 function FreeSearchExamBlock({ exam }) {
   return (
@@ -31,7 +31,16 @@ function FreeSearchExamBlock({ exam }) {
         </div>
         <div className="free-search-list-item-secondary-details-pair">
           <a className="secondary-details-pair-key">תגיות: </a>
-          <a className="secondary-details-pair-value">{exam.tags.map((tag) => `#${tag}`).join(", ")}</a>
+          <a className="secondary-details-pair-value">
+            {exam.tags.map((tag, index) => (
+              <span className="thread-page-tag" key={index}>
+                <a href={`/search/${tag}`}>
+                  {isTextRTL(tag) ? <span dir="rtl">#{tag}</span> : <span dir="ltr">{tag}#</span>}
+                </a>
+                {index !== exam.tags.length - 1 && ", "}
+              </span>
+            ))}
+          </a>
         </div>
       </div>
     </li>

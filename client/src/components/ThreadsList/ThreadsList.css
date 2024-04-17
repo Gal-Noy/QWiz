@@ -23,7 +23,6 @@
 
   &.is-profile-page {
     width: 75vw;
-    height: 75vh;
   }
 }
 
@@ -71,12 +70,12 @@
   z-index: 1;
 
   &.is-profile-page {
-    width: 140vw;
+    width: 110vw;
   }
 }
 
 .thread-row {
-  height: 6rem;
+  min-height: 6rem;
   display: flex;
   align-items: center;
   width: 110vw;
@@ -103,7 +102,7 @@
   }
 
   &.is-profile-page {
-    width: 140vw;
+    width: 110vw;
   }
 }
 
@@ -127,9 +126,11 @@
     justify-content: center;
   }
 }
-.title,
-.tags {
+.title {
   width: 15rem;
+}
+.tags {
+  width: 20rem;
 }
 .creator,
 .createdAt {
@@ -138,9 +139,12 @@
 .views,
 .comments {
   width: 6rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+
+  &.row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
 }
 .lastComment {
   width: 12rem;

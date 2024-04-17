@@ -16,7 +16,6 @@ function FilterDropdown(props) {
   }, [isOpen]);
 
   useEffect(() => {
-    console.log(options);
     setFilteredOptions(options);
   }, [options]);
 

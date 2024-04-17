@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
 import CommentBox from "./CommentBox";
 import NewComment from "./NewComment";
-import { examToString, sumComments } from "../../utils/generalUtils";
+import { examToString, sumComments, isTextRTL } from "../../utils/generalUtils";
 import { toast } from "react-custom-alert";
 import "./ThreadPage.css";
 
@@ -121,8 +121,10 @@ function ThreadPage() {
             <div className="thread-page-tags">
               {thread.tags.map((tag, index) => (
                 <span className="thread-page-tag" key={index}>
-                  #<a href={`/search/${tag}`}>{tag}</a>
-                  {index !== thread.tags.length - 1 && ","}
+                  <a href={`/search/${tag}`}>
+                    {isTextRTL(tag) ? <span dir="rtl">#{tag}</span> : <span dir="ltr">{tag}#</span>}
+                  </a>
+                  {index !== thread.tags.length - 1 && ", "}
                 </span>
               ))}
             </div>

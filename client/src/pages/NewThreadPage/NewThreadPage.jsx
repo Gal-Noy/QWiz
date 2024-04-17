@@ -2,14 +2,17 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import PageHeader from "../../components/PageHeader/PageHeader";
 import ContentArea from "../../components/ContentArea/ContentArea";
+import MultiSelectFilter from "../../components/MultiSelectFilter/MultiSelectFilter";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
-import { examToString } from "../../utils/generalUtils";
+import { examToStringVerbose } from "../../utils/generalUtils";
 import { toast } from "react-custom-alert";
 import "./NewThreadPage.css";
 
 function NewThread() {
   const { examId } = useParams();
-  const [examDetailsValue, setExamDetailsValue] = useState("");
+  const [exam, setExam] = useState(null);
+  const [examPending, setExamPending] = useState(false);
+  const [examData, setExamData] = useState("");
   const [threadDetails, setThreadDetails] = useState({
     title: "",
     exam: examId,
@@ -19,22 +22,24 @@ function NewThread() {
   const [isPending, setIsPending] = useState(false);
 
   useEffect(() => {
+    setExamPending(true);
     axiosInstance
       .get(`/exams/${examId}`)
-      .then((res) => handleResult(res, 200, () => setExamDetailsValue(examToString(res.data))))
-      .catch((err) => handleError(err, "שגיאה בטעינת פרטי הבחינה, אנא נסה שנית."));
+      .then((res) =>
+        handleResult(res, 200, () => {
+          setExam(res.data);
+          setExamData(examToStringVerbose(res.data));
+          setThreadDetails({ ...threadDetails, tags: res.data.tags });
+        })
+      )
+      .catch((err) => handleError(err, "שגיאה בטעינת הבחינה, אנא נסה שנית."))
+      .finally(() => setExamPending(false));
   }, [examId]);
 
   const createNewThread = async () => {
     if (!threadDetails.title || !threadContent) {
       toast.warning("אנא מלא/י כותרת ותוכן");
       return;
-    }
-    for (const tag of threadDetails.tags) {
-      if (tag.includes(" ")) {
-        toast.warning("אנא הכנס/י תגיות מופרדות בפסיק ללא רווחים");
-        return;
-      }
     }
 
     setIsPending(true);
@@ -43,7 +48,7 @@ function NewThread() {
       title: threadDetails.title,
       content: threadContent,
       exam: examId,
-      tags: [...new Set(threadDetails.tags)],
+      tags: threadDetails.tags,
     };
 
     await axiosInstance
@@ -59,7 +64,7 @@ function NewThread() {
   };
 
   const cancelNewThread = () => {
-    window.location.href = `/exam/${examId}`;
+    window.location.href = `/exam/${examId}/forum`;
   };
 
   return (
@@ -70,7 +75,8 @@ function NewThread() {
           <label className="new-thread-label" htmlFor="exam-id">
             פרטי הבחינה:
           </label>
-          <input className="new-thread-input" type="text" id="exam-id" value={examDetailsValue} disabled />
+          <input className="new-thread-input" type="text" id="exam-id" value={examData} disabled />
+          {examPending && <div className="lds-dual-ring" id="new-thread-exam-loading"></div>}
         </div>
         <div className="new-thread-label-input-pair">
           <label className="new-thread-label" htmlFor="title">
@@ -94,13 +100,15 @@ function NewThread() {
           <label className="new-thread-label" htmlFor="title">
             תגיות:
           </label>
-          <input
-            className="new-thread-input"
-            type="text"
-            id="title"
-            placeholder="הכנס תגיות מופרדות בפסיק ללא רווחים"
-            value={threadDetails.tags.join(",")}
-            onChange={(e) => setThreadDetails({ ...threadDetails, tags: e.target.value.split(",") })}
+          <MultiSelectFilter
+            options={exam ? exam.tags : []}
+            setOptions={(tags) => setExam({ ...exam, tags })}
+            list={threadDetails.tags}
+            setList={(tags) => setThreadDetails({ ...threadDetails, tags })}
+            placeholder="בחר / הוסף תגיות"
+            dependency={!!exam}
+            isPending={examPending}
+            newThreadPage={true}
           />
         </div>
         <div className="new-thread-buttons">

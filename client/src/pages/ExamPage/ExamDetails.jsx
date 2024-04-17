@@ -4,6 +4,7 @@ import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 import ExamRating from "../../components/ExamRating/ExamRating";
 import "./ExamDetails.css";
+import { isTextRTL } from "../../utils/generalUtils";
 
 function ExamDetails({ examId }) {
   const [exam, setExam] = useState(null);
@@ -108,8 +109,10 @@ function ExamDetails({ examId }) {
                 <div className="exam-details-item-text">
                   {exam.tags.map((tag, index) => (
                     <span className="thread-page-tag" key={index}>
-                      #<a href={`/search/${tag}`}>{tag}</a>
-                      {index !== exam.tags.length - 1 && ","}
+                      <a href={`/search/${tag}`}>
+                        {isTextRTL(tag) ? <span dir="rtl">#{tag}</span> : <span dir="ltr">{tag}#</span>}
+                      </a>
+                      {index !== exam.tags.length - 1 && ", "}
                     </span>
                   ))}
                 </div>

@@ -24,6 +24,16 @@
     cursor: default;
     opacity: 0.7;
   }
+
+  &.new-thread-page {
+    width: 40vw;
+    height: 2rem;
+    border-radius: 0.5rem;
+    border: 1px solid grey;
+    padding: 0.5rem 0.5rem;
+    font-size: 1.3rem;
+    color: black;
+  }
 }
 
 .multi-select-filter-select {
@@ -33,6 +43,7 @@
   &.show {
     display: block;
     z-index: 1;
+    top: 90%;
   }
 
   ul {
@@ -46,6 +57,10 @@
     overflow-x: hidden;
     scrollbar-width: thin;
     scrollbar-color: var(--cyan2) white;
+
+    &.new-thread-page {
+      width: 40vw;
+    }
   }
 
   li {

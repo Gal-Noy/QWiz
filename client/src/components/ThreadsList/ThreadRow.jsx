@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
-import { formatDate } from "../../utils/generalUtils";
+import { formatDate, isTextRTL } from "../../utils/generalUtils";
 
 function ThreadRow({ thread, exam, isProfilePage }) {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -80,11 +80,11 @@ function ThreadRow({ thread, exam, isProfilePage }) {
       <div className="table-element title">{thread.title}</div>
       <div className="table-element creator">{thread.creator.name}</div>
       <div className="table-element createdAt">{formatDate(thread.createdAt)}</div>
-      <div className="table-element views">
+      <div className="table-element views row">
         <span className="material-symbols-outlined">visibility</span>
         {thread.views}
       </div>
-      <div className="table-element comments">
+      <div className="table-element comments row">
         <span className="material-symbols-outlined">chat_bubble_outline</span>
         {thread.comments.length}
       </div>
@@ -92,7 +92,16 @@ function ThreadRow({ thread, exam, isProfilePage }) {
         {thread.comments.length > 0 && <a>{thread.comments[thread.comments.length - 1].sender.name}</a>}
         {thread.comments.length > 0 && <a>{formatDate(thread.comments[thread.comments.length - 1].createdAt)}</a>}
       </div>
-      <div className="table-element tags">{thread.tags.map((t) => `#${t}`).join(", ")}</div>
+      <div className="table-element tags">
+        {thread.tags.map((tag, index) => (
+          <span className="thread-page-tag" key={index}>
+            <a href={`/search/${tag}`}>
+              {isTextRTL(tag) ? <span dir="rtl">#{tag}</span> : <span dir="ltr">{tag}#</span>}
+            </a>
+            {index !== thread.tags.length - 1 && ", "}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { handleClickOutside } from "../../utils/generalUtils";
 import "../MultiSelectFilter/MultiSelectFilter.css";
 
 function MultiSelectFilter(props) {
-  const { options, setOptions, list, setList, placeholder, dependency, isPending } = props;
+  const { options, setOptions, list, setList, placeholder, dependency, isPending, newThreadPage } = props;
   const [showOptions, setShowOptions] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchedOptions, setSearchedOptions] = useState(options);
@@ -37,7 +37,7 @@ function MultiSelectFilter(props) {
 
   useEffect(() => {
     setOptions(
-      options.sort((a, b) =>
+      [...options].sort((a, b) =>
         list.includes(a) && !list.includes(b) ? -1 : !list.includes(a) && list.includes(b) ? 1 : 0
       )
     );
@@ -52,6 +52,7 @@ function MultiSelectFilter(props) {
     } else {
       setList(list.filter((listObj) => listObj !== option));
     }
+    setSearchValue("");
   };
 
   return (
@@ -61,7 +62,8 @@ function MultiSelectFilter(props) {
           "multi-select-filter-value-bar" +
           (list.length === 0 ? " placeholder" : "") +
           (disabled ? " disabled" : "") +
-          (isPending ? " pending" : "")
+          (isPending ? " pending" : "") +
+          (newThreadPage ? " new-thread-page" : "")
         }
         onClick={() => {
           if (!disabled && !isPending) setShowOptions(!showOptions);
@@ -79,7 +81,7 @@ function MultiSelectFilter(props) {
         )}
       </div>
       <div className={"multi-select-filter-select" + (showOptions ? " show" : "")}>
-        <ul className="multi-select-filter-options">
+        <ul className={"multi-select-filter-options" + (newThreadPage ? " new-thread-page" : "")}>
           <input
             className="multi-select-input"
             placeholder="חיפוש / הוספה"

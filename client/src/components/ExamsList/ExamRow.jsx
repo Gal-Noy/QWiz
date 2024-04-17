@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axiosInstance, { handleResult, handleError } from "../../utils/axiosInstance";
+import { isTextRTL } from "../../utils/generalUtils";
 import ExamRating from "../ExamRating/ExamRating";
 
 function ExamRow({ exam, isProfilePage }) {
@@ -72,8 +73,17 @@ function ExamRow({ exam, isProfilePage }) {
       <div className="table-element semester">{exam.semester === 1 ? "א'" : exam.semester === 2 ? "ב'" : "קיץ"}</div>
       <div className="table-element term">{exam.semester === 1 ? "א'" : exam.semester === 2 ? "ב'" : "ג'"}</div>
       <div className="table-element grade">{exam.grade}</div>
-      <ExamRating exam={exam} editMode={false}/>
-      <div className="table-element tags">{exam.tags.map((t) => `#${t}`).join(", ")}</div>
+      <ExamRating exam={exam} editMode={false} />
+      <div className="table-element tags">
+        {exam.tags.map((tag, index) => (
+          <span className="thread-page-tag" key={index}>
+            <a href={`/search/${tag}`}>
+              {isTextRTL(tag) ? <span dir="rtl">#{tag}</span> : <span dir="ltr">{tag}#</span>}
+            </a>
+            {index !== exam.tags.length - 1 && ", "}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }

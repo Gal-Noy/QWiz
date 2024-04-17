@@ -14,6 +14,7 @@
   gap: 0.5rem;
   padding: 0.5rem;
   position: relative;
+  align-items: center;
 }
 .ql-toolbar.ql-snow {
   font-family: "Noto Sans Hebrew", "Noto Sans", sans-serif;

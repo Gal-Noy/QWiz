@@ -9,15 +9,20 @@ const formatDateAndTime = (date) => {
 };
 
 const examToString = (exam) => {
-  return `${exam.course.name} - ${exam.year} - ${exam.type === "test" ? "מבחן" : "בוחן"} - ${
-    exam.semester === 1 ? "א'" : exam.semester === 2 ? "ב'" : "ג'"
-  } - ${exam.term === 1 ? "א'" : exam.term === 2 ? "ב'" : "ג'"}`;
+  return exam
+    ? `${exam.course.name} - ${exam.year} - ${exam.type === "test" ? "מבחן" : "בוחן"} - ${
+        exam.semester === 1 ? "א'" : exam.semester === 2 ? "ב'" : "ג'"
+      } - ${exam.term === 1 ? "א'" : exam.term === 2 ? "ב'" : "ג'"}`
+    : "";
 };
 
 const examToStringVerbose = (exam) => {
-  return `${exam.course.name} - ${exam.year} - ${exam.type === "test" ? "מבחן" : "בוחן"} - ${
-    exam.semester === 1 ? "סמסטר א" : exam.semester === 2 ? "סמסטר ב" : "סמסטר קיץ"
-  } - ${exam.term === 1 ? "מועד א" : exam.term === 2 ? "מועד ב" : "מועד ג"}`;
+  console.log(exam);
+  return exam
+    ? `${exam.course.name} - ${exam.year} - ${exam.type === "test" ? "מבחן" : "בוחן"} - ${
+        exam.semester === 1 ? "סמסטר א" : exam.semester === 2 ? "סמסטר ב" : "סמסטר קיץ"
+      } - ${exam.term === 1 ? "מועד א" : exam.term === 2 ? "מועד ב" : "מועד ג"}`
+    : "";
 };
 
 const sumComments = (comments) => {
@@ -40,6 +45,11 @@ const handleClickOutside = (ref, callback) => {
   };
 };
 
+const isTextRTL = (text) => {
+  const rtlChars = /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/;
+  return rtlChars.test(text);
+};
+
 const calcAvgRating = (difficultyRatings) =>
   difficultyRatings.reduce((acc, curr) => acc + curr.rating, 0) / difficultyRatings.length;
 
@@ -51,4 +61,5 @@ export {
   sumComments,
   calcAvgRating,
   handleClickOutside,
+  isTextRTL,
 };

@@ -49,7 +49,7 @@
 }
 
 .exam-row {
-  height: 6rem;
+  min-height: 6rem;
   display: flex;
   align-items: center;
   width: 130vw;

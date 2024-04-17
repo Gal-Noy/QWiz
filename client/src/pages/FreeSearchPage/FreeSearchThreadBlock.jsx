@@ -1,5 +1,5 @@
 import React from "react";
-import { formatDate } from "../../utils/generalUtils";
+import { formatDate, isTextRTL } from "../../utils/generalUtils";
 
 function FreeSearchThreadBlock({ thread }) {
   return (
@@ -32,7 +32,16 @@ function FreeSearchThreadBlock({ thread }) {
         </div>
         <div className="free-search-list-item-secondary-details-pair">
           <a className="secondary-details-pair-key">תגיות: </a>
-          <a className="secondary-details-pair-value">{thread.tags.map((tag) => `#${tag}`).join(", ")}</a>
+          <a className="secondary-details-pair-value">
+            {thread.tags.map((tag, index) => (
+              <span className="thread-page-tag" key={index}>
+                <a href={`/search/${tag}`}>
+                  {isTextRTL(tag) ? <span dir="rtl">#{tag}</span> : <span dir="ltr">{tag}#</span>}
+                </a>
+                {index !== thread.tags.length - 1 && ", "}
+              </span>
+            ))}
+          </a>
         </div>
       </div>
     </li>

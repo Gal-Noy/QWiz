@@ -20,6 +20,7 @@
   display: flex;
   flex-direction: row;
   gap: 1rem;
+  position: relative;
 }
 
 .new-thread-label {
@@ -67,4 +68,15 @@
   &:active {
     background-color: #666666;
   }
+}
+
+#new-thread-exam-loading {
+  position: absolute;
+  left: 60%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+#new-thread-exam-loading:after {
+  border: 2px solid grey;
+  border-color: grey transparent grey transparent;
 }
