@@ -2,7 +2,19 @@ import { User } from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+/**
+ * Controller for handling user registration, login and logout.
+ */
 const authController = {
+  /**
+   * Registers a new user.
+   *
+   * @async
+   * @function register
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {User} The created user.
+   */
   register: async (req, res) => {
     try {
       if (!req.body.name || !req.body.email || !req.body.password || !req.body.confirmPassword) {
@@ -11,12 +23,13 @@ const authController = {
 
       const { name, email, password, confirmPassword } = req.body;
 
+      // Check if user with same email already exists
       const existingUser = await User.findOne({ email: req.body.email.toLowerCase() }).exec();
-
       if (existingUser) {
         return res.status(400).json({ type: "UserExistError", message: "User with same email already exists." });
       }
 
+      // Validate email and password
       if (
         !email.match(
           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -33,14 +46,15 @@ const authController = {
         return res.status(400).json({ type: "PasswordsMismatchError", message: "Passwords do not match." });
       }
 
+      // Encrypt password
       const encryptedPassword = await bcrypt.hash(password, 10);
 
+      // Create new user
       const newUser = {
         name,
         email: email.toLowerCase(),
         password: encryptedPassword,
       };
-
       const user = await User.create(newUser);
 
       return res.status(201).json(user);
@@ -49,6 +63,15 @@ const authController = {
     }
   },
 
+  /**
+   * Logs in a user.
+   *
+   * @async
+   * @function login
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Object} The user and token.
+   */
   login: async (req, res) => {
     try {
       if (!req.body.email || !req.body.password) {
@@ -59,7 +82,9 @@ const authController = {
 
       const user = await User.findOne({ email: email.toLowerCase() }).exec();
 
+      // Check if user exists and password is correct
       if (user && (await bcrypt.compare(password, user.password))) {
+        // Check if user is already logged in
         if (user.isActive) {
           const inactivityTimeoutThreshold = 30 * 60 * 1000; // 30 minutes
           const userInactivityTime = Date.now() - user.lastActivity;
@@ -72,13 +97,15 @@ const authController = {
           }
         }
 
+        // Create token
         const token = jwt.sign({ user_id: user._id, email }, process.env.TOKEN_KEY, { expiresIn: "1h" });
 
+        // Update user activity
         user.isActive = true;
         user.lastActivity = Date.now();
         await user.save();
 
-        delete user.password;
+        delete user.password; // remove password from user object
 
         return res.json({
           token,
@@ -87,18 +114,29 @@ const authController = {
         });
       }
 
+      // Invalid credentials, return error
       return res.status(400).json({ type: "InvalidCredentialsError", message: "Invalid Credentials." });
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
   },
 
+  /**
+   * Logs out a user.
+   *
+   * @async
+   * @function logout
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Object} The result of logging out the user (message).
+   */
   logout: async (req, res) => {
     try {
       const userId = req.user.user_id;
 
       const dbUser = await User.findById(userId);
 
+      // Update user activity
       dbUser.isActive = false;
       dbUser.lastActivity = Date.now();
       await dbUser.save();

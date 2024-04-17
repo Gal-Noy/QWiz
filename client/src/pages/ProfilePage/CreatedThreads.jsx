@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
 import ThreadsList from "../../components/ThreadsList/ThreadsList";
 
 /**
@@ -13,8 +13,16 @@ function CreatedThreads() {
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    axiosInstance
+  /**
+   * Fetches the threads created by the user.
+   *
+   * @async
+   * @function fetchThreads
+   * @returns {Promise<void>} The result of the threads fetch.
+   */
+  const fetchThreads = async () => {
+    setIsPending(true);
+    await axiosInstance
       .get("/threads/user")
       .then((res) =>
         handleResult(res, 200, () => {
@@ -24,7 +32,9 @@ function CreatedThreads() {
       )
       .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת הדיונים שנוצרו")))
       .finally(() => setIsPending(false));
-  }, []);
+  };
+
+  useEffect(() => fetchThreads(), []); // Initial fetch
 
   return (
     <ThreadsList

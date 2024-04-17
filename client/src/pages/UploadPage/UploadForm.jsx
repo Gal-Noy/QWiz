@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
 import SelectFilter from "../../components/SelectFilter/SelectFilter";
 import MultiSelectFilter from "../../components/MultiSelectFilter/MultiSelectFilter";
 import { toast } from "react-custom-alert";
@@ -84,16 +84,19 @@ function UploadForm() {
       return;
     }
 
+    // Create the exam data object
     const examData = {
       ...examDetails,
       phone_number: studentDetails.phone_number,
       id_number: studentDetails.id_number,
     };
 
+    // Create a form data object
     const formData = new FormData();
     formData.append("file", file);
     formData.append("examData", JSON.stringify(examData));
 
+    // Create the exam
     await axiosInstance
       .post("/exams", formData, {
         headers: {
@@ -143,6 +146,7 @@ function UploadForm() {
     });
     cancelFile();
 
+    // Clear the star rating
     const stars = document.querySelectorAll(".radio-input");
     stars.forEach((star) => {
       star.checked = false;
@@ -244,10 +248,12 @@ function UploadForm() {
       .finally(() => setSelectListsPendings({ ...selectListsPendings, tags: false, lecturers: false }));
   };
 
+  // Initial fetch of faculties
   useEffect(() => {
     fetchFaculties();
   }, []);
 
+  // Fetch departments and courses according to the chosen faculty
   useEffect(() => {
     setExamDetails({ ...examDetails, department: null, course: null });
     if (examDetails.faculty) fetchDepartmentsByFaculty(examDetails.faculty._id);
@@ -258,6 +264,7 @@ function UploadForm() {
     if (examDetails.department) fetchCoursesByDepartment(examDetails.department._id);
   }, [examDetails.department]);
 
+  // Fetch the course attributes by course
   useEffect(() => {
     setExamDetails({ ...examDetails, tags: [], lecturers: [] });
     if (examDetails.course) fetchCourseAttributes(examDetails.course._id);

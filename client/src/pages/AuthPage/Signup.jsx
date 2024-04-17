@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
 import { toast } from "react-custom-alert";
 
 /**

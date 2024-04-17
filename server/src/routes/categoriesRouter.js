@@ -5,7 +5,7 @@ import { authenticateToken, authenticateAdmin } from "../middleware/authMiddlewa
 const categoriesRouter = express.Router();
 categoriesRouter.use(authenticateToken);
 
-// Faculties
+////////////////////////////////////////// FACULTIES //////////////////////////////////////////
 
 // GET: get all faculties
 categoriesRouter.get("/faculties", categoriesController.getFaculties);
@@ -22,7 +22,10 @@ categoriesRouter.put("/faculty/:id", authenticateAdmin, categoriesController.upd
 // DELETE: delete faculty by id
 categoriesRouter.delete("/faculty/:id", authenticateAdmin, categoriesController.deleteFaculty);
 
-// Departments
+// GET: get faculty's departments
+categoriesRouter.get("/faculty/:id/departments", categoriesController.getFacultyDepartments);
+
+////////////////////////////////////////// DEPARTMENTS //////////////////////////////////////////
 
 // GET: get all departments
 categoriesRouter.get("/departments", categoriesController.getDepartments);
@@ -39,7 +42,10 @@ categoriesRouter.put("/department/:id", authenticateAdmin, categoriesController.
 // DELETE: delete department by id
 categoriesRouter.delete("/department/:id", authenticateAdmin, categoriesController.deleteDepartment);
 
-// Courses
+// GET: get department's courses
+categoriesRouter.get("/department/:id/courses", categoriesController.getDepartmentCourses);
+
+////////////////////////////////////////// COURSES //////////////////////////////////////////
 
 // GET: get all courses
 categoriesRouter.get("/courses", categoriesController.getCourses);
@@ -55,13 +61,5 @@ categoriesRouter.put("/course/:id", authenticateAdmin, categoriesController.upda
 
 // DELETE: delete course by id
 categoriesRouter.delete("/course/:id", authenticateAdmin, categoriesController.deleteCourse);
-
-// Filters
-
-// GET: get faculty's departments
-categoriesRouter.get("/faculty/:id/departments", categoriesController.getFacultyDepartments);
-
-// GET: get department's courses
-categoriesRouter.get("/department/:id/courses", categoriesController.getDepartmentCourses);
 
 export default categoriesRouter;

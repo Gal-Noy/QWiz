@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
 import "./FavoriteToggle.css";
 
 /**
  * A toggle component for adding or removing an exam from favorites.
  *
  * @component
-  * @param {Object} props - The component props.
+ * @param {Object} props - The component props.
  * @param {string} props.examId - The ID of the exam.
  * @returns {JSX.Element} - The FavoriteToggle component.
  */

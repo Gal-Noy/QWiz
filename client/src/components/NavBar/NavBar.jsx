@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
 import defaultAvatar from "../../assets/default-avatar.jpg";
 import { toast } from "react-custom-alert";
 import "./NavBar.css";

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { formatDateAndTime } from "../../utils/generalUtils";
-import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
 import defaultAvatar from "../../assets/default-avatar.jpg";
 import NewComment from "./NewComment";
 import ContentArea from "../../components/ContentArea/ContentArea";
@@ -48,6 +48,7 @@ function CommentBox(props) {
   const [isLiked, setIsLiked] = useState(likes.includes(user._id));
   const [likePending, setLikePending] = useState(false);
 
+  // Set the expand status
   useEffect(() => {
     setIsExpanded(expand);
   }, [expand]);

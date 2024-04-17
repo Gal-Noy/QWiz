@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axiosInstance, { handleResult, handleError } from "../../utils/axiosInstance";
+import axiosInstance, { handleResult, handleError } from "../../api/axiosInstance";
 import { useParams } from "react-router-dom";
 import FreeSearchThreadBlock from "./FreeSearchThreadBlock";
 import FreeSearchExamBlock from "./FreeSearchExamBlock";
@@ -17,14 +17,23 @@ function FreeSearchPage() {
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  /**
+   * Fetches the free search results.
+   *
+   * @async
+   * @function fetchFreeSearchResults
+   * @returns {Promise<void>} The result of the free search fetch.
+   */
+  const fetchFreeSearchResults = async () => {
     setIsPending(true);
-    axiosInstance
+    await axiosInstance
       .get(`/search/${query}`)
       .then((res) => handleResult(res, 200, () => setSearchResults(res.data)))
       .catch((err) => handleError(err, null, () => setError("שגיאה בחיפוש, אנא נסה שנית.")))
       .finally(() => setIsPending(false));
-  }, [query]);
+  };
+
+  useEffect(() => fetchFreeSearchResults(), [query]); // Initial fetch
 
   return (
     <div className="free-search-page">

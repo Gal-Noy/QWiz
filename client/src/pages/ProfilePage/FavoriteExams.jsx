@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
 import ExamsList from "../../components/ExamsList/ExamsList";
 
 /**
@@ -13,10 +13,10 @@ function FavoriteExams() {
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  const fetchFavoriteExams = async () => {
     setIsPending(true);
-    axiosInstance
-      .get("/exams/favorites", {})
+    await axiosInstance
+      .get("/exams/favorites")
       .then((res) =>
         handleResult(res, 200, () => {
           const fetchedExams = res.data;
@@ -26,7 +26,9 @@ function FavoriteExams() {
       )
       .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת הבחינות המועדפות, אנא נסה שנית.")))
       .finally(() => setIsPending(false));
-  }, []);
+  };
+
+  useEffect(() => fetchFavoriteExams(), []); // Initial fetch
 
   return (
     <ExamsList

@@ -33,12 +33,14 @@ function ListHeader(props) {
     }
   };
 
+  // Sort the list when the sorter is active
   useEffect(() => {
     if (isSorter) {
       sortFunc(isAsc);
     }
   }, [isSorter, isAsc]);
 
+  // Reset the sorter when the sort header changes
   useEffect(() => {
     if (sortHeader !== header) {
       setIsSorter(false);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
 import CommentBox from "./CommentBox";
 import NewComment from "./NewComment";
 import StarToggle from "../../components/StarToggle/StarToggle";
@@ -27,17 +27,15 @@ function ThreadPage() {
   const user = JSON.parse(localStorage.getItem("user"));
   const isAdmin = user && thread?.creator._id === user._id;
 
+  // Scroll to the comment if it exists
   if (commentId) {
     const commentElement = document.getElementById(`comment-${commentId}`);
     if (commentElement) commentElement.scrollIntoView({ behavior: "smooth" });
   }
 
-  useEffect(() => {
-    if (!threadId) return;
-
+  const fetchThread = async () => {
     setIsPending(true);
-
-    axiosInstance
+    await axiosInstance
       .get(`/threads/${threadId}`)
       .then((res) =>
         handleResult(res, 200, () => {
@@ -48,6 +46,11 @@ function ThreadPage() {
       )
       .catch((err) => handleError(err, null, () => setError("אירעה שגיאה בעת טעינת הדיון")))
       .finally(() => setIsPending(false));
+  };
+
+  // Initial fetch
+  useEffect(() => {
+    if (threadId) fetchThread();
   }, [threadId]);
 
   /**
@@ -67,6 +70,7 @@ function ThreadPage() {
       .finally(() => setIsClosedPending(false));
   };
 
+  // Update the isClosed state when the thread is fetched
   useEffect(() => {
     if (thread) setIsClosed(thread.isClosed);
   }, [thread]);
@@ -93,6 +97,7 @@ function ThreadPage() {
     setIsPendingCallback(true);
 
     if (!currReplied) {
+      // Add a new comment
       await axiosInstance
         .post(`/threads/${threadId}/comment`, { content: newComment })
         .then((res) =>
@@ -104,6 +109,7 @@ function ThreadPage() {
         .catch((err) => handleError(err, "הוספת התגובה נכשלה"))
         .finally(() => setIsPendingCallback(false));
     } else {
+      // Reply to a comment
       await axiosInstance
         .post(`/threads/${threadId}/comment/${currReplied}/reply`, { content: newComment })
         .then((res) =>

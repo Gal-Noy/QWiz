@@ -26,23 +26,28 @@ function MultiSelectFilter(props) {
   const [disabled, setDisabled] = useState(options.length === 0);
   const multiSelectFilterRef = useRef(null);
 
+  // Close the dropdown when clicking outside of it
   useEffect(() => {
     handleClickOutside(multiSelectFilterRef, () => setShowOptions(false));
   }, [showOptions]);
 
+  // Update the searched options when the options change
   useEffect(() => {
     setSearchedOptions(options);
   }, [options]);
 
+  // Filter the options based on the search input
   useEffect(() => {
     const filteredOptions = options.filter((option) => option.includes(searchValue));
     setSearchedOptions(filteredOptions);
   }, [searchValue]);
 
+  // Disable the filter when the dependency is false
   useEffect(() => {
     setDisabled(!dependency);
   }, [dependency]);
 
+  // Reset the filter when it's disabled, and close the dropdown
   useEffect(() => {
     if (disabled) {
       setList([]);
@@ -51,8 +56,8 @@ function MultiSelectFilter(props) {
     }
   }, [disabled]);
 
+  // Sort the options based on appearance in the list.
   useEffect(() => {
-    // Sort the options based on appearance in the list.
     setOptions(
       [...options].sort((a, b) =>
         list.includes(a) && !list.includes(b) ? -1 : !list.includes(a) && list.includes(b) ? 1 : 0

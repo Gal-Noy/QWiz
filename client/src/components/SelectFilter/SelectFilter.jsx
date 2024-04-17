@@ -25,25 +25,30 @@ const SelectFilter = (props) => {
   const selectFilterRef = useRef(null);
   const isAvailable = !disabled && !isPending;
 
+  // Close the dropdown when clicking outside of it
   useEffect(() => {
     handleClickOutside(selectFilterRef, () => setShowOptions(false));
   }, [showOptions]);
 
+  // Update the searched options when the options change
   useEffect(() => {
     setSearchedOptions(options);
     if (!value) setSearchValue("");
   }, [options]);
 
+  // Filter the options based on the search input, and reset the value if during search
   useEffect(() => {
     const filteredOptions = options.filter((option) => option.name.includes(searchValue));
     setSearchedOptions(filteredOptions);
     if (value) setValue(null);
   }, [searchValue]);
 
+  // Disable the filter when the dependency is false
   useEffect(() => {
     setDisabled(!dependency);
   }, [dependency]);
 
+  // Reset the filter when it's disabled, and close the dropdown
   useEffect(() => {
     if (disabled) {
       setSearchValue("");

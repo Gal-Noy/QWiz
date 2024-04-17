@@ -29,14 +29,17 @@ function FilterDropdown(props) {
   const valueChosen = isMultiChoice ? value.length > 0 : !!value;
   const dropdownRef = useRef(null);
 
+  // Close the dropdown when clicking outside of it
   useEffect(() => {
     handleClickOutside(dropdownRef, () => setIsOpen(false));
   }, [isOpen]);
 
+  // Update the filtered options when the options change
   useEffect(() => {
     setFilteredOptions(options);
   }, [options]);
 
+  // Filter the options based on the search input
   useEffect(() => {
     const filteredOptions = options.filter((option) =>
       option.name ? option.name.includes(searchInput) : option.toString().includes(searchInput)
@@ -44,6 +47,7 @@ function FilterDropdown(props) {
     setFilteredOptions(filteredOptions);
   }, [searchInput]);
 
+  // Close the dropdown when it's disabled, and reset the value
   useEffect(() => {
     if (!isAvailable) {
       setSearchInput("");
@@ -52,6 +56,7 @@ function FilterDropdown(props) {
     }
   }, [isAvailable]);
 
+  // Sort the options based on appearance in the value array for multi-choice dropdowns
   useEffect(() => {
     if (isMultiChoice) {
       setOptions(

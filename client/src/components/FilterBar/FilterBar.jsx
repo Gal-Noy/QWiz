@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import FilterDropdown from "./FilterDropdown";
-import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
 import { calcAvgRating } from "../../utils/generalUtils";
 import { toast } from "react-custom-alert";
 import "./FilterBar.css";
@@ -345,12 +345,12 @@ function FilterBar(props) {
     setShowExams(true);
   };
 
-  // Fetch faculties, departments, and courses according to the chosen filters
-
+  // Initial fetch of faculties
   useEffect(() => {
     fetchFaculties();
   }, []);
 
+  // Fetch departments and courses according to the chosen faculty
   useEffect(() => {
     setCategoriesLists({ ...categoriesLists, departments: [], courses: [] });
     setChosenCategories({ ...chosenCategories, department: null, course: null });

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
 import ThreadsList from "../../components/ThreadsList/ThreadsList";
 
 /**

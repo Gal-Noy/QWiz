@@ -30,6 +30,7 @@ function ExamsList(props) {
   const firstExamIndex = lastExamIndex - examsPerPage;
   const currentExams = exams.slice(firstExamIndex, lastExamIndex);
 
+  // Scroll to the bottom of the page when exams are shown
   useEffect(() => {
     if (showExams) {
       window.scrollTo({
@@ -39,6 +40,7 @@ function ExamsList(props) {
     }
   }, [showExams]);
 
+  // Update the number of pages when exams are updated
   useEffect(() => {
     if (showExams) {
       setNumPages(Math.ceil(exams.length / examsPerPage));

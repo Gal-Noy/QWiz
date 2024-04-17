@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
 import { calcAvgRating } from "../../utils/generalUtils";
 import "./ExamRating.css";
 
@@ -35,7 +35,6 @@ function ExamRating(props) {
     if (isPending) return;
 
     setIsPending(true);
-
     await axiosInstance
       .post(`/exams/${exam._id}/rate`, { rating })
       .then((res) => handleResult(res, 200, () => setExam(res.data)))
@@ -50,7 +49,7 @@ function ExamRating(props) {
   return editMode ? (
     rating ? (
       <div className="exam-rating">
-        { /* Display the user's rating */}
+        {/* Display the user's rating */}
         <a className="rate-exam-header">הדירוג שלך:</a>
         {isPending ? (
           <div className="lds-dual-ring" id="rate-loading"></div>
@@ -77,7 +76,7 @@ function ExamRating(props) {
       </div>
     ) : (
       <div className="exam-rating">
-        { /* Rate the exam */}
+        {/* Rate the exam */}
         <a className="rate-exam-header">דרג/י את הבחינה:</a>
         {isPending ? (
           <div className="lds-dual-ring" id="rate-loading"></div>
@@ -101,7 +100,7 @@ function ExamRating(props) {
     )
   ) : (
     <div className="average-rating-div">
-      { /* Display the average rating */}
+      {/* Display the average rating */}
       <meter
         className="average-rating"
         id={`average-rating-${exam._id}`}

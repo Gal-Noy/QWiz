@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
 import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 import ExamRating from "../../components/ExamRating/ExamRating";
@@ -21,29 +21,41 @@ function ExamDetails({ examId }) {
   const [filePath, setFilePath] = useState(null);
   const [pdfLoaded, setPdfLoaded] = useState(false);
 
-  useEffect(() => {
-    axiosInstance
+  /**
+   * Fetches the exam details.
+   *
+   * @async
+   * @function fetchExam
+   * @returns {Promise<void>} The result of the exam details fetch.
+   */
+  const fetchExam = async () => {
+    if (isPending) return;
+    setIsPending(true);
+    await axiosInstance
       .get(`/exams/${examId}`)
       .then((res) => handleResult(res, 200, () => setExam(res.data)))
-      .then(() => {
-        setIsPending(false);
-      })
+      .then(() => setIsPending(false))
       .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת פרטי הבחינה, אנא נסה שנית.")));
-  }, [examId]);
+  };
+
+  /**
+   * Fetches the presigned URL of the exam.
+   *
+   * @async
+   * @function getPresignedUrl
+   * @returns {Promise<void>} The result of the presigned URL fetch.
+   */
+  const getPresignedUrl = async () =>
+    await axiosInstance
+      .get(`/exams/${exam._id}/presigned`)
+      .then((res) => handleResult(res, 200, () => setFilePath(res.data.presignedUrl)))
+      .catch((err) => handleError(err));
+
+  useEffect(() => fetchExam(), [examId]); // Initial fetch
 
   useEffect(() => {
-    if (exam) {
-      axiosInstance
-        .get(`/exams/${exam._id}/presigned`)
-        .then((res) => handleResult(res, 200, () => setFilePath(res.data.presignedUrl)))
-        .catch((err) => handleError(err));
-    }
-  }, [exam]);
-
-  const goToPdf = () => {
-    if (!pdfLoaded) return;
-    window.open(filePath, "_blank");
-  };
+    if (exam) getPresignedUrl();
+  }, [exam]); // Fetch the presigned URL after the exam is fetched
 
   return (
     <div className="exam-details">
@@ -120,7 +132,14 @@ function ExamDetails({ examId }) {
             </div>
           </div>
           <div className="exam-details-left-section">
-            <div className={"exam-details-pdf" + (!pdfLoaded ? " pdf-not-loaded" : "")} onClick={goToPdf}>
+            <div
+              className={"exam-details-pdf" + (!pdfLoaded ? " pdf-not-loaded" : "")}
+              onClick={() => {
+                // Open the PDF in a new tab
+                if (!pdfLoaded) return;
+                window.open(filePath, "_blank");
+              }}
+            >
               <Document file={filePath} onLoadSuccess={() => setPdfLoaded(true)}>
                 <Page pageNumber={1} renderAnnotationLayer={false} renderTextLayer={false} />
               </Document>

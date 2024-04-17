@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
 import defaultAvatar from "../../assets/default-avatar.jpg";
 import { toast } from "react-custom-alert";
 
@@ -47,6 +47,7 @@ function PersonalDetails() {
 
     setIsPending(true);
 
+    // Update the user's details
     await axiosInstance
       .put(`/users/${user._id}`, editedUser)
       .then((res) =>
@@ -64,6 +65,7 @@ function PersonalDetails() {
       )
       .catch((err) =>
         handleError(err, null, () => {
+          // Reset the edited user to the current user's details
           setEditedUser({
             ...user,
             password: "",

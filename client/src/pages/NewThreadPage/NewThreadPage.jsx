@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import PageHeader from "../../components/PageHeader/PageHeader";
 import ContentArea from "../../components/ContentArea/ContentArea";
 import MultiSelectFilter from "../../components/MultiSelectFilter/MultiSelectFilter";
-import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
 import { examToStringVerbose } from "../../utils/generalUtils";
 import { toast } from "react-custom-alert";
 import "./NewThreadPage.css";
@@ -27,9 +27,16 @@ function NewThread() {
   const [threadContent, setThreadContent] = useState("");
   const [isPending, setIsPending] = useState(false);
 
-  useEffect(() => {
+  /**
+   * Fetches the exam details.
+   *
+   * @async
+   * @function fetchExam
+   * @returns {void}
+   */
+  const fetchExam = async () => {
     setExamPending(true);
-    axiosInstance
+    await axiosInstance
       .get(`/exams/${examId}`)
       .then((res) =>
         handleResult(res, 200, () => {
@@ -40,7 +47,9 @@ function NewThread() {
       )
       .catch((err) => handleError(err, "שגיאה בטעינת הבחינה, אנא נסה שנית."))
       .finally(() => setExamPending(false));
-  }, [examId]);
+  };
+
+  useEffect(() => fetchExam(), [examId]); // Initial fetch
 
   /**
    * Create a new thread.

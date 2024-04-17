@@ -1,8 +1,20 @@
 import { Faculty, Department, Course } from "../models/categoriesModels.js";
 
+/**
+ * Controller for handling faculty, department and course operations.
+ */
 const categoriesController = {
-  // Faculties
+  ////////////////////////////////////////// FACULTIES //////////////////////////////////////////
 
+  /**
+   * Gets all faculties.
+   *
+   * @async
+   * @function getFaculties
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Faculty[]} The faculties.
+   */
   getFaculties: async (req, res) => {
     try {
       const faculties = await Faculty.find();
@@ -13,6 +25,15 @@ const categoriesController = {
     }
   },
 
+  /**
+   * Gets a faculty by its ID.
+   *
+   * @async
+   * @function getFacultyById
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Faculty} The faculty.
+   */
   getFacultyById: async (req, res) => {
     try {
       const faculty = await Faculty.findById(req.params.id);
@@ -27,6 +48,15 @@ const categoriesController = {
     }
   },
 
+  /**
+   * Creates a faculty.
+   *
+   * @async
+   * @function createFaculty
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Faculty} The created faculty.
+   */
   createFaculty: async (req, res) => {
     try {
       const faculty = new Faculty(req.body);
@@ -38,6 +68,15 @@ const categoriesController = {
     }
   },
 
+  /**
+   * Updates a faculty.
+   *
+   * @async
+   * @function updateFaculty
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Faculty} The updated faculty.
+   */
   updateFaculty: async (req, res) => {
     try {
       const faculty = await Faculty.findById(req.params.id);
@@ -55,6 +94,15 @@ const categoriesController = {
     }
   },
 
+  /**
+   * Deletes a faculty.
+   *
+   * @async
+   * @function deleteFaculty
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Object} The result of deleting the faculty (message).
+   */
   deleteFaculty: async (req, res) => {
     try {
       const faculty = await Faculty.findByIdAndDelete(req.params.id);
@@ -69,8 +117,36 @@ const categoriesController = {
     }
   },
 
-  // Departments
+  /**
+   * Gets all departments of a faculty.
+   *
+   * @async
+   * @function getFacultyDepartments
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Department[]} The departments of the faculty.
+   */
+  getFacultyDepartments: async (req, res) => {
+    try {
+      const departments = await Department.find({ faculty: req.params.id });
 
+      return res.json(departments);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+
+  ////////////////////////////////////////// DEPARTMENTS //////////////////////////////////////////
+
+  /**
+   * Gets all departments.
+   *
+   * @async
+   * @function getDepartments
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Department[]} The departments.
+   */
   getDepartments: async (req, res) => {
     try {
       const departments = await Department.find();
@@ -81,6 +157,15 @@ const categoriesController = {
     }
   },
 
+  /**
+   * Gets a department by its ID.
+   *
+   * @async
+   * @function getDepartmentById
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Department} The department.
+   */
   getDepartmentById: async (req, res) => {
     try {
       const department = await Department.findById(req.params.id);
@@ -95,6 +180,15 @@ const categoriesController = {
     }
   },
 
+  /**
+   * Creates a department.
+   *
+   * @async
+   * @function createDepartment
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Department} The created department.
+   */
   createDepartment: async (req, res) => {
     try {
       const department = new Department(req.body);
@@ -107,6 +201,15 @@ const categoriesController = {
     }
   },
 
+  /**
+   * Updates a department.
+   *
+   * @async
+   * @function updateDepartment
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Department} The updated department.
+   */
   updateDepartment: async (req, res) => {
     try {
       const department = await Department.findById(req.params.id);
@@ -124,6 +227,15 @@ const categoriesController = {
     }
   },
 
+  /**
+   * Deletes a department.
+   *
+   * @async
+   * @function deleteDepartment
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Object} The result of deleting the department (message).
+   */
   deleteDepartment: async (req, res) => {
     try {
       const department = await Department.findByIdAndDelete(req.params.id);
@@ -138,8 +250,36 @@ const categoriesController = {
     }
   },
 
-  // Courses
+  /**
+   * Gets all courses of a department.
+   *
+   * @async
+   * @function getDepartmentCourses
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Course[]} The courses of the department.
+   */
+  getDepartmentCourses: async (req, res) => {
+    try {
+      const courses = await Course.find({ department: req.params.id });
 
+      return res.json(courses);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+
+  ////////////////////////////////////////// COURSES //////////////////////////////////////////
+
+  /**
+   * Gets all courses.
+   *
+   * @async
+   * @function getCourses
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Course[]} The courses.
+   */
   getCourses: async (req, res) => {
     try {
       const courses = await Course.find();
@@ -150,6 +290,15 @@ const categoriesController = {
     }
   },
 
+  /**
+   * Gets a course by its ID.
+   *
+   * @async
+   * @function getCourseById
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Course} The course.
+   */
   getCourseById: async (req, res) => {
     try {
       const course = await Course.findById(req.params.id);
@@ -164,6 +313,15 @@ const categoriesController = {
     }
   },
 
+  /**
+   * Creates a course.
+   *
+   * @async
+   * @function createCourse
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Course} The created course.
+   */
   createCourse: async (req, res) => {
     try {
       const course = new Course(req.body);
@@ -176,6 +334,15 @@ const categoriesController = {
     }
   },
 
+  /**
+   * Updates a course.
+   *
+   * @async
+   * @function updateCourse
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Course} The updated course.
+   */
   updateCourse: async (req, res) => {
     try {
       const course = await Course.findById(req.params.id);
@@ -193,6 +360,15 @@ const categoriesController = {
     }
   },
 
+  /**
+   * Deletes a course.
+   *
+   * @async
+   * @function deleteCourse
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Object} The result of deleting the course (message).
+   */
   deleteCourse: async (req, res) => {
     try {
       const course = await Course.findByIdAndDelete(req.params.id);
@@ -202,28 +378,6 @@ const categoriesController = {
       }
 
       return res.json({ message: "Course deleted" });
-    } catch (error) {
-      return res.status(500).json({ message: error.message });
-    }
-  },
-
-  // Filters
-
-  getFacultyDepartments: async (req, res) => {
-    try {
-      const departments = await Department.find({ faculty: req.params.id });
-
-      return res.json(departments);
-    } catch (error) {
-      return res.status(500).json({ message: error.message });
-    }
-  },
-
-  getDepartmentCourses: async (req, res) => {
-    try {
-      const courses = await Course.find({ department: req.params.id });
-
-      return res.json(courses);
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }

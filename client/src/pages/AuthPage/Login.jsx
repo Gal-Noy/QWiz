@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import axiosInstance, { handleError, handleResult } from "../../utils/axiosInstance";
+import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
 import { toast } from "react-custom-alert";
 
 /**
@@ -41,6 +41,7 @@ function Login() {
       .post("/auth/login", loginData)
       .then((res) =>
         handleResult(res, 200, () => {
+          // Save the token and user data in the local storage, then redirect to the home page
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("user", JSON.stringify(res.data.user));
           window.location.href = "/home";
