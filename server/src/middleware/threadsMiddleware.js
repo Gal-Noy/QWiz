@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { User } from "../models/userModel.js";
+import { Comment } from "../models/threadModels.js";
 import threadsController from "../controllers/threadsController.js";
 
 const validateIdParam = (req, res, next) => {
