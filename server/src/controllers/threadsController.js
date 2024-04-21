@@ -62,8 +62,8 @@ const threadsController = {
           query,
           req,
           (a, b) =>
-            (sortOrder === "desc" ? 1 : -1) *
-            (user.starred_threads.includes(a._id) - user.starred_threads.includes(b._id))
+            (sortOrder === "desc" ? -1 : 1) *
+            (user.starred_threads.includes(b._id) - user.starred_threads.includes(a._id))
         );
       } else if (sortBy === "lastComment") {
         result = await paginateWithCustomSort(
@@ -71,7 +71,7 @@ const threadsController = {
           query,
           req,
           (a, b) =>
-            (sortOrder === "desc" ? 1 : -1) *
+            (sortOrder === "desc" ? -1 : 1) *
             (a.comments.length > 0 && b.comments.length > 0
               ? b.comments[b.comments.length - 1].createdAt - a.comments[a.comments.length - 1].createdAt
               : 0)

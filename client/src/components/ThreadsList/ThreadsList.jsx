@@ -18,7 +18,7 @@ function ThreadsList(props) {
   const { query, isProfilePage } = props;
 
   const [threadsData, setThreadsData] = useState({
-    page: "1/1",
+    page: "0/0",
     total: 0,
     sortBy: "createdAt",
     sortOrder: "asc",
@@ -28,8 +28,8 @@ function ThreadsList(props) {
   const [error, setError] = useState(null);
 
   // Pagination
-  const [numPages, setNumPages] = useState(threadsData.total > 0 ? Math.ceil(threadsData.total / 10) : 1);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [numPages, setNumPages] = useState(threadsData.total > 0 ? Math.ceil(threadsData.total / 10) : 0);
+  const [currentPage, setCurrentPage] = useState(0);
   const threadsPerPage = import.meta.env.VITE_PAGE_SIZE || 10;
 
   // Sorting
@@ -44,6 +44,7 @@ function ThreadsList(props) {
         handleResult(res, 200, () => {
           setThreadsData(res.data);
           setNumPages(Math.ceil(res.data.total / threadsPerPage));
+          if (currentPage === 0) setCurrentPage(1);
         })
       )
       .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת הדיונים.")))
@@ -71,7 +72,7 @@ function ThreadsList(props) {
       <div className={"threads-list-container" + (isProfilePage ? " is-profile-page" : "")}>
         <div className={"threads-list-headers-row" + (isProfilePage ? " is-profile-page" : "")}>
           {Object.entries({
-            starred: "מועדפים",
+            starred: "מסומן בכוכב",
             isClosed: "סטטוס",
             exam: "פרטי בחינה",
             title: "נושא",

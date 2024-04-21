@@ -1,3 +1,4 @@
 fix sort headers
 threads pagination
 collapse comment's replies
+fix design

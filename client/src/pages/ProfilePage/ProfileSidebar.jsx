@@ -48,7 +48,7 @@ function ProfileSidebar({ tab }) {
         onClick={() => setTab("starred-threads")}
       >
         <span className="material-symbols-outlined sidebar-icon">star</span>
-        דיונים מועדפים
+        דיונים מסומנים בכוכב
       </div>
     </div>
   );

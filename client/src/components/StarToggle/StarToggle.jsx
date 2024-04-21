@@ -29,7 +29,7 @@ function StarToggle({ threadId }) {
           localStorage.setItem("user", JSON.stringify({ ...user, starred_threads: res.data }))
         )
       )
-      .catch((err) => handleError(err, "שגיאה בהוספת הדיון למועדפים, אנא נסה שנית."))
+      .catch((err) => handleError(err, "שגיאה בסימון הדיון בכוכב, אנא נסה שנית."))
       .finally(() => setIsPending(false));
 
   /**
@@ -47,7 +47,7 @@ function StarToggle({ threadId }) {
           localStorage.setItem("user", JSON.stringify({ ...user, starred_threads: res.data }))
         )
       )
-      .catch((err) => handleError(err, "שגיאה בהסרת הדיון ממועדפים, אנא נסה שנית."))
+      .catch((err) => handleError(err, "שגיאה בהסרת הדיון מסימון בכוכב, אנא נסה שנית."))
       .finally(() => setIsPending(false));
 
   /**

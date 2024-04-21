@@ -70,7 +70,7 @@ const examsController = {
           query,
           req,
           (a, b) =>
-            (sortOrder === "desc" ? 1 : -1) *
+            (sortOrder === "desc" ? -1 : 1) *
             (a.difficultyRatings.reduce((acc, rating) => acc + rating.rating, 0) / a.difficultyRatings.length -
               b.difficultyRatings.reduce((acc, rating) => acc + rating.rating, 0) / b.difficultyRatings.length)
         );
@@ -81,8 +81,22 @@ const examsController = {
           query,
           req,
           (a, b) =>
-            (sortOrder === "desc" ? 1 : -1) *
-            (user.favorite_exams.includes(a._id) - user.favorite_exams.includes(b._id))
+            (sortOrder === "desc" ? -1 : 1) *
+            (user.favorite_exams.includes(b._id) - user.favorite_exams.includes(a._id))
+        );
+      } else if (sortBy === "course-name") {
+        result = await paginateWithCustomSort(
+          Exam,
+          query,
+          req,
+          (a, b) => (sortOrder === "desc" ? -1 : 1) * a.course.name.localeCompare(b.course.name)
+        );
+      } else if (sortBy === "course-code") {
+        result = await paginateWithCustomSort(
+          Exam,
+          query,
+          req,
+          (a, b) => (sortOrder === "desc" ? -1 : 1) * a.course.code.localeCompare(b.course.code)
         );
       } else {
         result = await paginateAndSort(Exam, query, req);

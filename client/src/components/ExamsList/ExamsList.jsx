@@ -18,7 +18,7 @@ function ExamsList(props) {
   const { query, showExams, isProfilePage } = props;
 
   const [examsData, setExamsData] = useState({
-    page: "1/1",
+    page: "0/0",
     total: 0,
     sortBy: "createdAt",
     sortOrder: "asc",
@@ -29,7 +29,7 @@ function ExamsList(props) {
 
   // Pagination
   const [numPages, setNumPages] = useState(examsData.total > 0 ? Math.ceil(examsData.total / 10) : 0);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const examsPerPage = import.meta.env.VITE_PAGE_SIZE || 10;
 
   // Sorting
@@ -54,6 +54,7 @@ function ExamsList(props) {
         handleResult(res, 200, () => {
           setExamsData(res.data);
           setNumPages(Math.ceil(res.data.total / examsPerPage));
+          if (currentPage === 0) setCurrentPage(1);
         })
       )
       .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת המבחנים.")))
@@ -68,10 +69,10 @@ function ExamsList(props) {
   }, [query, currentPage, sortHeader, isAsc]);
 
   const handleSortClick = (header) => {
-    if (header === sortHeader.replace(/\./g, "-")) {
+    if (header === sortHeader) {
       setIsAsc(!isAsc);
     } else {
-      setSortHeader(header.replace(/\-/g, "."));
+      setSortHeader(header);
       setIsAsc(true);
     }
   };
@@ -99,7 +100,7 @@ function ExamsList(props) {
               key={header}
               label={label}
               header={header}
-              sortHeader={examsData.sortBy.replace(/\./g, "-")}
+              sortHeader={examsData.sortBy}
               isAsc={examsData.sortOrder === "asc"}
               handleSortClick={() => handleSortClick(header)}
             />
