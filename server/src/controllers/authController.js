@@ -65,7 +65,7 @@ const authController = {
 
       return res.status(201).json(user);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -127,7 +127,7 @@ const authController = {
       // Invalid credentials, return error
       return res.status(400).json({ type: "InvalidCredentialsError", message: "Invalid Credentials." });
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -154,7 +154,7 @@ const authController = {
 
       return res.json({ message: "User logged out successfully." });
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 };

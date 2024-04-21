@@ -26,7 +26,7 @@ const threadsController = {
 
       return res.json(threads);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -55,7 +55,7 @@ const threadsController = {
 
       return res.json(thread);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -117,7 +117,7 @@ const threadsController = {
 
       return res.status(201).json(thread);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -147,7 +147,7 @@ const threadsController = {
 
       return res.json(thread);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -173,7 +173,7 @@ const threadsController = {
 
       return res.json({ message: "Thread deleted" });
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -202,7 +202,7 @@ const threadsController = {
 
       return res.json(threads);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -228,7 +228,7 @@ const threadsController = {
 
       return res.json(threads);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -248,7 +248,7 @@ const threadsController = {
 
       return res.json(threads);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -270,7 +270,7 @@ const threadsController = {
 
       return res.json(user.starred_threads);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -322,7 +322,7 @@ const threadsController = {
 
       return res.json(thread);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -357,7 +357,7 @@ const threadsController = {
 
       return res.json(thread);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -385,7 +385,7 @@ const threadsController = {
 
       return res.json(user.starred_threads);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -410,7 +410,7 @@ const threadsController = {
 
       return res.json(user.starred_threads);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -437,7 +437,7 @@ const threadsController = {
 
       return res.json(comment);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -460,7 +460,7 @@ const threadsController = {
 
       return res.status(201).json(comment);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -490,7 +490,7 @@ const threadsController = {
 
       return res.json(comment);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -516,7 +516,7 @@ const threadsController = {
 
       return res.json({ message: "Comment deleted" });
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -567,7 +567,7 @@ const threadsController = {
 
       return res.status(201).json(thread);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -623,7 +623,7 @@ const threadsController = {
 
       return res.status(201).json(comment);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -676,7 +676,7 @@ const threadsController = {
 
       return res.json(comment);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -711,7 +711,7 @@ const threadsController = {
 
       return res.json(comment);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 };

@@ -26,7 +26,7 @@ const examsController = {
 
       return res.json(exams);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -51,7 +51,7 @@ const examsController = {
 
       return res.json(exam);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -208,7 +208,7 @@ const examsController = {
 
       return res.status(201).json(response);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -239,7 +239,7 @@ const examsController = {
 
       return res.json(updatedExam);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -265,7 +265,7 @@ const examsController = {
 
       return res.json({ message: "Exam deleted successfully" });
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -295,7 +295,7 @@ const examsController = {
 
       return res.json(exams);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -322,7 +322,7 @@ const examsController = {
 
       return res.json(exams);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -342,7 +342,7 @@ const examsController = {
 
       return res.json(exams);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -365,7 +365,7 @@ const examsController = {
 
       return res.json(user.favorite_exams);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -394,7 +394,7 @@ const examsController = {
 
       return res.json({ presignedUrl });
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -423,7 +423,7 @@ const examsController = {
 
       return res.json(user.favorite_exams);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -447,7 +447,7 @@ const examsController = {
 
       return res.json(user.favorite_exams);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -489,7 +489,7 @@ const examsController = {
 
       return res.json(exam);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 };

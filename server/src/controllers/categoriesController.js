@@ -22,7 +22,7 @@ const categoriesController = {
 
       return res.json(faculties);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -47,7 +47,7 @@ const categoriesController = {
 
       return res.json(faculty);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -69,7 +69,7 @@ const categoriesController = {
       await faculty.save();
       return res.json(faculty);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -98,7 +98,7 @@ const categoriesController = {
 
       return res.json(faculty);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -124,7 +124,7 @@ const categoriesController = {
 
       return res.json({ message: "Faculty deleted" });
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -145,7 +145,7 @@ const categoriesController = {
 
       return res.json(departments);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -168,7 +168,7 @@ const categoriesController = {
 
       return res.json(departments);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -193,7 +193,7 @@ const categoriesController = {
 
       return res.json(department);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -216,7 +216,7 @@ const categoriesController = {
 
       return res.json(department);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -245,7 +245,7 @@ const categoriesController = {
 
       return res.json(department);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -271,7 +271,7 @@ const categoriesController = {
 
       return res.json({ message: "Department deleted" });
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -291,7 +291,7 @@ const categoriesController = {
 
       return res.json(courses);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -313,7 +313,7 @@ const categoriesController = {
 
       return res.json(courses);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -338,7 +338,7 @@ const categoriesController = {
 
       return res.json(course);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -361,7 +361,7 @@ const categoriesController = {
 
       return res.json(course);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -390,7 +390,7 @@ const categoriesController = {
 
       return res.json(course);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -416,7 +416,7 @@ const categoriesController = {
 
       return res.json({ message: "Course deleted" });
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 };

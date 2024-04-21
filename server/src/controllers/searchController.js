@@ -62,7 +62,7 @@ const searchController = {
 
       return res.json(searchResults);
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 };

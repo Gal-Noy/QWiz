@@ -21,7 +21,7 @@ const usersController = {
 
       return res.json(users);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -46,7 +46,7 @@ const usersController = {
 
       return res.json(user);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -75,7 +75,7 @@ const usersController = {
 
       return res.json(user);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -101,7 +101,7 @@ const usersController = {
 
       return res.json(deletedUser);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 
@@ -181,7 +181,7 @@ const usersController = {
 
       return res.json(dbUser);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
 };
