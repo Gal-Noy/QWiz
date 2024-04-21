@@ -6,6 +6,6 @@ const searchRouter = express.Router();
 searchRouter.use(authenticateToken);
 
 // GET: free search
-searchRouter.get("/:query", searchController.freeSearch);
+searchRouter.get("/:query", searchController.freeSearch); // TODO: PS
 
 export default searchRouter;

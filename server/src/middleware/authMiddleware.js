@@ -3,7 +3,7 @@ import { User } from "../models/userModel.js";
 
 /**
  * Middleware to authenticate user token.
- * 
+ *
  * @async
  * @function authenticateToken
  * @param {Object} req - The request object.
@@ -80,7 +80,7 @@ const authenticateToken = async (req, res, next) => {
 
 /**
  * Middleware to authenticate admin user.
- * 
+ *
  * @async
  * @function authenticateAdmin
  * @param {Object} req - The request object.

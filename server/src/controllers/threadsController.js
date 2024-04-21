@@ -2,6 +2,7 @@ import { Thread, Comment } from "../models/threadModels.js";
 import { Exam } from "../models/examModel.js";
 import { User } from "../models/userModel.js";
 import { Course } from "../models/categoriesModels.js";
+import { paginateAndSort, paginateWithCustomSort } from "../utils/PSUtils.js";
 
 /**
  * Controller for the handling of threads and comments.
@@ -14,17 +15,72 @@ const threadsController = {
    * Only admins can get all threads.
    *
    * @async
-   * @function getAllThreads
+   * @function getThreads
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Thread[]} - The threads.
    * @throws {Error} - If an error occurred while getting the threads.
    */
-  getAllThreads: async (req, res) => {
+  getThreads: async (req, res) => {
     try {
-      const threads = await Thread.find();
+      const {
+        title, // Search by title regex
+        exam, // Exam ID
+        creator, // User ID
+        createdAt, // Date range
+        views, // Number range
+        tags, // Array of tags
+        isClosed, // Boolean
+        comments, // Number range
+        starredOnly, // Boolean
+        sortBy, // Sort by field
+        sortOrder, // Sort direction
+      } = req.query;
 
-      return res.json(threads);
+      // Filter
+      const query = {};
+      if (title) query["title"] = { $regex: title, $options: "i" };
+      if (exam) query["exam"] = exam;
+      if (creator) query["creator"] = creator;
+      if (createdAt) query["createdAt"] = { $gte: new Date(createdAt[0]), $lte: new Date(createdAt[1]) };
+      if (views) query["views"] = { $gte: views };
+      if (tags) query["tags"] = { $elemMatch: { $in: tags.split(",") } };
+      if (isClosed) query["isClosed"] = { $eq: isClosed === "true" };
+      if (comments) query["comments"] = { $gte: comments };
+      if (starredOnly) {
+        const user = await User.findById(req.user.user_id);
+        query["_id"] = { $in: user.starred_threads };
+      }
+
+      let result;
+
+      // Sort
+      if (sortBy === "starred") {
+        const user = await User.findById(req.user.user_id);
+        result = await paginateWithCustomSort(
+          Thread,
+          query,
+          req,
+          (a, b) =>
+            (sortOrder === "desc" ? 1 : -1) *
+            (user.starred_threads.includes(a._id) - user.starred_threads.includes(b._id))
+        );
+      } else if (sortBy === "lastComment") {
+        result = await paginateWithCustomSort(
+          Thread,
+          query,
+          req,
+          (a, b) =>
+            (sortOrder === "desc" ? 1 : -1) *
+            (a.comments.length > 0 && b.comments.length > 0
+              ? b.comments[b.comments.length - 1].createdAt - a.comments[a.comments.length - 1].createdAt
+              : 0)
+        );
+      } else {
+        result = await paginateAndSort(Thread, query, req);
+      }
+
+      return res.json(result);
     } catch (error) {
       return res.status(500).json({ type: "ServerError", message: error.message });
     }

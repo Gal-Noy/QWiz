@@ -1,34 +1,40 @@
 import React, { useState, useEffect } from "react";
-import { calcAvgRating } from "../../utils/generalUtils";
 import ExamRow from "./ExamRow";
 import ListHeader from "../ListHeader/ListHeader";
+import Pagination from "../Pagination/Pagination";
+import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
 import "./ExamsList.css";
 
 /**
  * Renders a list of exams.
  *
  * @param {Object} props - The component props.
- * @param {Array} props.exams - The list of exams to display.
- * @param {Function} props.setExams - The function to update the list of exams.
- * @param {boolean} props.showExams - Flag indicating whether to show the exams.
- * @param {boolean} props.isProfilePage - Flag indicating whether it's the profile page.
- * @param {boolean} props.isPending - Flag indicating whether the exams are pending.
- * @param {string} props.error - The error message, if any.
+ * @param {string} props.query - The query to fetch exams from the server.
+ * @param {boolean} props.showExams - Indicates whether to show the exams.
+ * @param {boolean} props.isProfilePage - Indicates whether the component is rendered on the profile page.
  * @returns {JSX.Element|null} The rendered component.
  */
 function ExamsList(props) {
-  const { exams, setExams, showExams, isProfilePage, isPending, error } = props;
+  const { query, showExams, isProfilePage } = props;
 
-  const favoriteExams = JSON.parse(localStorage.getItem("user")).favorite_exams;
-  const [sortHeader, setSortHeader] = useState("");
+  const [examsData, setExamsData] = useState({
+    page: "1/1",
+    total: 0,
+    sortBy: "createdAt",
+    sortOrder: "asc",
+    data: [],
+  });
+  const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState(null);
 
   // Pagination
-  const [numPages, setNumPages] = useState(exams.length > 0 ? Math.ceil(exams.length / 10) : 0);
+  const [numPages, setNumPages] = useState(examsData.total > 0 ? Math.ceil(examsData.total / 10) : 0);
   const [currentPage, setCurrentPage] = useState(1);
-  const examsPerPage = 10;
-  const lastExamIndex = currentPage * examsPerPage;
-  const firstExamIndex = lastExamIndex - examsPerPage;
-  const currentExams = exams.slice(firstExamIndex, lastExamIndex);
+  const examsPerPage = import.meta.env.VITE_PAGE_SIZE || 10;
+
+  // Sorting
+  const [sortHeader, setSortHeader] = useState("createdAt");
+  const [isAsc, setIsAsc] = useState(true);
 
   // Scroll to the bottom of the page when exams are shown
   useEffect(() => {
@@ -40,201 +46,70 @@ function ExamsList(props) {
     }
   }, [showExams]);
 
-  // Update the number of pages when exams are updated
+  const fetchExams = async (query, currentPage, sortHeader, isAsc) => {
+    setIsPending(true);
+    await axiosInstance
+      .get(`${query}&page=${currentPage}&sortBy=${sortHeader}&sortOrder=${isAsc ? "asc" : "desc"}`)
+      .then((res) =>
+        handleResult(res, 200, () => {
+          setExamsData(res.data);
+          setNumPages(Math.ceil(res.data.total / examsPerPage));
+        })
+      )
+      .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת המבחנים.")))
+      .finally(() => setIsPending(false));
+  };
+
+  // Fetch the exams
   useEffect(() => {
     if (showExams) {
-      setNumPages(Math.ceil(exams.length / examsPerPage));
+      fetchExams(query, currentPage, sortHeader, isAsc);
     }
-  }, [exams]);
+  }, [query, currentPage, sortHeader, isAsc]);
+
+  const handleSortClick = (header) => {
+    if (header === sortHeader.replace(/\./g, "-")) {
+      setIsAsc(!isAsc);
+    } else {
+      setSortHeader(header.replace(/\-/g, "."));
+      setIsAsc(true);
+    }
+  };
 
   return !showExams ? null : (
     <div className="exams-list">
-      <label className="exams-list-count">סה"כ בחינות נמצאו: {exams.length}</label>
-      {!isPending && !error && numPages > 1 && (
-        <div className="exams-list-pagination">
-          {/* Pagination */}
-          <span
-            className={"material-symbols-outlined navigation-arrow" + (currentPage > 1 ? " enabled" : "")}
-            onClick={() => {
-              if (currentPage > 1) setCurrentPage(currentPage - 1);
-            }}
-          >
-            arrow_forward_ios
-          </span>
-          {numPages} / {currentPage}
-          <span
-            className={"material-symbols-outlined navigation-arrow" + (currentPage < numPages ? " enabled" : "")}
-            onClick={() => {
-              if (currentPage < numPages) setCurrentPage(currentPage + 1);
-            }}
-          >
-            arrow_back_ios
-          </span>
-        </div>
-      )}
+      <label className="exams-list-count">סה"כ בחינות נמצאו: {examsData.total}</label>
+      <Pagination numPages={numPages} currentPage={currentPage} setCurrentPage={setCurrentPage} />
       <div className={"exams-list-container" + (isProfilePage ? " is-profile-page" : "")}>
         <div className={"exams-list-headers-row" + (isProfilePage ? " is-profile-page" : "")}>
-          {/* Table headers */}
-          <ListHeader
-            label="מועדפים"
-            header="favorite"
-            sortHeader={sortHeader}
-            setSortHeader={setSortHeader}
-            sortFunc={(isAsc) =>
-              setExams((prevExams) =>
-                prevExams.slice().sort((a, b) => (favoriteExams.includes(a._id) ? -1 : 1) * (isAsc ? 1 : -1))
-              )
-            }
-          />
-          <ListHeader
-            label="מספר קורס"
-            header="course-num"
-            sortHeader={sortHeader}
-            setSortHeader={setSortHeader}
-            sortFunc={(isAsc) =>
-              setExams((prevExams) =>
-                prevExams.slice().sort((a, b) => (a.course.code > b.course.code ? 1 : -1) * (isAsc ? 1 : -1))
-              )
-            }
-          />
-          <ListHeader
-            label="שם הקורס"
-            header="course-name"
-            sortHeader={sortHeader}
-            setSortHeader={setSortHeader}
-            sortFunc={(isAsc) =>
-              setExams((prevExams) =>
-                prevExams
-                  .slice()
-                  .sort(
-                    (a, b) =>
-                      a.course.name.localeCompare(b.course.name, "he", { sensitivity: "base" }) * (isAsc ? 1 : -1)
-                  )
-              )
-            }
-          />
-          <ListHeader
-            label="מרצים"
-            header="lecturers"
-            sortHeader={sortHeader}
-            setSortHeader={setSortHeader}
-            sortFunc={(isAsc) =>
-              setExams((prevExams) =>
-                prevExams
-                  .slice()
-                  .sort((a, b) =>
-                    !a.lecturers.length && !b.lecturers.length
-                      ? 0
-                      : !a.lecturers.length
-                      ? 1
-                      : !b.lecturers.length
-                      ? -1
-                      : isAsc
-                      ? a.lecturers[0].localeCompare(b.lecturers[0])
-                      : b.lecturers[0].localeCompare(a.lecturers[0])
-                  )
-              )
-            }
-          />
-          <ListHeader
-            label="סוג בחינה"
-            header="type"
-            sortHeader={sortHeader}
-            setSortHeader={setSortHeader}
-            sortFunc={(isAsc) =>
-              setExams((prevExams) => prevExams.slice().sort((a, b) => (a.type > b.type ? 1 : -1) * (isAsc ? 1 : -1)))
-            }
-          />
-          <ListHeader
-            label="שנה"
-            header="year"
-            sortHeader={sortHeader}
-            setSortHeader={setSortHeader}
-            sortFunc={(isAsc) =>
-              setExams((prevExams) => prevExams.slice().sort((a, b) => (a.year > b.year ? 1 : -1) * (isAsc ? 1 : -1)))
-            }
-          />
-          <ListHeader
-            label="סמסטר"
-            header="semester"
-            sortHeader={sortHeader}
-            setSortHeader={setSortHeader}
-            sortFunc={(isAsc) =>
-              setExams((prevExams) =>
-                prevExams.slice().sort((a, b) => (a.semester > b.semester ? 1 : -1) * (isAsc ? 1 : -1))
-              )
-            }
-          />
-          <ListHeader
-            label="מועד"
-            header="term"
-            sortHeader={sortHeader}
-            setSortHeader={setSortHeader}
-            sortFunc={(isAsc) =>
-              setExams((prevExams) => prevExams.slice().sort((a, b) => (a.term > b.term ? 1 : -1) * (isAsc ? 1 : -1)))
-            }
-          />
-          <ListHeader
-            label="ציון"
-            header="grade"
-            sortHeader={sortHeader}
-            setSortHeader={setSortHeader}
-            sortFunc={(isAsc) =>
-              setExams((prevExams) => prevExams.slice().sort((a, b) => (a.grade > b.grade ? 1 : -1) * (isAsc ? 1 : -1)))
-            }
-          />
-          <ListHeader
-            label="דירוג קושי"
-            header="rate"
-            sortHeader={sortHeader}
-            setSortHeader={setSortHeader}
-            sortFunc={(isAsc) =>
-              setExams((prevExams) =>
-                prevExams
-                  .slice()
-                  .sort((a, b) =>
-                    a.difficultyRatings.length === 0 && b.difficultyRatings.length === 0
-                      ? 0
-                      : a.difficultyRatings.length === 0
-                      ? 1
-                      : b.difficultyRatings.length === 0
-                      ? -1
-                      : (isAsc ? 1 : -1) * (calcAvgRating(a.difficultyRatings) - calcAvgRating(b.difficultyRatings))
-                  )
-              )
-            }
-          />
-          <ListHeader
-            label="תגיות"
-            header="tags"
-            sortHeader={sortHeader}
-            setSortHeader={setSortHeader}
-            sortFunc={(isAsc) =>
-              setExams((prevExams) =>
-                prevExams
-                  .slice()
-                  .sort((a, b) =>
-                    !a.tags.length && !b.tags.length
-                      ? 0
-                      : !a.tags.length
-                      ? 1
-                      : !b.tags.length
-                      ? -1
-                      : isAsc
-                      ? a.tags[0].localeCompare(b.tags[0])
-                      : b.tags[0].localeCompare(a.tags[0])
-                  )
-              )
-            }
-          />
+          {Object.entries({
+            favorites: "מועדפים",
+            "course-code": "מספר קורס",
+            "course-name": "שם הקורס",
+            lecturers: "מרצים",
+            type: "סוג בחינה",
+            year: "שנה",
+            semester: "סמסטר",
+            term: "מועד",
+            grade: "ציון",
+            rating: "דירוג",
+            tags: "תגיות",
+          }).map(([header, label]) => (
+            <ListHeader
+              key={header}
+              label={label}
+              header={header}
+              sortHeader={examsData.sortBy.replace(/\./g, "-")}
+              isAsc={examsData.sortOrder === "asc"}
+              handleSortClick={() => handleSortClick(header)}
+            />
+          ))}
         </div>
         {isPending && !error && <div className="lds-dual-ring" id="exams-loading"></div>}
         {error && <div className="exams-list-error">{error}</div>}
-        
-        {/* Display the exams */}
         {!isPending && !error && (
           <div className="exams-list-rows">
-            {currentExams.map((exam) => (
+            {examsData.data.map((exam) => (
               <ExamRow key={exam._id} exam={exam} isProfilePage={isProfilePage} />
             ))}
           </div>

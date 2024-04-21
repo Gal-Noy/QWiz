@@ -206,21 +206,11 @@
     background-color: var(--orange3);
   }
 }
-.filter-bar-search-input {
-  width: 90%;
-  border: none;
-  border-radius: 5px;
-  font-size: 1.2rem;
-  padding: 0.5rem;
-  border: 0;
-
-  &:focus {
-    outline: none;
-  }
-}
 
 #filter-bar-search-button {
   font-weight: 700;
+  min-height: 2rem;
+  padding: 0.5rem;
 
   &.pending {
     background-color: var(--orange1);

@@ -2,10 +2,8 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import PersonalDetails from "./PersonalDetails";
 import ProfileSidebar from "./ProfileSidebar";
-import UploadedExams from "./UploadedExams";
-import FavoriteExams from "./FavoriteExams";
-import CreatedThreads from "./CreatedThreads";
-import StarredThreads from "./StarredThreads";
+import ExamsList from "../../components/ExamsList/ExamsList";
+import ThreadsList from "../../components/ThreadsList/ThreadsList";
 import "./ProfilePage.css";
 
 /**
@@ -22,10 +20,23 @@ function ProfilePage() {
       <ProfileSidebar tab={tab} />
       <div className="profile-page-content">
         {tab === "personal-details" && <PersonalDetails />}
-        {tab === "uploaded-exams" && <UploadedExams />}
-        {tab === "favorite-exams" && <FavoriteExams />}
-        {tab === "created-threads" && <CreatedThreads />}
-        {tab === "starred-threads" && <StarredThreads />}
+        {tab === "uploaded-exams" && (
+          <ExamsList
+            query={`/exams?uploadedBy=${JSON.parse(localStorage.getItem("user"))._id}`}
+            showExams={true}
+            isProfilePage={true}
+          />
+        )}
+        {tab === "favorite-exams" && (
+          <ExamsList query={`/exams?favoritesOnly=true`} showExams={true} isProfilePage={true} />
+        )}
+        {tab === "created-threads" && (
+          <ThreadsList
+            query={`/threads?=creator=${JSON.parse(localStorage.getItem("user"))._id}`}
+            isProfilePage={true}
+          />
+        )}
+        {tab === "starred-threads" && <ThreadsList query={`/threads?starredOnly=true`} isProfilePage={true} />}
       </div>
     </div>
   );

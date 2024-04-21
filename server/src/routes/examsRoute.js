@@ -3,6 +3,7 @@ import examsController from "../controllers/examsController.js";
 import multer from "multer";
 import { authenticateToken, authenticateAdmin } from "../middleware/authMiddleware.js";
 import { validateIdParam } from "../middleware/examsMiddleware.js";
+import { PSMiddleware } from "../middleware/PSMiddleware.js";
 
 // Multer configuration for file upload
 const upload = multer({
@@ -15,10 +16,8 @@ const upload = multer({
 const examsRouter = express.Router();
 examsRouter.use(authenticateToken);
 
-/////////////////////////// EXAMS CRUD ///////////////////////////
-
-// GET: get all exams (ADMIN ONLY)
-examsRouter.get("/", authenticateAdmin, examsController.getAllExams);
+// GET: get exams
+examsRouter.get("/", PSMiddleware, examsController.getExams);
 
 // GET: get exam by id
 examsRouter.get("/:id", validateIdParam, examsController.getExamById);
@@ -31,22 +30,6 @@ examsRouter.put("/:id", authenticateAdmin, examsController.updateExam);
 
 // DELETE: delete exam by id (ADMIN ONLY)
 examsRouter.delete("/:id", authenticateAdmin, examsController.deleteExam);
-
-/////////////////////////// EXAMS SEARCH ///////////////////////////
-
-// GET: get exams by user id (my exams)
-examsRouter.get("/user/:id", authenticateAdmin, examsController.getUserExams);
-
-// GET: get exams by course id
-examsRouter.get("/course/:id", examsController.getCourseExams);
-
-// GET: get uploaded exams
-examsRouter.get("/uploaded", examsController.getUploadedExams);
-
-// GET: get favorite exams
-examsRouter.get("/favorites", examsController.getFavoriteExams);
-
-/////////////////////////// EXAMS ACTIONS ///////////////////////////
 
 // GET: get exam presigned URL by id
 examsRouter.get("/:id/presigned", examsController.getPresignedUrl);

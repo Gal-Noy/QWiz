@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoosePaginate from "mongoose-paginate";
 import { deleteExam, deleteExams, populateExam } from "../middleware/examsMiddleware.js";
 
 const examSchema = mongoose.Schema({
@@ -70,6 +71,8 @@ const examSchema = mongoose.Schema({
     required: true,
   },
 });
+
+examSchema.plugin(mongoosePaginate);
 
 examSchema.pre("findOneAndDelete", deleteExam);
 examSchema.pre("deleteOne", deleteExam);

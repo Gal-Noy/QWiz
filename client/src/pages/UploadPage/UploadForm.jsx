@@ -180,12 +180,7 @@ function UploadForm() {
 
     await axiosInstance
       .get(`/categories/faculties`)
-      .then((res) =>
-        handleResult(res, 200, () => {
-          const sortedFaculties = res.data.sort((a, b) => (a.name > b.name ? 1 : -1));
-          setSelectLists({ ...selectLists, faculties: sortedFaculties });
-        })
-      )
+      .then((res) => handleResult(res, 200, () => setSelectLists({ ...selectLists, faculties: res.data.data })))
       .catch((err) => handleError(err, "שגיאה בטעינת הפקולטות, אנא נסה שנית."))
       .finally(() => setSelectListsPendings({ ...selectListsPendings, faculties: false }));
   };
@@ -203,13 +198,8 @@ function UploadForm() {
     setSelectListsPendings({ ...selectListsPendings, departments: true });
 
     await axiosInstance
-      .get(`/categories/faculty/${facultyId}/departments`)
-      .then((res) =>
-        handleResult(res, 200, () => {
-          const sortedDepartments = res.data.sort((a, b) => (a.name > b.name ? 1 : -1));
-          setSelectLists({ ...selectLists, departments: sortedDepartments });
-        })
-      )
+      .get(`/categories/departments?faculty=${facultyId}`)
+      .then((res) => handleResult(res, 200, () => setSelectLists({ ...selectLists, departments: res.data.data })))
       .catch((err) => handleError(err, "שגיאה בטעינת המחלקות, אנא נסה שנית."))
       .finally(() => setSelectListsPendings({ ...selectListsPendings, departments: false }));
   };
@@ -227,13 +217,8 @@ function UploadForm() {
     setSelectListsPendings({ ...selectListsPendings, courses: true });
 
     await axiosInstance
-      .get(`/categories/department/${departmentId}/courses`)
-      .then((res) =>
-        handleResult(res, 200, () => {
-          const sortedCourses = res.data.sort((a, b) => (a.name > b.name ? 1 : -1));
-          setSelectLists({ ...selectLists, courses: sortedCourses });
-        })
-      )
+      .get(`/categories/courses?department=${departmentId}`)
+      .then((res) => handleResult(res, 200, () => setSelectLists({ ...selectLists, courses: res.data.data })))
       .catch((err) => handleError(err, "שגיאה בטעינת הקורסים, אנא נסה שנית."))
       .finally(() => setSelectListsPendings({ ...selectListsPendings, courses: false }));
   };
@@ -242,16 +227,16 @@ function UploadForm() {
    * Fetches the course attributes from the API.
    *
    * @async
-   * @function fetchCourseAttributes
+   * @function fetchCourseMetadata
    * @param {string} courseId The course
    * @returns {Promise<void>} The result of fetching the course attributes.
    */
-  const fetchCourseAttributes = async (courseId) => {
+  const fetchCourseMetadata = async (courseId) => {
     if (selectListsPendings.tags || selectListsPendings.lecturers) return;
     setSelectListsPendings({ ...selectListsPendings, tags: true, lecturers: true });
 
     await axiosInstance
-      .get(`/categories/course/${courseId}`)
+      .get(`/categories/course/${courseId}/metadata`)
       .then((res) =>
         handleResult(res, 200, () => {
           const { tags, lecturers } = res.data;
@@ -287,7 +272,7 @@ function UploadForm() {
     setExamDetails({ ...examDetails, tags: [], lecturers: [] });
     cancelFile();
     clearRating();
-    if (examDetails.course) fetchCourseAttributes(examDetails.course._id);
+    if (examDetails.course) fetchCourseMetadata(examDetails.course._id);
   }, [examDetails.course]);
 
   // File states and handlers

@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 0.5rem;
   font-size: 1.3rem;
 }
 
@@ -44,7 +44,7 @@
   z-index: 1;
 
   &.is-profile-page {
-    width: 110vw;
+    width: 130vw;
   }
 }
 
@@ -76,7 +76,7 @@
   }
 
   &.is-profile-page {
-    width: 110vw;
+    width: 130vw;
   }
 }
 
@@ -94,22 +94,21 @@
 .type {
   width: 12rem;
 }
-.rate,
-.course-num,
+.rating,
+.course-code,
 .lecturers {
   width: 15rem;
 }
 .course-name {
   width: 20rem;
 }
-.favorite,
+.favorites,
 .semester {
   width: 10rem;
 }
 .tags {
   width: 15rem;
 }
-
 
 .exams-list-error {
   display: flex;
@@ -133,31 +132,7 @@
   }
 }
 
-.exams-list-pagination {
-  display: flex;
-  justify-content: space-evenly;
-  width: 50%;
-  margin: 1rem 0;
-  font-size: 1.5rem;
-}
-
-.navigation-arrow {
-  font-size: 2rem;
-  color: grey;
-
-  &.enabled {
-    color: navy;
-
-    cursor: pointer;
-    transition: all 0.3s;
-
-    &:hover {
-      color: var(--cyan2);
-    }
-  }
-}
-
-.table-element.row.rate {
+.table-element.row.rating {
   display: flex;
   align-items: center;
   gap: 0.5rem;

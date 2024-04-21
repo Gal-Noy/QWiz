@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
+import React from "react";
 import ThreadsList from "../../components/ThreadsList/ThreadsList";
 import "./ExamForum.css";
 
@@ -12,27 +11,6 @@ import "./ExamForum.css";
  * @returns {JSX.Element} The rendered ExamForum component.
  */
 function ExamForum({ examId }) {
-  const [threads, setThreads] = useState([]);
-  const [isPending, setIsPending] = useState(true);
-  const [error, setError] = useState(null);
-
-  /**
-   * Fetches the threads of the exam.
-   *
-   * @async
-   * @function fetchThreads
-   * @returns {Promise<void>} The result of the threads fetch.
-   */
-  const fetchThreads = async () => {
-    setIsPending(true);
-    await axiosInstance
-      .get(`threads/exam/${examId}`)
-      .then((res) => handleResult(res, 200, () => setThreads(res.data)))
-      .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת הדיונים, אנא נסה שנית.")))
-      .finally(() => setIsPending(false));
-  };
-
-  useEffect(() => fetchThreads(), [examId]); // Initial fetch
 
   return (
     <div className="exam-forum">
@@ -44,7 +22,7 @@ function ExamForum({ examId }) {
       >
         add
       </span>
-      <ThreadsList threads={threads} setThreads={setThreads} isPending={isPending} error={error} />
+      <ThreadsList query={`/threads?exam=${examId}`} />
     </div>
   );
 }

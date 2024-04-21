@@ -1,4 +1,6 @@
 import { Faculty, Department, Course } from "../models/categoriesModels.js";
+import { Exam } from "../models/examModel.js";
+import { paginateAndSort, sortOnly } from "../utils/PSUtils.js";
 
 /**
  * Controller for handling faculty, department and course operations.
@@ -18,9 +20,9 @@ const categoriesController = {
    */
   getFaculties: async (req, res) => {
     try {
-      const faculties = await Faculty.find();
+      const result =await sortOnly(Faculty, {}, req);
 
-      return res.json(faculties);
+      return res.json(result);
     } catch (error) {
       return res.status(500).json({ type: "ServerError", message: error.message });
     }
@@ -128,31 +130,11 @@ const categoriesController = {
     }
   },
 
-  /**
-   * Gets all departments of a faculty.
-   *
-   * @async
-   * @function getFacultyDepartments
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Department[]} The departments of the faculty.
-   * @throws {Error} If an error occurs while fetching the departments.
-   * @throws {FacultyNotFoundError} If the faculty is not found.
-   */
-  getFacultyDepartments: async (req, res) => {
-    try {
-      const departments = await Department.find({ faculty: req.params.id });
-
-      return res.json(departments);
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
-
   ////////////////////////////////////////// DEPARTMENTS //////////////////////////////////////////
 
   /**
-   * Gets all departments.
+   * Get departments.
+   * Supports filtering, sorting, and pagination.
    *
    * @async
    * @function getDepartments
@@ -164,9 +146,14 @@ const categoriesController = {
    */
   getDepartments: async (req, res) => {
     try {
-      const departments = await Department.find();
+      const { faculty } = req.query;
 
-      return res.json(departments);
+      const query = {};
+      if (faculty) query["faculty"] = faculty;
+
+      const result = await sortOnly(Department, query, req);
+
+      return res.json(result);
     } catch (error) {
       return res.status(500).json({ type: "ServerError", message: error.message });
     }
@@ -275,30 +262,11 @@ const categoriesController = {
     }
   },
 
-  /**
-   * Gets all courses of a department.
-   *
-   * @async
-   * @function getDepartmentCourses
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Course[]} The courses of the department.
-   * @throws {Error} If an error occurs while fetching the courses.
-   */
-  getDepartmentCourses: async (req, res) => {
-    try {
-      const courses = await Course.find({ department: req.params.id });
-
-      return res.json(courses);
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
-
   ////////////////////////////////////////// COURSES //////////////////////////////////////////
 
   /**
-   * Gets all courses.
+   * Get courses.
+   * Supports filtering, sorting, and pagination.
    *
    * @async
    * @function getCourses
@@ -309,9 +277,16 @@ const categoriesController = {
    */
   getCourses: async (req, res) => {
     try {
-      const courses = await Course.find();
+      const { department, tags, lecturers } = req.query;
 
-      return res.json(courses);
+      const query = {};
+      if (department) query["department"] = department;
+      if (tags) query["tags"] = { $elemMatch: { $in: tags.split(",") } };
+      if (lecturers) query["lecturers"] = { $elemMatch: { $in: lecturers.split(",") } };
+
+      const result = await sortOnly(Course, query, req);
+
+      return res.json(result);
     } catch (error) {
       return res.status(500).json({ type: "ServerError", message: error.message });
     }
@@ -415,6 +390,52 @@ const categoriesController = {
       }
 
       return res.json({ message: "Course deleted" });
+    } catch (error) {
+      return res.status(500).json({ type: "ServerError", message: error.message });
+    }
+  },
+
+  /**
+   * Gets the metadata of a course.
+   *
+   * @async
+   * @function getCourseMetadata
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Object} The course metadata.
+   * @throws {CourseNotFoundError} If the course is not found.
+   * @throws {Error} If an error occurs while fetching the course metadata.
+   */
+  getCourseMetadata: async (req, res) => {
+    try {
+      const course =await Course.findById(req.params.id);
+
+      if (!course) {
+        return res.status(404).json({ type: "CourseNotFoundError", message: "Course not found" });
+      }
+
+      const courseExams = await Exam.find({ course: req.params.id });
+
+      const metadata = {
+        examsCount: courseExams.length,
+        years: [...new Set(courseExams.map((exam) => exam.year))],
+        semesters: [...new Set(courseExams.map((exam) => exam.semester))],
+        terms: [...new Set(courseExams.map((exam) => exam.term))],
+        types: [...new Set(courseExams.map((exam) => exam.type))],
+        grades: [...new Set(courseExams.map((exam) => exam.grade))].sort((a, b) => a - b),
+        difficultyRatings: [
+          ...new Set(
+            courseExams.map(
+              (exam) =>
+                exam.difficultyRatings.reduce((acc, curr) => acc + curr.rating, 0) / exam.difficultyRatings.length
+            )
+          ),
+        ].sort((a, b) => a - b),
+        lecturers: course.lecturers,
+        tags: course.tags,
+      };
+
+      return res.json(metadata);
     } catch (error) {
       return res.status(500).json({ type: "ServerError", message: error.message });
     }

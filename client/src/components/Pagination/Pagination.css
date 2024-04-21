@@ -1,0 +1,24 @@
+.pagination {
+    display: flex;
+    justify-content: space-evenly;
+    width: 50%;
+    margin: 1rem 0;
+    font-size: 1.5rem;
+  }
+  
+  .navigation-arrow {
+    font-size: 2rem;
+    color: grey;
+  
+    &.enabled {
+      color: navy;
+  
+      cursor: pointer;
+      transition: all 0.3s;
+  
+      &:hover {
+        color: var(--cyan2);
+      }
+    }
+  }
+  

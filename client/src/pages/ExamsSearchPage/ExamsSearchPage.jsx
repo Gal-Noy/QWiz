@@ -11,9 +11,8 @@ import "./ExamsSearchPage.css";
  * @returns {JSX.Element} The rendered ExamsSearchPage component.
  */
 function ExamsSearchPage() {
-  const [filteredExams, setFilteredExams] = useState([]);
   const [showExams, setShowExams] = useState(false);
-  const [error, setError] = useState(null);
+  const [query, setQuery] = useState("/exams");
 
   const paragraphs = [
     "החומרים במאגר מבוססים על העלאות של סטודנטים/ות.",
@@ -23,13 +22,11 @@ function ExamsSearchPage() {
   return (
     <div className="search-page">
       <PageHeader title={"מאגר המבחנים של QWiz"} paragraphs={paragraphs} />
-      <FilterBar setFilteredExams={setFilteredExams} setShowExams={setShowExams} setError={setError} />
+      <FilterBar setQuery={setQuery} setShowExams={setShowExams} />
       <ExamsList
-        exams={filteredExams}
-        setExams={setFilteredExams}
+        query={query}
         showExams={showExams}
         isProfilePage={false}
-        error={error}
       />
     </div>
   );

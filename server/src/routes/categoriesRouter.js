@@ -1,14 +1,15 @@
 import express from "express";
 import categoriesController from "../controllers/categoriesController.js";
 import { authenticateToken, authenticateAdmin } from "../middleware/authMiddleware.js";
+import { PSMiddleware } from "../middleware/PSMiddleware.js";
 
 const categoriesRouter = express.Router();
 categoriesRouter.use(authenticateToken);
 
 ////////////////////////////////////////// FACULTIES //////////////////////////////////////////
 
-// GET: get all faculties
-categoriesRouter.get("/faculties", categoriesController.getFaculties);
+// GET: get faculties
+categoriesRouter.get("/faculties", PSMiddleware, categoriesController.getFaculties);
 
 // GET: get faculty by id
 categoriesRouter.get("/faculty/:id", categoriesController.getFacultyById);
@@ -22,13 +23,10 @@ categoriesRouter.put("/faculty/:id", authenticateAdmin, categoriesController.upd
 // DELETE: delete faculty by id (ADMIN ONLY)
 categoriesRouter.delete("/faculty/:id", authenticateAdmin, categoriesController.deleteFaculty);
 
-// GET: get faculty's departments
-categoriesRouter.get("/faculty/:id/departments", categoriesController.getFacultyDepartments);
-
 ////////////////////////////////////////// DEPARTMENTS //////////////////////////////////////////
 
-// GET: get all departments
-categoriesRouter.get("/departments", categoriesController.getDepartments);
+// GET: get departments
+categoriesRouter.get("/departments", PSMiddleware, categoriesController.getDepartments);
 
 // GET: get department by id
 categoriesRouter.get("/department/:id", categoriesController.getDepartmentById);
@@ -42,13 +40,10 @@ categoriesRouter.put("/department/:id", authenticateAdmin, categoriesController.
 // DELETE: delete department by id (ADMIN ONLY)
 categoriesRouter.delete("/department/:id", authenticateAdmin, categoriesController.deleteDepartment);
 
-// GET: get department's courses
-categoriesRouter.get("/department/:id/courses", categoriesController.getDepartmentCourses);
-
 ////////////////////////////////////////// COURSES //////////////////////////////////////////
 
-// GET: get all courses
-categoriesRouter.get("/courses", categoriesController.getCourses);
+// GET: get courses
+categoriesRouter.get("/courses", PSMiddleware, categoriesController.getCourses);
 
 // GET: get course by id
 categoriesRouter.get("/course/:id", categoriesController.getCourseById);
@@ -61,5 +56,8 @@ categoriesRouter.put("/course/:id", authenticateAdmin, categoriesController.upda
 
 // DELETE: delete course by id (ADMIN ONLY)
 categoriesRouter.delete("/course/:id", authenticateAdmin, categoriesController.deleteCourse);
+
+// GET: get course's metadata
+categoriesRouter.get("/course/:id/metadata", categoriesController.getCourseMetadata);
 
 export default categoriesRouter;

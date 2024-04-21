@@ -2,14 +2,15 @@ import express from "express";
 import threadsController from "../controllers/threadsController.js";
 import { authenticateToken, authenticateAdmin } from "../middleware/authMiddleware.js";
 import { validateIdParam } from "../middleware/threadsMiddleware.js";
+import { PSMiddleware } from "../middleware/PSMiddleware.js";
 
 const threadsRouter = express.Router();
 threadsRouter.use(authenticateToken);
 
 ///////////////////////// THREADS CRUD /////////////////////////
 
-// GET: get all threads (ADMIN ONLY)
-threadsRouter.get("/", authenticateAdmin, threadsController.getAllThreads);
+// GET: get threads
+threadsRouter.get("/", PSMiddleware, threadsController.getThreads);
 
 // GET: get thread by id
 threadsRouter.get("/:id", validateIdParam, threadsController.getThreadById);
@@ -22,20 +23,6 @@ threadsRouter.put("/:id", authenticateAdmin, threadsController.updateThread);
 
 // DELETE: delete thread by id (ADMIN ONLY)
 threadsRouter.delete("/:id", authenticateAdmin, threadsController.deleteThread);
-
-///////////////////////// THREADS SEARCH /////////////////////////
-
-// GET: get threads by exam
-threadsRouter.get("/exam/:id", threadsController.getThreadsByExam);
-
-// GET: get threads by user id (ADMIN ONLY)
-threadsRouter.get("/user/:id", authenticateAdmin, threadsController.getThreadsByUserId);
-
-// GET: get threads created by user
-threadsRouter.get("/created", threadsController.getCreatedThreads);
-
-// GET: get starred threads
-threadsRouter.get("/starred", threadsController.getStarredThreads);
 
 ///////////////////////// THREADS ACTIONS /////////////////////////
 

@@ -3,51 +3,19 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 0.5rem;
   font-size: 1.3rem;
-
-  &.is-profile-page {
-    gap: 1rem;
-  }
 }
 
 .threads-list-container {
   display: flex;
   flex-direction: column;
   border-radius: 2rem 2rem 0 0;
-  width: 62.5vw;
+  width: 75vw;
   height: 75vh;
   overflow: auto;
   scrollbar-color: var(--red3) var(--red4);
   border: 2px solid var(--red5);
-
-  &.is-profile-page {
-    width: 75vw;
-  }
-}
-
-.threads-list-pagination {
-  display: flex;
-  justify-content: space-evenly;
-  width: 50%;
-  margin: 1rem 0;
-  font-size: 1.5rem;
-}
-
-.navigation-arrow {
-  font-size: 2rem;
-  color: grey;
-
-  &.enabled {
-    color: navy;
-
-    cursor: pointer;
-    transition: all 0.3s;
-
-    &:hover {
-      color: var(--cyan2);
-    }
-  }
 }
 
 .threads-list-rows {

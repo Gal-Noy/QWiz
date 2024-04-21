@@ -2,29 +2,93 @@ import { Exam } from "../models/examModel.js";
 import { User } from "../models/userModel.js";
 import { Faculty, Department, Course } from "../models/categoriesModels.js";
 import { uploadFile, getPresignedUrl } from "../utils/s3.js";
+import { paginateAndSort, paginateWithCustomSort } from "../utils/PSUtils.js";
 
 /**
  * Controller for handling exam operations.
  */
 const examsController = {
-  /////////////////////////// EXAMS CRUD ///////////////////////////
-
   /**
-   * Get all exams.
-   * Only admins can access this route.
+   * Get exams.
+   * Supports filtering, sorting, and pagination.
    *
    * @async
-   * @function getAllExams
+   * @function getExams
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
-   * @returns {Exam[]} The list of exams.
+   * @returns {Object} The paginated list of exams.
    * @throws {Error} If an error occurs while fetching the exams.
    */
-  getAllExams: async (req, res) => {
+  getExams: async (req, res) => {
     try {
-      const exams = await Exam.find().select("-s3Key");
+      const {
+        course, // Course ID
+        years, // Array of years
+        semesters, // Array of semesters
+        terms, // Array of terms
+        type, // Exam type (quiz, test)
+        minGrade, // Minimum grade (0-100)
+        lecturers, // Array of lecturers
+        tags, // Array of tags
+        minRating, // Minimum difficulty rating (0-5)
+        uploadedBy, // User ID
+        favoritesOnly, // Boolean
+        sortBy, // Sort by field
+        sortOrder, // Sort direction
+      } = req.query;
 
-      return res.json(exams);
+      // Filter
+      const query = {};
+      if (course) query["course"] = course;
+      if (years) query["year"] = { $in: years.split(",").map((year) => parseInt(year)) };
+      if (semesters) query["semester"] = { $in: semesters.split(",").map((semester) => parseInt(semester)) };
+      if (terms) query["term"] = { $in: terms.split(",").map((term) => parseInt(term)) };
+      if (type) query["type"] = type;
+      if (minGrade) query["grade"] = { $gte: minGrade };
+      if (lecturers) query["lecturers"] = { $elemMatch: { $in: lecturers.split(",") } };
+      if (tags) query["tags"] = { $elemMatch: { $in: tags.split(",") } };
+      if (minRating) {
+        const avgRating = await Exam.aggregate([
+          { $match: { difficultyRatings: { $exists: true, $ne: [] } } },
+          { $unwind: "$difficultyRatings" },
+          { $group: { _id: "$_id", avgRating: { $avg: "$difficultyRatings.rating" } } },
+          { $match: { avgRating: { $gte: parseInt(minRating) } } },
+        ]);
+        query["_id"] = { $in: avgRating.map((rating) => rating._id) };
+      }
+      if (uploadedBy) query["uploadedBy"] = uploadedBy;
+      if (favoritesOnly === "true") {
+        const user = await User.findById(req.user.user_id);
+        query["_id"] = { $in: user.favorite_exams };
+      }
+
+      let result;
+
+      if (sortBy === "rating") {
+        result = await paginateWithCustomSort(
+          Exam,
+          query,
+          req,
+          (a, b) =>
+            (sortOrder === "desc" ? 1 : -1) *
+            (a.difficultyRatings.reduce((acc, rating) => acc + rating.rating, 0) / a.difficultyRatings.length -
+              b.difficultyRatings.reduce((acc, rating) => acc + rating.rating, 0) / b.difficultyRatings.length)
+        );
+      } else if (sortBy === "favorites") {
+        const user = await User.findById(req.user.user_id);
+        result = await paginateWithCustomSort(
+          Exam,
+          query,
+          req,
+          (a, b) =>
+            (sortOrder === "desc" ? 1 : -1) *
+            (user.favorite_exams.includes(a._id) - user.favorite_exams.includes(b._id))
+        );
+      } else {
+        result = await paginateAndSort(Exam, query, req);
+      }
+
+      return res.json(result);
     } catch (error) {
       return res.status(500).json({ type: "ServerError", message: error.message });
     }
@@ -43,7 +107,7 @@ const examsController = {
    */
   getExamById: async (req, res) => {
     try {
-      const exam = await Exam.findById(req.params.id).select("-s3Key");
+      const exam = await Exam.findById(req.params.id);
 
       if (!exam) {
         return res.status(404).json({ type: "ExamNotFoundError", message: "Exam not found" });
@@ -215,6 +279,7 @@ const examsController = {
   /**
    * Update an exam by ID.
    * Only admins can update exams.
+   * To rate an exam, use the rateExam action instead.
    *
    * @async
    * @function updateExam
@@ -268,108 +333,6 @@ const examsController = {
       return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
-
-  /////////////////////////// EXAMS SEARCH ///////////////////////////
-
-  /**
-   * Get exams by user ID.
-   * Only admins can access this route.
-   *
-   * @async
-   * @function getUserExams
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Exam[]} The list of exams.
-   * @throws {UserNotFoundError} If the user is not found.
-   * @throws {Error} If an error occurs while fetching the exams.
-   */
-  getUserExams: async (req, res) => {
-    try {
-      const user = await User.findById(req.params.id);
-
-      if (!user) {
-        return res.status(404).json({ type: "UserNotFoundError", message: "User not found" });
-      }
-
-      const exams = await Exam.find({ uploadedBy: req.params.id }).select("-s3Key");
-
-      return res.json(exams);
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
-
-  /**
-   * Get exams by course ID.
-   *
-   * @async
-   * @function getCourseExams
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Exam[]} The list of exams.
-   * @throws {CourseNotFoundError} If the course is not found.
-   * @throws {Error} If an error occurs while fetching the exams.
-   */
-  getCourseExams: async (req, res) => {
-    try {
-      const course = await Course.findById(req.params.id);
-
-      if (!course) {
-        return res.status(404).json({ type: "CourseNotFoundError", message: "Course not found" });
-      }
-
-      const exams = await Exam.find({ course: course._id }).select("-s3Key");
-
-      return res.json(exams);
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
-
-  /**
-   * Get exams uploaded by the user.
-   *
-   * @async
-   * @function getUploadedExams
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Exam[]} The list of exams.
-   * @throws {Error} If an error occurs while fetching the exams.
-   */
-  getUploadedExams: async (req, res) => {
-    try {
-      const exams = await Exam.find({ uploadedBy: req.user.user_id }).select("-s3Key");
-
-      return res.json(exams);
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
-
-  /**
-   * Get favorite exams.
-   *
-   * @async
-   * @function getFavoriteExams
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Exam[]} The list of favorite exams.
-   * @throws {Error} If an error occurs while fetching the favorite exams.
-   */
-  getFavoriteExams: async (req, res) => {
-    try {
-      const user = await User.findById(req.user.user_id).populate({
-        path: "favorite_exams",
-        select: "-s3Key",
-      });
-
-      return res.json(user.favorite_exams);
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
-
-  /////////////////////////// EXAMS ACTIONS ///////////////////////////
 
   /**
    * Get a presigned URL for an exam file.
@@ -466,7 +429,7 @@ const examsController = {
   rateExam: async (req, res) => {
     try {
       const { rating } = req.body;
-      const exam = await Exam.findById(req.params.id).select("-s3Key");
+      const exam = await Exam.findById(req.params.id);
 
       if (!exam) {
         return res.status(404).json({ type: "ExamNotFoundError", message: "Exam not found" });
