@@ -80,7 +80,6 @@ function ExamsList(props) {
   return !showExams ? null : (
     <div className="exams-list">
       <label className="exams-list-count">סה"כ בחינות נמצאו: {examsData.total}</label>
-      <Pagination numPages={numPages} currentPage={currentPage} setCurrentPage={setCurrentPage} />
       <div className={"exams-list-container" + (isProfilePage ? " is-profile-page" : "")}>
         <div className={"exams-list-headers-row" + (isProfilePage ? " is-profile-page" : "")}>
           {Object.entries({
@@ -100,8 +99,8 @@ function ExamsList(props) {
               key={header}
               label={label}
               header={header}
-              sortHeader={examsData.sortBy}
-              isAsc={examsData.sortOrder === "asc"}
+              sortHeader={sortHeader}
+              isAsc={isAsc}
               handleSortClick={() => handleSortClick(header)}
             />
           ))}
@@ -116,6 +115,7 @@ function ExamsList(props) {
           </div>
         )}
       </div>
+      <Pagination numPages={numPages} currentPage={currentPage} setCurrentPage={setCurrentPage} />
     </div>
   );
 }

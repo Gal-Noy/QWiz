@@ -38,7 +38,7 @@
   z-index: 1;
 
   &.is-profile-page {
-    width: 110vw;
+    width: 130vw;
   }
 }
 
@@ -70,7 +70,7 @@
   }
 
   &.is-profile-page {
-    width: 110vw;
+    width: 130vw;
   }
 }
 

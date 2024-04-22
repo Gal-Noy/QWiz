@@ -25,18 +25,18 @@ function ExamRow(props) {
       <div className="table-element favorites" onClick={(e) => e.stopPropagation()}>
         <FavoriteToggle examId={exam._id} />
       </div>
-      <div className="table-element course-code">{exam.course.code}</div>
-      <div className="table-element course-name">{exam.course.name}</div>
-      <div className="table-element lecturers">{exam.lecturers.join(", ")}</div>
-      <div className="table-element type">{exam.type === "test" ? "מבחן" : "בוחן"}</div>
-      <div className="table-element year">{exam.year}</div>
-      <div className="table-element semester">{exam.semester === 1 ? "א'" : exam.semester === 2 ? "ב'" : "קיץ"}</div>
-      <div className="table-element term">{exam.semester === 1 ? "א'" : exam.semester === 2 ? "ב'" : "ג'"}</div>
-      <div className="table-element grade">{exam.grade}</div>
-      <div className="table-element rating row">
+      <div className="table-element row course-code">{exam.course.code}</div>
+      <div className="table-element row course-name">{exam.course.name}</div>
+      <div className="table-element row lecturers">{exam.lecturers.join(", ")}</div>
+      <div className="table-element row type">{exam.type === "test" ? "מבחן" : "בוחן"}</div>
+      <div className="table-element row year">{exam.year}</div>
+      <div className="table-element row semester">{exam.semester === 1 ? "א'" : exam.semester === 2 ? "ב'" : "קיץ"}</div>
+      <div className="table-element row term">{exam.semester === 1 ? "א'" : exam.semester === 2 ? "ב'" : "ג'"}</div>
+      <div className="table-element row grade">{exam.grade}</div>
+      <div className="table-element row rating">
         <ExamRating exam={exam} editMode={false} />
       </div>
-      <div className="table-element tags">{mapTags(exam.tags)}</div>
+      <div className="table-element row tags">{mapTags(exam.tags)}</div>
     </div>
   );
 }

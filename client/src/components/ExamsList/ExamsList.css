@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 1rem;
   font-size: 1.3rem;
 }
 
@@ -17,10 +17,10 @@
   overflow: auto;
   scrollbar-color: var(--orange1) var(--yellow4);
   border: 2px solid var(--orange1);
+  margin-top: 1rem;
 
   &.is-profile-page {
     width: 75vw;
-    height: 75vh;
   }
 }
 
@@ -34,27 +34,23 @@
   top: 0;
   display: flex;
   align-items: center;
-  width: 130vw;
+  min-width: 120vw;
+  gap: 2rem;
   padding: 1% 2%;
-  gap: 4rem;
   font-weight: 500;
   background: var(--orange2);
   border-bottom: 1px solid var(--orange1);
   box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.1);
   z-index: 1;
-
-  &.is-profile-page {
-    width: 130vw;
-  }
 }
 
 .exam-row {
   min-height: 6rem;
   display: flex;
   align-items: center;
-  width: 130vw;
+  min-width: 120vw;
+  gap: 2rem;
   padding: 1% 2%;
-  gap: 4rem;
   border-bottom: 1px solid var(--orange1);
   transition: background 0.3s;
 
@@ -74,10 +70,6 @@
   &:active {
     background: var(--orange3);
   }
-
-  &.is-profile-page {
-    width: 130vw;
-  }
 }
 
 .table-element {
@@ -88,26 +80,43 @@
 .grade,
 .year,
 .term {
-  width: 7rem;
+  min-width: 4vw;
+  &.row {
+    width: 4vw;
+  }
 }
 
 .type {
-  width: 12rem;
+  min-width: 8vw;
+  &.row {
+    width: 8vw;
+  }
 }
 .rating,
-.course-code,
-.lecturers {
-  width: 15rem;
+.course-code {
+  min-width: 10vw;
+  &.row {
+    width: 10vw;
+  }
 }
-.course-name {
-  width: 20rem;
+.course-name, .lecturers {
+  min-width: 15vw;
+  &.row {
+    width: 15vw;
+  }
 }
 .favorites,
 .semester {
-  width: 10rem;
+  min-width: 7vw;
+  &.row {
+    width: 7vw;
+  }
 }
 .tags {
-  width: 15rem;
+  min-width: 15vw;
+  &.row {
+    width: 15vw;
+  }
 }
 
 .exams-list-error {

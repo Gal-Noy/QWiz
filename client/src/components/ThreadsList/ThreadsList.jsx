@@ -68,7 +68,6 @@ function ThreadsList(props) {
   return (
     <div className={"threads-list" + (isProfilePage ? " is-profile-page" : "")}>
       <label className="threads-list-count">סה"כ דיונים נמצאו: {threadsData.total}</label>
-      <Pagination numPages={numPages} currentPage={currentPage} setCurrentPage={setCurrentPage} />
       <div className={"threads-list-container" + (isProfilePage ? " is-profile-page" : "")}>
         <div className={"threads-list-headers-row" + (isProfilePage ? " is-profile-page" : "")}>
           {Object.entries({
@@ -87,8 +86,8 @@ function ThreadsList(props) {
               key={header}
               label={label}
               header={header}
-              sortHeader={threadsData.sortBy}
-              isAsc={threadsData.sortOrder === "asc"}
+              sortHeader={sortHeader}
+              isAsc={isAsc}
               handleSortClick={() => handleSortClick(header)}
             />
           ))}
@@ -108,6 +107,7 @@ function ThreadsList(props) {
           </div>
         )}
       </div>
+      <Pagination numPages={numPages} currentPage={currentPage} setCurrentPage={setCurrentPage} />
     </div>
   );
 }

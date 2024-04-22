@@ -1,6 +1,5 @@
 .profile-page {
   display: flex;
-  align-items: center;
   width: 100%;
 }
 
@@ -10,7 +9,7 @@
   justify-content: start;
   align-items: start;
   width: 20%;
-  height: 87.5vh;
+  min-height: 87.5vh;
   border-bottom-left-radius: 1rem;
   border-bottom-right-radius: 1rem;
   background-color: white;
@@ -49,7 +48,7 @@
   justify-content: start;
   align-items: center;
   width: 80%;
-  height: 87.5vh;
+  min-height: 87.5vh;
   box-sizing: border-box;
   padding: 2rem;
 }
