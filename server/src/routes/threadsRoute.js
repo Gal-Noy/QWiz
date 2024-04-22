@@ -1,7 +1,7 @@
 import express from "express";
 import threadsController from "../controllers/threadsController.js";
 import { authenticateToken, authenticateAdmin } from "../middleware/authMiddleware.js";
-import { validateIdParam } from "../middleware/threadsMiddleware.js";
+import { validateIdParam, threadsUpdateMiddleware } from "../middleware/threadsMiddleware.js";
 import { PSMiddleware } from "../middleware/PSMiddleware.js";
 
 const threadsRouter = express.Router();
@@ -18,19 +18,13 @@ threadsRouter.get("/:id", validateIdParam, threadsController.getThreadById);
 // POST: create a new thread
 threadsRouter.post("/", threadsController.createThread);
 
-// PUT: update thread by id (ADMIN ONLY)
-threadsRouter.put("/:id", authenticateAdmin, threadsController.updateThread);
+// PUT: update thread by id
+threadsRouter.put("/:id", threadsUpdateMiddleware, threadsController.updateThread);
 
 // DELETE: delete thread by id (ADMIN ONLY)
 threadsRouter.delete("/:id", authenticateAdmin, threadsController.deleteThread);
 
 ///////////////////////// THREADS ACTIONS /////////////////////////
-
-// PUT: edit title of a thread
-threadsRouter.put("/:id/edit", threadsController.editThreadTitle);
-
-// POST: toggle thread closed status
-threadsRouter.post("/:id/toggle", threadsController.toggleThreadClosed);
 
 // POST: star a thread
 threadsRouter.post("/:id/star", threadsController.starThread);
@@ -43,10 +37,10 @@ threadsRouter.delete("/:id/star", threadsController.unstarThread);
 // GET: get comment by id
 threadsRouter.get("/comment/:id", threadsController.getCommentById);
 
-// POST: create a new comment (ADMIN ONLY)
+// POST: create a new comment
 threadsRouter.post("/:id/comment", authenticateAdmin, threadsController.createComment);
 
-// PUT: update comment by id (ADMIN ONLY)
+// PUT: update comment by id
 threadsRouter.put("/comment/:id", authenticateAdmin, threadsController.updateComment);
 
 // DELETE: delete comment by id (ADMIN ONLY)
@@ -55,7 +49,7 @@ threadsRouter.delete("/comment/:id", authenticateAdmin, threadsController.delete
 ///////////////////////// COMMENTS ACTIONS /////////////////////////
 
 // POST: add a new comment to a thread
-threadsRouter.post("/:id/comment", threadsController.addCommentToThread);
+threadsRouter.post("/:id/new-comment", threadsController.addCommentToThread);
 
 // POST: add a new reply to a comment
 threadsRouter.post("/:threadId/comment/:commentId/reply", threadsController.addReplyToComment);

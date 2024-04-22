@@ -179,8 +179,6 @@ const threadsController = {
 
   /**
    * Update a thread by ID.
-   * Only admins can update threads.
-   * Thread's creator can only edit the title (editThreadTitle).
    *
    * @async
    * @function updateThread
@@ -192,10 +190,13 @@ const threadsController = {
    */
   updateThread: async (req, res) => {
     try {
-      const thread = await Thread.findById(req.params.id);
+      const thread = req.thread;
 
-      if (!thread) {
-        return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
+      if (req.body.title && thread.comments.length > 0) {
+        // Update the main comment title as well
+        const mainComment = await Comment.findById(thread.comments[0]);
+        mainComment.title = req.body.title;
+        await mainComment.save();
       }
 
       thread.set(req.body);
@@ -233,189 +234,7 @@ const threadsController = {
     }
   },
 
-  ///////////////////////// THREADS SEARCH /////////////////////////
-
-  /**
-   * Get threads by exam ID.
-   *
-   * @async
-   * @function getThreadsByExam
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Thread[]} - The threads.
-   * @throws {ExamNotFoundError} - If the exam was not found.
-   * @throws {Error} - If an error occurred while getting the threads.
-   */
-  getThreadsByExam: async (req, res) => {
-    try {
-      const examObj = await Exam.findById(req.params.id);
-
-      if (!examObj) {
-        return res.status(404).json({ type: "ExamNotFoundError", message: "Exam not found" });
-      }
-
-      const threads = await Thread.find({ exam: req.params.id });
-
-      return res.json(threads);
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
-
-  /**
-   * Get threads by user ID.
-   * Only admins can get threads by user ID.
-   *
-   * @async
-   * @function getThreadsByUserId
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Thread[]} - The threads.
-   * @throws {Error} - If an error occurred while getting the threads.
-   */
-  getThreadsByUserId: async (req, res) => {
-    try {
-      const threads = await Thread.find({ creator: req.params.id });
-
-      const user = await User.findById(req.params.id);
-      if (!user) {
-        return res.status(404).json({ type: "UserNotFoundError", message: "User not found" });
-      }
-
-      return res.json(threads);
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
-
-  /**
-   * Get threads created by the user.
-   *
-   * @async
-   * @function getCreatedThreads
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Thread[]} - The threads.
-   * @throws {Error} - If an error occurred while getting the threads.
-   */
-  getCreatedThreads: async (req, res) => {
-    try {
-      const threads = await Thread.find({ creator: req.user.user_id });
-
-      return res.json(threads);
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
-
-  /**
-   * Get starred threads by the user.
-   *
-   * @async
-   * @function getStarredThreads
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Thread[]} - The starred threads.
-   * @throws {Error} - If an error occurred while getting the threads.
-   */
-  getStarredThreads: async (req, res) => {
-    try {
-      const user = await User.findById(req.user.user_id).populate({
-        path: "starred_threads",
-      });
-
-      return res.json(user.starred_threads);
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
-
   ///////////////////////// THREADS ACTIONS /////////////////////////
-
-  /**
-   * Edit the title of a thread.
-   * Only the creator of the thread can edit the title.
-   *
-   * @async
-   * @function editThreadTitle
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Thread} - The updated thread.
-   * @throws {ThreadNotFoundError} - If the thread was not found.
-   * @throws {AccessDeniedError} - If the user is not the creator of the thread.
-   * @throws {MissingFieldsError} - If required fields are missing.
-   * @throws {Error} - If an error occurred while updating the thread.
-   */
-  editThreadTitle: async (req, res) => {
-    try {
-      const thread = await Thread.findById(req.params.id);
-
-      if (!thread) {
-        return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
-      }
-      if (thread.creator._id.toString() !== req.user.user_id) {
-        return res.status(403).json({ type: "AccessDeniedError", message: "Access denied, creator only" });
-      }
-      if (thread.isClosed) {
-        return res.status(403).json({ type: "AccessDeniedError", message: "Thread is closed" });
-      }
-
-      const { title } = req.body;
-
-      if (!title) {
-        return res.status(400).json({ type: "MissingFieldsError", message: "Please provide title" });
-      }
-
-      thread.title = title;
-      await thread.save();
-
-      // Update the main comment title as well
-      if (thread.comments.length > 0) {
-        const mainComment = await Comment.findById(thread.comments[0]);
-        mainComment.title = title;
-        await mainComment.save();
-      }
-
-      return res.json(thread);
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
-
-  /**
-   * Toggle the closed status of a thread.
-   * Only the creator of the thread can toggle the status.
-   *
-   * @async
-   * @function toggleThreadClosed
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Thread} - The updated thread.
-   * @throws {ThreadNotFoundError} - If the thread was not found.
-   * @throws {AccessDeniedError} - If the user is not the creator of the thread.
-   * @throws {Error} - If an error occurred while toggling the thread status.
-   */
-  toggleThreadClosed: async (req, res) => {
-    try {
-      const thread = await Thread.findById(req.params.id);
-
-      if (!thread) {
-        return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
-      }
-
-      if (thread.creator._id.toString() !== req.user.user_id) {
-        return res.status(403).json({ type: "AccessDeniedError", message: "Access denied, creator only" });
-      }
-
-      // Toggle the closed status
-      thread.isClosed = !thread.isClosed;
-      await thread.save();
-
-      return res.json(thread);
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
 
   /**
    * Star a thread.
@@ -520,8 +339,6 @@ const threadsController = {
 
   /**
    * Update a comment by ID.
-   * Only admins can update comments directly.
-   * Comment's sender can only edit the title and content (editComment).
    *
    * @async
    * @function updateComment

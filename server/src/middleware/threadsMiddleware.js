@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { User } from "../models/userModel.js";
-import { Comment } from "../models/threadModels.js";
+import { Thread, Comment } from "../models/threadModels.js";
 import threadsController from "../controllers/threadsController.js";
 
 const validateIdParam = (req, res, next) => {
@@ -105,4 +105,102 @@ const populateComment = function (next) {
   next();
 };
 
-export { validateIdParam, deleteThread, deleteThreads, populateThread, deleteComment, deleteComments, populateComment };
+const threadsUpdateMiddleware = async (req, res, next) => {
+  try {
+    const thread = await Thread.findById(req.params.id);
+
+    if (!thread) {
+      return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
+    }
+
+    if (req.user.role !== "admin") {
+      if (thread.creator._id.toString() !== req.user.user_id) {
+        return res.status(403).json({ type: "AccessDeniedError", message: "Access denied, creator only" });
+      }
+      if (req.body.isClosed !== false && thread.isClosed) {
+        return res.status(403).json({ type: "AccessDeniedError", message: "Thread is closed" });
+      }
+
+      // Only allow certain fields to be updated
+      const allowedFields = ["title", "tags", "isClosed"];
+      for (const field in req.body) {
+        if (!allowedFields.includes(field)) {
+          return res.status(403).json({ type: "AccessDeniedError", message: "Access denied, restricted field" });
+        }
+      }
+    }
+
+    req.thread = thread;
+
+    next();
+  } catch (error) {
+    return res.status(500).json({ type: "ServerError", message: error.message });
+  }
+};
+
+const commentsCreateMiddleware = async (req, res, next) => {
+  try {
+    const { threadId, replyTo, commentData } = req.body;
+
+    if (!commentData) {
+      return res.status(400).json({ type: "InvalidDataError", message: "Invalid comment data" });
+    }
+
+    if (req.user.role !== "admin") {
+      if (!replyTo || !threadId) {
+        return res
+          .status(403)
+          .json({ type: "AccessDeniedError", message: "Access denied, replyTo and threadId required" });
+      }
+
+      const thread = await Thread.findById(threadId);
+
+      if (!thread) {
+        return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
+      }
+      if (thread.isClosed) {
+        return res.status(403).json({ type: "AccessDeniedError", message: "Thread is closed" });
+      }
+
+      const { type, id } = replyTo; // type: "thread" | "comment", id: string
+
+      if (type === "thread") {
+        // reply to a thread
+        req.thread = thread;
+      } else {
+        // reply to a comment
+        const comment = await Comment.findById(id);
+
+        if (!comment) {
+          return res.status(404).json({ type: "CommentNotFoundError", message: "Comment not found" });
+        }
+
+        req.comment = comment;
+      }
+
+      // Only allow certain fields to be updated
+      const allowedFields = ["content"];
+      for (const field in commentData) {
+        if (!allowedFields.includes(field)) {
+          return res.status(403).json({ type: "AccessDeniedError", message: "Access denied, restricted field" });
+        }
+      }
+    }
+
+    next();
+  } catch (error) {
+    return res.status(500).json({ type: "ServerError", message: error.message });
+  }
+};
+
+export {
+  validateIdParam,
+  deleteThread,
+  deleteThreads,
+  populateThread,
+  deleteComment,
+  deleteComments,
+  populateComment,
+  threadsUpdateMiddleware,
+  commentsCreateMiddleware,
+};

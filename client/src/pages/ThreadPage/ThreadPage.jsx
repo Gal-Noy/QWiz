@@ -70,7 +70,7 @@ function ThreadPage() {
     if (pendings.isClosed) return;
     setPendings({ ...pendings, isClosed: true });
     await axiosInstance
-      .post(`/threads/${threadId}/toggle`)
+      .put(`/threads/${threadId}`, { isClosed: !isClosed })
       .then((res) => handleResult(res, 200, () => setThread(res.data)))
       .catch((err) => handleError(err, "שגיאה בשינוי סטטוס הדיון"))
       .finally(() => setPendings({ ...pendings, isClosed: false }));
@@ -108,7 +108,7 @@ function ThreadPage() {
     if (!currReplied) {
       // Add a new comment
       await axiosInstance
-        .post(`/threads/${threadId}/comment`, { content: newComment })
+        .post(`/threads/${threadId}/new-comment`, { content: newComment })
         .then((res) =>
           handleResult(res, 201, () => {
             toast.success("התגובה נוספה בהצלחה");
@@ -156,7 +156,7 @@ function ThreadPage() {
     setPendings({ ...pendings, changeTitle: true });
 
     await axiosInstance
-      .put(`/threads/${threadId}/edit`, { title: newTitle })
+      .put(`/threads/${threadId}`, { title: newTitle })
       .then((res) =>
         handleResult(res, 200, () => {
           toast.success("הכותרת עודכנה בהצלחה");

@@ -2,3 +2,4 @@ threads pagination
 collapse comment's replies
 free search pagination
 fix return;
+handle starred and favorites in controller
