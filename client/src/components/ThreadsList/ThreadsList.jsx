@@ -44,7 +44,6 @@ function ThreadsList(props) {
         handleResult(res, 200, () => {
           setThreadsData(res.data);
           setNumPages(Math.ceil(res.data.total / threadsPerPage));
-          if (currentPage === 0) setCurrentPage(1);
         })
       )
       .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת הדיונים.")))
@@ -54,6 +53,7 @@ function ThreadsList(props) {
   // Fetch threads
   useEffect(() => {
     fetchThreads(query, currentPage, sortHeader, isAsc);
+    if (currentPage === 0) setCurrentPage(1);
   }, [query, currentPage, sortHeader, isAsc]);
 
   const handleSortClick = (header) => {
@@ -81,16 +81,19 @@ function ThreadsList(props) {
             comments: "תגובות",
             lastComment: "תגובה אחרונה",
             tags: "תגיות",
-          }).map(([header, label]) => label && (
-            <ListHeader
-              key={header}
-              label={label}
-              header={header}
-              sortHeader={sortHeader}
-              isAsc={isAsc}
-              handleSortClick={() => handleSortClick(header)}
-            />
-          ))}
+          }).map(
+            ([header, label]) =>
+              label && (
+                <ListHeader
+                  key={header}
+                  label={label}
+                  header={header}
+                  sortHeader={sortHeader}
+                  isAsc={isAsc}
+                  handleSortClick={() => handleSortClick(header)}
+                />
+              )
+          )}
         </div>
         {isPending && !error && <div className="lds-dual-ring" id="threads-loading"></div>}
         {error && <div className="threads-list-error">{error}</div>}

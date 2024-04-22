@@ -1,7 +1,7 @@
 import express from "express";
 import threadsController from "../controllers/threadsController.js";
 import { authenticateToken, authenticateAdmin } from "../middleware/authMiddleware.js";
-import { validateIdParam, threadsUpdateMiddleware } from "../middleware/threadsMiddleware.js";
+import { validateIdParam, threadsUpdateMiddleware, commentsCreateMiddleware } from "../middleware/threadsMiddleware.js";
 import { PSMiddleware } from "../middleware/PSMiddleware.js";
 
 const threadsRouter = express.Router();
@@ -38,7 +38,7 @@ threadsRouter.delete("/:id/star", threadsController.unstarThread);
 threadsRouter.get("/comment/:id", threadsController.getCommentById);
 
 // POST: create a new comment
-threadsRouter.post("/:id/comment", authenticateAdmin, threadsController.createComment);
+threadsRouter.post("/comment", commentsCreateMiddleware, threadsController.createComment);
 
 // PUT: update comment by id
 threadsRouter.put("/comment/:id", authenticateAdmin, threadsController.updateComment);
@@ -47,12 +47,6 @@ threadsRouter.put("/comment/:id", authenticateAdmin, threadsController.updateCom
 threadsRouter.delete("/comment/:id", authenticateAdmin, threadsController.deleteComment);
 
 ///////////////////////// COMMENTS ACTIONS /////////////////////////
-
-// POST: add a new comment to a thread
-threadsRouter.post("/:id/new-comment", threadsController.addCommentToThread);
-
-// POST: add a new reply to a comment
-threadsRouter.post("/:threadId/comment/:commentId/reply", threadsController.addReplyToComment);
 
 // PUT: edit a comment
 threadsRouter.put("/:threadId/comment/:commentId/edit", threadsController.editComment);

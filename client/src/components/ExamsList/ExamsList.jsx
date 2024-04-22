@@ -44,7 +44,6 @@ function ExamsList(props) {
         handleResult(res, 200, () => {
           setExamsData(res.data);
           setNumPages(Math.ceil(res.data.total / examsPerPage));
-          if (currentPage === 0) setCurrentPage(1);
         })
       )
       .catch((err) => handleError(err, null, () => setError("שגיאה בטעינת המבחנים.")))
@@ -55,6 +54,7 @@ function ExamsList(props) {
   useEffect(() => {
     if (showExams) {
       fetchExams(query, currentPage, sortHeader, isAsc);
+      if (currentPage === 0) setCurrentPage(1);
     }
   }, [query, currentPage, sortHeader, isAsc]);
 

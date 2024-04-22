@@ -140,17 +140,11 @@ const threadsUpdateMiddleware = async (req, res, next) => {
 
 const commentsCreateMiddleware = async (req, res, next) => {
   try {
-    const { threadId, replyTo, commentData } = req.body;
-
-    if (!commentData) {
-      return res.status(400).json({ type: "InvalidDataError", message: "Invalid comment data" });
-    }
+    const { threadId, commentId } = req.body;
 
     if (req.user.role !== "admin") {
-      if (!replyTo || !threadId) {
-        return res
-          .status(403)
-          .json({ type: "AccessDeniedError", message: "Access denied, replyTo and threadId required" });
+      if (!threadId) {
+        return res.status(400).json({ type: "MissingFieldsError", message: "Missing field: threadId" });
       }
 
       const thread = await Thread.findById(threadId);
@@ -162,14 +156,8 @@ const commentsCreateMiddleware = async (req, res, next) => {
         return res.status(403).json({ type: "AccessDeniedError", message: "Thread is closed" });
       }
 
-      const { type, id } = replyTo; // type: "thread" | "comment", id: string
-
-      if (type === "thread") {
-        // reply to a thread
-        req.thread = thread;
-      } else {
-        // reply to a comment
-        const comment = await Comment.findById(id);
+      if (commentId) { // If replying to a comment
+        const comment = await Comment.findById(commentId);
 
         if (!comment) {
           return res.status(404).json({ type: "CommentNotFoundError", message: "Comment not found" });
@@ -177,15 +165,47 @@ const commentsCreateMiddleware = async (req, res, next) => {
 
         req.comment = comment;
       }
+      else { // If creating a new comment in a thread
+        req.thread = thread;
+      }
+
+      const allowedFields = ["threadId", "commentId", "content"];
+      for (const field in req.body) {
+        if (!allowedFields.includes(field)) {
+          return res.status(403).json({ type: "AccessDeniedError", message: `Access denied, restricted field: ${field}` });
+        }
+      }
+    }
+
+    next();
+  } catch (error) {
+    return res.status(500).json({ type: "ServerError", message: error.message });
+  }
+};
+
+const commentsUpdateMiddleware = async (req, res, next) => {
+  try {
+    const comment = await Comment.findById(req.params.id);
+
+    if (!comment) {
+      return res.status(404).json({ type: "CommentNotFoundError", message: "Comment not found" });
+    }
+
+    if (req.user.role !== "admin") {
+      if (comment.sender._id.toString() !== req.user.user_id) {
+        return res.status(403).json({ type: "AccessDeniedError", message: "Access denied, sender only" });
+      }
 
       // Only allow certain fields to be updated
       const allowedFields = ["content"];
-      for (const field in commentData) {
+      for (const field in req.body) {
         if (!allowedFields.includes(field)) {
           return res.status(403).json({ type: "AccessDeniedError", message: "Access denied, restricted field" });
         }
       }
     }
+
+    req.comment = comment;
 
     next();
   } catch (error) {

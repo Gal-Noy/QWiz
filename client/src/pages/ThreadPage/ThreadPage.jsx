@@ -93,22 +93,16 @@ function ThreadPage() {
    * @returns {Promise<void>} The result of adding the comment.
    */
   const addComment = async (setIsPendingCallback) => {
-    if (isClosed) {
-      toast.warning("הדיון נעול ולא ניתן להוסיף תגובות");
-      return;
-    }
+    if (isClosed) return toast.warning("הדיון נעול ולא ניתן להוסיף תגובות");
 
-    if (!newComment) {
-      toast.warning("אנא הכנס/י תוכן לתגובה");
-      return;
-    }
+    if (!newComment) return toast.warning("אנא הכנס/י תוכן לתגובה");
 
     setIsPendingCallback(true);
 
     if (!currReplied) {
-      // Add a new comment
+      // Add a new comment to the thread
       await axiosInstance
-        .post(`/threads/${threadId}/new-comment`, { content: newComment })
+        .post("/threads/comment", { threadId, content: newComment })
         .then((res) =>
           handleResult(res, 201, () => {
             toast.success("התגובה נוספה בהצלחה");
@@ -118,9 +112,13 @@ function ThreadPage() {
         .catch((err) => handleError(err, "הוספת התגובה נכשלה"))
         .finally(() => setIsPendingCallback(false));
     } else {
-      // Reply to a comment
+      // Reply to an existing comment
       await axiosInstance
-        .post(`/threads/${threadId}/comment/${currReplied}/reply`, { content: newComment })
+        .post("/threads/comment", {
+          threadId,
+          commentId: currReplied,
+          content: newComment,
+        })
         .then((res) =>
           handleResult(res, 201, () => {
             toast.success("התגובה נוספה בהצלחה");

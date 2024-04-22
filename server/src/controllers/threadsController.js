@@ -199,6 +199,18 @@ const threadsController = {
         await mainComment.save();
       }
 
+      if (req.body.tags && req.body.tags.length > 0) {
+        // Update course and exam tags if necessary
+        const exam = await Exam.findById(thread.exam);
+        const course = await Course.findById(exam.course);
+
+        course.tags = [...new Set([...course.tags, ...req.body.tags])];
+        await course.save();
+
+        exam.tags = [...new Set([...exam.tags, ...req.body.tags])];
+        await exam.save();
+      }
+
       thread.set(req.body);
       await thread.save();
 
@@ -328,8 +340,51 @@ const threadsController = {
    */
   createComment: async (req, res) => {
     try {
-      const comment = new Comment(req.body);
-      await comment.save();
+      const { title, content } = req.body;
+
+      if (!content) {
+        return res.status(400).json({ type: "MissingFieldsError", message: "Please provide content" });
+      }
+
+      let comment;
+
+      if (req.thread) {
+        const newComment = {
+          title: title || `תגובה לדיון: ${req.thread.title}`, // Default title, can be changed by sender later
+          content,
+          sender: req.user.user_id,
+        };
+
+        comment = new Comment(newComment);
+        await comment.save();
+
+        // Add the comment to the thread
+        req.thread.comments.push(comment._id);
+        await req.thread.save();
+      } else if (req.comment) {
+        const newComment = {
+          title: title || `תגובה ל: ${req.comment.sender.name}`, // Default title, can be changed by sender later
+          content,
+          sender: req.user.user_id,
+        };
+
+        comment = new Comment(newComment);
+        await comment.save();
+
+        // Add the comment to the comment
+        req.comment.replies.push(comment._id);
+        await req.comment.save();
+      } else {
+        // Create a new comment without a thread or comment, only available for admins
+        const newComment = {
+          title,
+          content,
+          sender: req.user.user_id,
+        };
+
+        comment = new Comment(newComment);
+        await comment.save();
+      }
 
       return res.status(201).json(comment);
     } catch (error) {
@@ -392,112 +447,6 @@ const threadsController = {
   },
 
   ///////////////////////// COMMENTS ACTIONS /////////////////////////
-
-  /**
-   * Add a new comment to a thread.
-   *
-   * @async
-   * @function addCommentToThread
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Thread} - The updated thread.
-   * @throws {ThreadNotFoundError} - If the thread was not found.
-   * @throws {MissingFieldsError} - If required fields are missing.
-   * @throws {AccessDeniedError} - If the thread is closed.
-   * @throws {Error} - If an error occurred while adding the comment.
-   */
-  addCommentToThread: async (req, res) => {
-    try {
-      const thread = await Thread.findById(req.params.id);
-
-      if (!thread) {
-        return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
-      }
-      if (thread.isClosed) {
-        return res.status(403).json({ type: "AccessDeniedError", message: "Thread is closed" });
-      }
-
-      const { content } = req.body;
-
-      if (!content) {
-        return res.status(400).json({ type: "MissingFieldsError", message: "Please provide content" });
-      }
-
-      const newComment = {
-        title: `תגובה לדיון: ${thread.title}`, // Default title, can be changed by sender later
-        content,
-        sender: req.user.user_id,
-      };
-
-      const comment = new Comment(newComment);
-      await comment.save();
-
-      // Add the comment to the thread
-      thread.comments.push(comment._id);
-      await thread.save();
-
-      return res.status(201).json(thread);
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
-
-  /**
-   * Add a new reply to a comment.
-   *
-   * @async
-   * @function addReplyToComment
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Comment} - The updated comment.
-   * @throws {ThreadNotFoundError} - If the thread was not found.
-   * @throws {AccessDeniedError} - If the thread is closed.
-   * @throws {CommentNotFoundError} - If the comment was not found.
-   * @throws {MissingFieldsError} - If required fields are missing.
-   * @throws {Error} - If an error occurred while adding the reply.
-   */
-  addReplyToComment: async (req, res) => {
-    try {
-      const thread = await Thread.findById(req.params.threadId);
-
-      if (!thread) {
-        return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
-      }
-      if (thread.isClosed) {
-        return res.status(403).json({ type: "AccessDeniedError", message: "Thread is closed" });
-      }
-
-      const comment = await Comment.findById(req.params.commentId);
-
-      if (!comment) {
-        return res.status(404).json({ type: "CommentNotFoundError", message: "Comment not found" });
-      }
-
-      const { content } = req.body;
-
-      if (!content) {
-        return res.status(400).json({ type: "MissingFieldsError", message: "Please provide content" });
-      }
-
-      const newReply = {
-        title: `תגובה ל: ${comment.sender.name}`, // Default title, can be changed by sender later
-        content,
-        sender: req.user.user_id,
-      };
-
-      const reply = new Comment(newReply);
-      await reply.save();
-
-      // Add the reply to the comment
-      comment.replies.push(reply._id);
-      await comment.save();
-
-      return res.status(201).json(comment);
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
-
   /**
    * Edit a comment by ID.
    * Only the sender of the comment can edit it.
