@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ExamsList from "../../components/ExamsList/ExamsList";
 import FilterBar from "../../components/FilterBar/FilterBar";
 import PageHeader from "../../components/PageHeader/PageHeader";
@@ -19,15 +19,21 @@ function ExamsSearchPage() {
     "על מנת לבצע חיפוש, יש לבחור תחילה פקולטה, מחלקה וקורס (או לבצע חיפוש באמצעות טקסט חופשי).",
   ];
 
+  // Scroll to the bottom of the page when exams are shown
+  useEffect(() => {
+    if (showExams) {
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [showExams]);
+
   return (
     <div className="search-page">
       <PageHeader title={"מאגר המבחנים של QWiz"} paragraphs={paragraphs} />
       <FilterBar setQuery={setQuery} setShowExams={setShowExams} />
-      <ExamsList
-        query={query}
-        showExams={showExams}
-        isProfilePage={false}
-      />
+      <ExamsList query={query} showExams={showExams} isProfilePage={false} />
     </div>
   );
 }

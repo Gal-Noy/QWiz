@@ -73,7 +73,7 @@ function ThreadsList(props) {
           {Object.entries({
             starred: "מסומן בכוכב",
             isClosed: "סטטוס",
-            exam: "פרטי בחינה",
+            exam: isProfilePage ? "פרטי בחינה" : null,
             title: "נושא",
             creator: "נפתח על ידי",
             createdAt: "תאריך יצירה",
@@ -81,7 +81,7 @@ function ThreadsList(props) {
             comments: "תגובות",
             lastComment: "תגובה אחרונה",
             tags: "תגיות",
-          }).map(([header, label]) => (
+          }).map(([header, label]) => label && (
             <ListHeader
               key={header}
               label={label}

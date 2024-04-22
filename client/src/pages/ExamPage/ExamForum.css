@@ -18,3 +18,27 @@
   align-items: center;
   padding: 2rem;
 }
+
+
+.add-thread-button {
+  position: absolute;
+  top: 1rem;
+  left: 1.5rem;
+
+  font-size: 2rem;
+  color: white;
+  background-color: var(--red1);
+  border-radius: 50%;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background-color: var(--red3);
+  }
+
+  &:active {
+    background-color: var(--red4);
+  }
+}

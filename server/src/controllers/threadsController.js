@@ -498,9 +498,7 @@ const threadsController = {
   },
 
   /**
-   * Create a new comment from request body.
-   * Only admins can create comments directly.
-   * Users can add comments to threads (addCommentToThread) or replies to comments (addReplyToComment).
+   * Create a new comment (add a new comment to a thread or reply to a comment).
    *
    * @async
    * @function createComment

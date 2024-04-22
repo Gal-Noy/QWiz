@@ -36,16 +36,6 @@ function ExamsList(props) {
   const [sortHeader, setSortHeader] = useState("createdAt");
   const [isAsc, setIsAsc] = useState(true);
 
-  // Scroll to the bottom of the page when exams are shown
-  useEffect(() => {
-    if (showExams) {
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth",
-      });
-    }
-  }, [showExams]);
-
   const fetchExams = async (query, currentPage, sortHeader, isAsc) => {
     setIsPending(true);
     await axiosInstance
