@@ -8,8 +8,6 @@ import { paginateAndSort, paginateWithCustomSort } from "../utils/PSUtils.js";
  * Controller for the handling of threads and comments.
  */
 const threadsController = {
-  ///////////////////////// THREADS CRUD /////////////////////////
-
   /**
    * Get all threads.
    * Only admins can get all threads.
@@ -161,6 +159,7 @@ const threadsController = {
 
       // Create the main comment
       const mainComment = {
+        thread: thread._id,
         title: title,
         content,
         sender: req.user.user_id,
@@ -191,23 +190,24 @@ const threadsController = {
   updateThread: async (req, res) => {
     try {
       const thread = req.thread;
+      const { title, tags } = req.body;
 
-      if (req.body.title && thread.comments.length > 0) {
+      if (title && title !== thread.title && thread.comments.length > 0) {
         // Update the main comment title as well
         const mainComment = await Comment.findById(thread.comments[0]);
-        mainComment.title = req.body.title;
+        mainComment.title = title;
         await mainComment.save();
       }
 
-      if (req.body.tags && req.body.tags.length > 0) {
+      if (tags && tags.length > 0) {
         // Update course and exam tags if necessary
         const exam = await Exam.findById(thread.exam);
         const course = await Course.findById(exam.course);
 
-        course.tags = [...new Set([...course.tags, ...req.body.tags])];
+        course.tags = [...new Set([...course.tags, ...tags])];
         await course.save();
 
-        exam.tags = [...new Set([...exam.tags, ...req.body.tags])];
+        exam.tags = [...new Set([...exam.tags, ...tags])];
         await exam.save();
       }
 
@@ -245,8 +245,6 @@ const threadsController = {
       return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
-
-  ///////////////////////// THREADS ACTIONS /////////////////////////
 
   /**
    * Star a thread.
@@ -301,8 +299,6 @@ const threadsController = {
     }
   },
 
-  ///////////////////////// COMMENTS CRUD /////////////////////////
-
   /**
    * Get a comment by ID.
    *
@@ -340,7 +336,7 @@ const threadsController = {
    */
   createComment: async (req, res) => {
     try {
-      const { title, content } = req.body;
+      const { thread, title, content } = req.body;
 
       if (!content) {
         return res.status(400).json({ type: "MissingFieldsError", message: "Please provide content" });
@@ -353,6 +349,7 @@ const threadsController = {
           title: title || `תגובה לדיון: ${req.thread.title}`, // Default title, can be changed by sender later
           content,
           sender: req.user.user_id,
+          thread: req.thread._id,
         };
 
         comment = new Comment(newComment);
@@ -366,6 +363,7 @@ const threadsController = {
           title: title || `תגובה ל: ${req.comment.sender.name}`, // Default title, can be changed by sender later
           content,
           sender: req.user.user_id,
+          thread,
         };
 
         comment = new Comment(newComment);
@@ -380,6 +378,7 @@ const threadsController = {
           title,
           content,
           sender: req.user.user_id,
+          thread,
         };
 
         comment = new Comment(newComment);
@@ -405,13 +404,23 @@ const threadsController = {
    */
   updateComment: async (req, res) => {
     try {
-      const comment = await Comment.findById(req.params.id);
+      const comment = req.comment;
+      const { title, content, like } = req.body;
 
-      if (!comment) {
-        return res.status(404).json({ type: "CommentNotFoundError", message: "Comment not found" });
+      if (title && req.thread.comments[0]._id.toString() === comment._id.toString()) {
+        req.thread.title = title;
+        await req.thread.save();
       }
 
-      comment.set(req.body);
+      if (like && !comment.likes.includes(req.user.user_id)) {
+        comment.likes.push(req.user.user_id);
+      }
+      if (!like && comment.likes.includes(req.user.user_id)) {
+        comment.likes = comment.likes.filter((like) => like.toString() !== req.user.user_id);
+      }
+
+      if (title) comment.title = title;
+      if (content) comment.content = content;
       await comment.save();
 
       return res.json(comment);
@@ -441,95 +450,6 @@ const threadsController = {
       }
 
       return res.json({ message: "Comment deleted" });
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
-
-  ///////////////////////// COMMENTS ACTIONS /////////////////////////
-  /**
-   * Edit a comment by ID.
-   * Only the sender of the comment can edit it.
-   *
-   * @async
-   * @function editComment
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Comment} - The updated comment.
-   * @throws {CommentNotFoundError} - If the comment was not found.
-   * @throws {AccessDeniedError} - If the user is not the sender of the comment.
-   * @throws {Error} - If an error occurred while updating the comment.
-   */
-  editComment: async (req, res) => {
-    try {
-      const thread = await Thread.findById(req.params.threadId);
-
-      if (!thread) {
-        return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
-      }
-      if (thread.isClosed) {
-        return res.status(403).json({ type: "AccessDeniedError", message: "Thread is closed" });
-      }
-
-      const comment = await Comment.findById(req.params.commentId);
-
-      if (!comment) {
-        return res.status(404).json({ type: "CommentNotFoundError", message: "Comment not found" });
-      }
-      if (comment.sender._id.toString() !== req.user.user_id) {
-        return res.status(403).json({ type: "AccessDeniedError", message: "Access denied, sender only" });
-      }
-
-      const { title, content } = req.body;
-      if (title) {
-        comment.title = title;
-
-        // Update the thread title if necessary
-        if (thread.comments[0]._id.toString() === comment._id.toString()) {
-          thread.title = title;
-          await thread.save();
-        }
-      }
-      if (content) comment.content = content;
-
-      await comment.save();
-
-      return res.json(comment);
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
-
-  /**
-   * Toggle like on a comment.
-   *
-   * @async
-   * @function toggleLikeComment
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Comment} - The updated comment.
-   * @throws {CommentNotFoundError} - If the comment was not found.
-   * @throws {Error} - If an error occurred while toggling the like.
-   */
-  toggleLikeComment: async (req, res) => {
-    try {
-      const comment = await Comment.findById(req.params.id);
-
-      if (!comment) {
-        return res.status(404).json({ type: "CommentNotFoundError", message: "Comment not found" });
-      }
-
-      // Search for the user in the likes array, and add/remove accordingly
-      const index = comment.likes.indexOf(req.user.user_id);
-      if (index === -1) {
-        comment.likes.push(req.user.user_id);
-      } else {
-        comment.likes.splice(index, 1);
-      }
-
-      await comment.save();
-
-      return res.json(comment);
     } catch (error) {
       return res.status(500).json({ type: "ServerError", message: error.message });
     }

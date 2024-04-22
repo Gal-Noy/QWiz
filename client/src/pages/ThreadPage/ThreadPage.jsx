@@ -102,7 +102,7 @@ function ThreadPage() {
     if (!currReplied) {
       // Add a new comment to the thread
       await axiosInstance
-        .post("/threads/comment", { threadId, content: newComment })
+        .post("/threads/comment", { thread, content: newComment })
         .then((res) =>
           handleResult(res, 201, () => {
             toast.success("התגובה נוספה בהצלחה");
@@ -115,8 +115,8 @@ function ThreadPage() {
       // Reply to an existing comment
       await axiosInstance
         .post("/threads/comment", {
-          threadId,
-          commentId: currReplied,
+          thread,
+          comment: currReplied,
           content: newComment,
         })
         .then((res) =>

@@ -64,7 +64,9 @@ function CommentBox(props) {
     if (likePending) return;
     setLikePending(true);
     await axiosInstance
-      .put(`/threads/comment/${_id}/like`)
+      .put(`/threads/comment/${_id}`, {
+        like: !isLiked,
+      })
       .then((res) =>
         handleResult(res, 200, () => {
           setLikesCount(res.data.likes.length);
@@ -94,6 +96,7 @@ function CommentBox(props) {
   const [editMode, setEditMode] = useState(false);
   const [editedCommentContent, setEditedCommentContent] = useState(content);
   const [editedCommentTitle, setEditedCommentTitle] = useState(title);
+  const [editPending, setEditPending] = useState(false);
 
   /**
    * Toggles the edit mode of the comment.
@@ -118,23 +121,21 @@ function CommentBox(props) {
    * @returns {Promise<void>} The result of updating the comment.
    */
   const editComment = async () => {
-    if (editedCommentContent === "") {
-      toast.warning("אנא הכנס/י תוכן לתגובה");
-      return;
-    }
-    if (editedCommentTitle === title && editedCommentContent === content) {
-      toggleEditMode();
-      return;
-    }
+    if (editedCommentContent === "") return toast.warning("אנא הכנס/י תוכן לתגובה");
+
+    if (editedCommentTitle === title && editedCommentContent === content) return toggleEditMode();
+
+    setEditPending(true);
     await axiosInstance
-      .put(`/threads/${threadId}/comment/${_id}/edit`, { title: editedCommentTitle, content: editedCommentContent })
+      .put(`/threads/comment/${_id}`, { title: editedCommentTitle, content: editedCommentContent })
       .then((res) =>
         handleResult(res, 200, () => {
           toast.success("התגובה עודכנה בהצלחה");
           setTimeout(() => window.location.reload(), 1000);
         })
       )
-      .catch((err) => handleError(err, "אירעה שגיאה בעת עדכון התגובה"));
+      .catch((err) => handleError(err, "אירעה שגיאה בעת עדכון התגובה"))
+      .finally(() => setEditPending(false));
   };
 
   /**
@@ -199,7 +200,7 @@ function CommentBox(props) {
                       thumb_up
                     </span>
                   )}
-                </a>{" "}
+                </a>
                 <span className="material-symbols-outlined comment-link" onClick={copyLinkToClipboard}>
                   link
                 </span>
@@ -216,7 +217,7 @@ function CommentBox(props) {
                         בטל
                       </button>
                       <button className="comment-button" onClick={editComment}>
-                        שמור
+                        {editPending ? <div className="lds-dual-ring" id="edit-comment-loading"></div> : "שמור"}
                       </button>
                     </>
                   ))}

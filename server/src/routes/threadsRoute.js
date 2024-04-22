@@ -1,13 +1,18 @@
 import express from "express";
 import threadsController from "../controllers/threadsController.js";
 import { authenticateToken, authenticateAdmin } from "../middleware/authMiddleware.js";
-import { validateIdParam, threadsUpdateMiddleware, commentsCreateMiddleware } from "../middleware/threadsMiddleware.js";
+import {
+  validateIdParam,
+  threadsUpdateMiddleware,
+  commentsCreateMiddleware,
+  commentsUpdateMiddleware,
+} from "../middleware/threadsMiddleware.js";
 import { PSMiddleware } from "../middleware/PSMiddleware.js";
 
 const threadsRouter = express.Router();
 threadsRouter.use(authenticateToken);
 
-///////////////////////// THREADS CRUD /////////////////////////
+///////////////////////// THREADS /////////////////////////
 
 // GET: get threads
 threadsRouter.get("/", PSMiddleware, threadsController.getThreads);
@@ -24,15 +29,13 @@ threadsRouter.put("/:id", threadsUpdateMiddleware, threadsController.updateThrea
 // DELETE: delete thread by id (ADMIN ONLY)
 threadsRouter.delete("/:id", authenticateAdmin, threadsController.deleteThread);
 
-///////////////////////// THREADS ACTIONS /////////////////////////
-
 // POST: star a thread
 threadsRouter.post("/:id/star", threadsController.starThread);
 
 // DELETE: unstar a thread
 threadsRouter.delete("/:id/star", threadsController.unstarThread);
 
-///////////////////////// COMMENTS CRUD /////////////////////////
+///////////////////////// COMMENTS /////////////////////////
 
 // GET: get comment by id
 threadsRouter.get("/comment/:id", threadsController.getCommentById);
@@ -41,17 +44,9 @@ threadsRouter.get("/comment/:id", threadsController.getCommentById);
 threadsRouter.post("/comment", commentsCreateMiddleware, threadsController.createComment);
 
 // PUT: update comment by id
-threadsRouter.put("/comment/:id", authenticateAdmin, threadsController.updateComment);
+threadsRouter.put("/comment/:id", commentsUpdateMiddleware, threadsController.updateComment);
 
 // DELETE: delete comment by id (ADMIN ONLY)
 threadsRouter.delete("/comment/:id", authenticateAdmin, threadsController.deleteComment);
-
-///////////////////////// COMMENTS ACTIONS /////////////////////////
-
-// PUT: edit a comment
-threadsRouter.put("/:threadId/comment/:commentId/edit", threadsController.editComment);
-
-// PUT: toggle like on a comment
-threadsRouter.put("/comment/:id/like", threadsController.toggleLikeComment);
 
 export default threadsRouter;

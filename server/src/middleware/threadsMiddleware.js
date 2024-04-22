@@ -26,7 +26,7 @@ const deleteThread = async function (next) {
   const { _id: threadId } = threadToDelete;
 
   try {
-    await Comment.deleteMany({ _id: { $in: threadToDelete.comments } });
+    await Comment.deleteMany({ thread: threadId });
 
     await User.updateMany({ starred_threads: threadId }, { $pull: { starred_threads: threadId } });
 
@@ -41,7 +41,7 @@ const deleteThreads = async function (next) {
   const threadIds = threadsToDelete.map((thread) => thread._id);
 
   try {
-    await Comment.deleteMany({ _id: { $in: threadsToDelete.flatMap((thread) => thread.comments) } });
+    await Comment.deleteMany({ thread: { $in: threadIds } });
 
     await User.updateMany({ starred_threads: { $in: threadIds } }, { $pull: { starred_threads: { $in: threadIds } } });
 
@@ -140,39 +140,42 @@ const threadsUpdateMiddleware = async (req, res, next) => {
 
 const commentsCreateMiddleware = async (req, res, next) => {
   try {
-    const { threadId, commentId } = req.body;
+    const { thread, comment } = req.body;
 
     if (req.user.role !== "admin") {
-      if (!threadId) {
+      if (!thread) {
         return res.status(400).json({ type: "MissingFieldsError", message: "Missing field: threadId" });
       }
 
-      const thread = await Thread.findById(threadId);
+      const dbThread = await Thread.findById(thread);
 
-      if (!thread) {
+      if (!dbThread) {
         return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
       }
-      if (thread.isClosed) {
+      if (dbThread.isClosed) {
         return res.status(403).json({ type: "AccessDeniedError", message: "Thread is closed" });
       }
 
-      if (commentId) { // If replying to a comment
-        const comment = await Comment.findById(commentId);
+      if (comment) {
+        // If replying to a comment
+        const dbComment = await Comment.findById(comment);
 
-        if (!comment) {
+        if (!dbComment) {
           return res.status(404).json({ type: "CommentNotFoundError", message: "Comment not found" });
         }
 
-        req.comment = comment;
-      }
-      else { // If creating a new comment in a thread
-        req.thread = thread;
+        req.comment = dbComment;
+      } else {
+        // If creating a new comment in a thread
+        req.thread = dbThread;
       }
 
-      const allowedFields = ["threadId", "commentId", "content"];
+      const allowedFields = ["thread", "comment", "content"];
       for (const field in req.body) {
         if (!allowedFields.includes(field)) {
-          return res.status(403).json({ type: "AccessDeniedError", message: `Access denied, restricted field: ${field}` });
+          return res
+            .status(403)
+            .json({ type: "AccessDeniedError", message: `Access denied, restricted field: ${field}` });
         }
       }
     }
@@ -191,13 +194,19 @@ const commentsUpdateMiddleware = async (req, res, next) => {
       return res.status(404).json({ type: "CommentNotFoundError", message: "Comment not found" });
     }
 
+    const thread = await Thread.findById(comment.thread);
+
     if (req.user.role !== "admin") {
       if (comment.sender._id.toString() !== req.user.user_id) {
         return res.status(403).json({ type: "AccessDeniedError", message: "Access denied, sender only" });
       }
 
+      if (thread.isClosed) {
+        return res.status(403).json({ type: "AccessDeniedError", message: "Thread is closed" });
+      }
+
       // Only allow certain fields to be updated
-      const allowedFields = ["content"];
+      const allowedFields = ["title", "content", "like"];
       for (const field in req.body) {
         if (!allowedFields.includes(field)) {
           return res.status(403).json({ type: "AccessDeniedError", message: "Access denied, restricted field" });
@@ -206,6 +215,7 @@ const commentsUpdateMiddleware = async (req, res, next) => {
     }
 
     req.comment = comment;
+    req.thread = thread;
 
     next();
   } catch (error) {
@@ -223,4 +233,5 @@ export {
   populateComment,
   threadsUpdateMiddleware,
   commentsCreateMiddleware,
+  commentsUpdateMiddleware,
 };

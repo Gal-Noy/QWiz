@@ -74,6 +74,11 @@ threadSchema.pre("save", async function (next) {
 export const Thread = mongoose.model("Thread", threadSchema);
 
 const commentSchema = new mongoose.Schema({
+  thread: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Thread",
+    required: true,
+  },
   title: {
     type: String,
     required: true,

@@ -150,6 +150,8 @@
   cursor: pointer;
   box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  min-width: 3vw;
+  min-height: 4vh;
 
   &:hover {
     background-color: var(--red2);
@@ -158,6 +160,11 @@
   &:active {
     background-color: var(--red3);
   }
+}
+
+#edit-comment-loading:after {
+  border: 2px solid black;
+  border-color: black transparent black transparent;
 }
 
 .ql-align-left {
