@@ -28,9 +28,8 @@ function Login() {
     const { email, password } = loginData;
 
     if (!email || !password) {
-      toast.warning("יש למלא כל השדות");
       setIsPending(false);
-      return;
+      return toast.warning("יש למלא כל השדות");
     }
 
     // Clear the local storage before logging in

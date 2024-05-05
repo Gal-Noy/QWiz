@@ -44,8 +44,7 @@ export const handleResult = (res, status, callback) => {
 export const handleError = (error, defaultMessage, callback) => {
   if (!error.response) {
     console.error(error.message);
-    toast.error("שגיאת שרת");
-    return;
+    return toast.error("שגיאת שרת");
   }
 
   const { status, data } = error.response;

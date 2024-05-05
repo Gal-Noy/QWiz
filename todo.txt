@@ -1,5 +1,10 @@
-threads pagination
-collapse comment's replies
-free search pagination
-fix return;
 handle starred and favorites in controller
+more pagination controllers
+
+fix page size to 10
+
+change password
+
+redoc
+
+lds css

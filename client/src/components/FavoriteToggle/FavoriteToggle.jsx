@@ -23,12 +23,8 @@ function FavoriteToggle({ examId }) {
    */
   const addToFavorites = async () =>
     await axiosInstance
-      .post(`/exams/favorites/${examId}`)
-      .then((res) =>
-        handleResult(res, 200, () =>
-          localStorage.setItem("user", JSON.stringify({ ...user, favorite_exams: res.data }))
-        )
-      )
+      .put(`/users/${user._id}`, { favorite_exams: [...new Set([...user.favorite_exams, examId])] })
+      .then((res) => handleResult(res, 200, () => localStorage.setItem("user", JSON.stringify(res.data))))
       .catch((err) => handleError(err, "שגיאה בהוספת הבחינה למועדפים, אנא נסה שנית."))
       .finally(() => setIsPending(false));
 
@@ -41,12 +37,8 @@ function FavoriteToggle({ examId }) {
    */
   const removeFromFavorites = async () =>
     await axiosInstance
-      .delete(`/exams/favorites/${examId}`)
-      .then((res) =>
-        handleResult(res, 200, () =>
-          localStorage.setItem("user", JSON.stringify({ ...user, favorite_exams: res.data }))
-        )
-      )
+      .put(`/users/${user._id}`, { favorite_exams: user.favorite_exams.filter((id) => id !== examId) })
+      .then((res) => handleResult(res, 200, () => localStorage.setItem("user", JSON.stringify(res.data))))
       .catch((err) => handleError(err, "שגיאה בהסרת הבחינה מהמועדפים, אנא נסה שנית."))
       .finally(() => setIsPending(false));
 

@@ -63,6 +63,8 @@ const authController = {
       };
       const user = await User.create(newUser);
 
+      user.password = undefined;
+
       return res.status(201).json(user);
     } catch (error) {
       return res.status(500).json({ type: "ServerError", message: error.message });
@@ -115,12 +117,11 @@ const authController = {
         user.lastActivity = Date.now();
         await user.save();
 
-        delete user.password; // remove password from user object
+        user.password = undefined;
 
         return res.json({
           token,
           user,
-          message: "User logged in successfully.",
         });
       }
 

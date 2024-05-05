@@ -84,10 +84,7 @@ function CommentBox(props) {
    * @returns {void} The result of allowing to reply to the comment.
    */
   const allowReply = () => {
-    if (isClosed) {
-      toast.warning("הדיון נעול ולא ניתן להוסיף תגובות");
-      return;
-    }
+    if (isClosed) return toast.warning("הדיון נעול ולא ניתן להוסיף תגובות");
 
     setCurrReplied(_id);
   };
@@ -105,10 +102,8 @@ function CommentBox(props) {
    * @returns {void} The result of toggling the edit mode of the comment.
    */
   const toggleEditMode = () => {
-    if (isClosed) {
-      toast.warning("הדיון נעול ולא ניתן לערוך תגובות");
-      return;
-    }
+    if (isClosed) return toast.warning("הדיון נעול ולא ניתן לערוך תגובות");
+
     setEditMode(!editMode);
     setEditedCommentContent(content);
     setEditedCommentTitle(title);
@@ -254,7 +249,7 @@ function CommentBox(props) {
           setNewComment={setNewComment}
           addComment={addComment}
           nest={nest + 1}
-          expand={expand}
+          expand={nest === 0 ? false : expand}
           isClosed={isClosed}
           replyTo={_id}
         />

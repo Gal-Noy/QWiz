@@ -29,12 +29,6 @@ threadsRouter.put("/:id", threadsUpdateMiddleware, threadsController.updateThrea
 // DELETE: delete thread by id (ADMIN ONLY)
 threadsRouter.delete("/:id", authenticateAdmin, threadsController.deleteThread);
 
-// POST: star a thread
-threadsRouter.post("/:id/star", threadsController.starThread);
-
-// DELETE: unstar a thread
-threadsRouter.delete("/:id/star", threadsController.unstarThread);
-
 ///////////////////////// COMMENTS /////////////////////////
 
 // GET: get comment by id

@@ -23,12 +23,8 @@ function StarToggle({ threadId }) {
    */
   const starThread = async () =>
     await axiosInstance
-      .post(`threads/${threadId}/star`)
-      .then((res) =>
-        handleResult(res, 200, () =>
-          localStorage.setItem("user", JSON.stringify({ ...user, starred_threads: res.data }))
-        )
-      )
+      .put(`/users/${user._id}`, { starred_threads: [...new Set([...user.starred_threads, threadId])] })
+      .then((res) => handleResult(res, 200, () => localStorage.setItem("user", JSON.stringify(res.data))))
       .catch((err) => handleError(err, "שגיאה בסימון הדיון בכוכב, אנא נסה שנית."))
       .finally(() => setIsPending(false));
 
@@ -41,12 +37,8 @@ function StarToggle({ threadId }) {
    */
   const unstarThread = async () =>
     await axiosInstance
-      .delete(`threads/${threadId}/star`)
-      .then((res) =>
-        handleResult(res, 200, () =>
-          localStorage.setItem("user", JSON.stringify({ ...user, starred_threads: res.data }))
-        )
-      )
+      .put(`/users/${user._id}`, { starred_threads: user.starred_threads.filter((id) => id !== threadId) })
+      .then((res) => handleResult(res, 200, () => localStorage.setItem("user", JSON.stringify(res.data))))
       .catch((err) => handleError(err, "שגיאה בהסרת הדיון מסימון בכוכב, אנא נסה שנית."))
       .finally(() => setIsPending(false));
 

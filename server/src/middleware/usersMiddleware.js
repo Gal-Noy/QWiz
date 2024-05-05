@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { User } from "../models/userModel.js";
 import { Thread } from "../models/threadModels.js";
 import usersController from "../controllers/usersController.js";
 
@@ -46,4 +47,40 @@ const deleteUsers = async function (next) {
   }
 };
 
-export { validateIdParam, deleteUser, deleteUsers };
+const usersUpdateMiddleware = async (req, res, next) => {
+  if (req.user.user_id.toString() !== req.params.id) {
+    return res.status(403).json({ type: "AccessDeniedError", message: "Access denied." });
+  }
+
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    return res.status(404).json({ type: "UserNotFoundError", message: "User not found." });
+  }
+
+  if (user.role !== "admin") {
+    const allowedFields = [
+      "name",
+      "email",
+      "password",
+      "phone_number",
+      "id_number",
+      "favorite_exams",
+      "starred_threads",
+    ];
+
+    for (const field in req.body) {
+      if (!allowedFields.includes(field)) {
+        return res
+          .status(403)
+          .json({ type: "AccessDeniedError", message: `Access denied, restricted field: ${field}` });
+      }
+    }
+  }
+
+  req.user = user;
+
+  next();
+};
+
+export { validateIdParam, deleteUser, deleteUsers, usersUpdateMiddleware };

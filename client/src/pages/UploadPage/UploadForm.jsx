@@ -73,15 +73,13 @@ function UploadForm() {
       !examDetails.term ||
       !examDetails.type
     ) {
-      toast.warning("יש למלא את כל השדות המסומנים בכוכבית.");
       setIsPending(false);
-      return;
+      return toast.warning("יש למלא את כל השדות המסומנים בכוכבית.");
     }
 
     if (!file) {
-      toast.warning("יש להעלות קובץ.");
       setIsPending(false);
-      return;
+      return toast.warning("יש להעלות קובץ.");
     }
 
     // Create the exam data object
@@ -292,10 +290,7 @@ function UploadForm() {
     if (e.target.files && e.target.files.length > 0) {
       const selectedFile = e.target.files[0];
 
-      if (!selectedFile.type.includes("pdf")) {
-        toast.warning("נא להעלות קובץ מסוג PDF בלבד.");
-        return;
-      }
+      if (!selectedFile.type.includes("pdf")) return toast.warning("נא להעלות קובץ מסוג PDF בלבד.");
 
       setFile(selectedFile);
     }

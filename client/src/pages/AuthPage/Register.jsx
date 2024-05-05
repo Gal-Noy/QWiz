@@ -35,15 +35,13 @@ function Register() {
     const { name, email, password, confirmPassword } = registerData;
 
     if (!name || !email || !password || !confirmPassword) {
-      toast.warning("יש למלא כל השדות");
       setIsPending(false);
-      return;
+      return toast.warning("יש למלא כל השדות");
     }
 
     if (password !== confirmPassword) {
-      toast.warning("הסיסמאות אינן תואמות");
       setIsPending(false);
-      return;
+      return toast.warning("הסיסמאות אינן תואמות");
     }
 
     await axiosInstance

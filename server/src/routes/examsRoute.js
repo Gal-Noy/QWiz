@@ -34,12 +34,6 @@ examsRouter.delete("/:id", authenticateAdmin, examsController.deleteExam);
 // GET: get exam presigned URL by id
 examsRouter.get("/:id/presigned", examsController.getPresignedUrl);
 
-// POST: add exam to favorites
-examsRouter.post("/favorites/:id", examsController.addFavoriteExam);
-
-// DELETE: remove exam from favorites
-examsRouter.delete("/favorites/:id", examsController.removeFavoriteExam);
-
 // POST: rate exam by id
 examsRouter.post("/:id/rate", examsController.rateExam);
 

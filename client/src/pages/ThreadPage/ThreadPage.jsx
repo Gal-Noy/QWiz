@@ -140,14 +140,10 @@ function ThreadPage() {
   const changeThreadTitle = async () => {
     if (!newTitle) return toast.warning("אנא הכנס/י כותרת חדשה");
 
-    if (isClosed) {
-      toast.warning("הדיון נעול ולא ניתן לשנות את הכותרת");
-      return;
-    }
+    if (isClosed) return toast.warning("הדיון נעול ולא ניתן לשנות את הכותרת");
 
     if (newTitle === thread.title) {
-      setShowEditTitle(false);
-      return;
+      return setShowEditTitle(false);
     }
 
     if (pendings.changeTitle) return;

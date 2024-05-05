@@ -59,10 +59,7 @@ function NewThread() {
    * @returns {void}
    */
   const createNewThread = async () => {
-    if (!threadDetails.title || !threadContent) {
-      toast.warning("אנא מלא/י כותרת ותוכן");
-      return;
-    }
+    if (!threadDetails.title || !threadContent) return toast.warning("אנא מלא/י כותרת ותוכן");
 
     setIsPending(true);
 

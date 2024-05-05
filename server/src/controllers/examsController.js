@@ -277,7 +277,6 @@ const examsController = {
       });
 
       const newExam = await exam.save();
-      delete newExam.s3Key;
 
       const response = {
         exam: newExam,
@@ -313,8 +312,6 @@ const examsController = {
 
       exam.set(req.body);
       const updatedExam = await exam.save();
-
-      delete updatedExam.s3Key;
 
       return res.json(updatedExam);
     } catch (error) {
@@ -370,59 +367,6 @@ const examsController = {
       const presignedUrl = await getPresignedUrl(exam.s3Key);
 
       return res.json({ presignedUrl });
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
-
-  /**
-   * Add an exam to favorites.
-   *
-   * @async
-   * @function addFavoriteExam
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Exam[]} The list of favorite exams.
-   * @throws {ExamNotFoundError} If the exam is not found.
-   * @throws {Error} If an error occurs while adding the exam to favorites.
-   */
-  addFavoriteExam: async (req, res) => {
-    try {
-      const user = await User.findById(req.user.user_id);
-      const exam = await Exam.findById(req.params.id);
-
-      if (!exam) {
-        return res.status(404).json({ type: "ExamNotFoundError", message: "Exam not found" });
-      }
-
-      user.favorite_exams.push(exam._id);
-      await user.save();
-
-      return res.json(user.favorite_exams);
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
-
-  /**
-   * Remove an exam from favorites.
-   *
-   * @async
-   * @function removeFavoriteExam
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Exam[]} The list of favorite exams.
-   * @throws {Error} If an error occurs while removing the exam from favorites.
-   */
-  removeFavoriteExam: async (req, res) => {
-    try {
-      const user = await User.findById(req.user.user_id);
-      const examId = req.params.id;
-
-      user.favorite_exams = user.favorite_exams.filter((exam) => exam._id.toString() !== examId);
-      await user.save();
-
-      return res.json(user.favorite_exams);
     } catch (error) {
       return res.status(500).json({ type: "ServerError", message: error.message });
     }

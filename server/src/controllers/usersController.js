@@ -1,5 +1,6 @@
 import { User } from "../models/userModel.js";
 import bcrypt from "bcrypt";
+import { paginateAndSort } from "../utils/PSUtils.js";
 
 /**
  * Controller for handling user-related operations
@@ -15,11 +16,31 @@ const usersController = {
    * @param {Response} res - Express response object
    * @returns {User[]} - Array of all users
    */
-  getAllUsers: async (req, res) => {
+  getUsers: async (req, res) => {
     try {
-      const users = await User.find({});
+      const {
+        name, // name regex
+        email, // email regex
+        phone_number, // phone number regex
+        id_number, // ID number regex
+        isActive, // Boolean
+        lastActivity, // Date
+        role, // user or admin
+      } = req.query;
 
-      return res.json(users);
+      // Filter
+      const query = {};
+      if (name) query["name"] = { $regex: name, $options: "i" };
+      if (email) query["email"] = { $regex: email, $options: "i" };
+      if (phone_number) query["phone_number"] = { $regex: phone_number, $options: "i" };
+      if (id_number) query["id_number"] = { $regex: id_number, $options: "i" };
+      if (isActive) query["isActive"] = isActive;
+      if (lastActivity) query["lastActivity"] = { $gte: lastActivity };
+      if (role) query["role"] = role;
+
+      const result = await paginateAndSort(User, req, query);
+
+      return res.json(result);
     } catch (error) {
       return res.status(500).json({ type: "ServerError", message: error.message });
     }
@@ -64,14 +85,48 @@ const usersController = {
    */
   updateUserById: async (req, res) => {
     try {
-      const user = await User.findById(req.params.id);
+      const user = req.user;
+      const { name, email, password, phone_number, id_number, favorite_exams, starred_threads } = req.body;
 
-      if (!user) {
-        return res.status(404).json({ type: "UserNotFoundError", message: "User not found" });
+      if (name && name.length < 2) {
+        return res.status(400).json({ type: "NameLengthError", message: "Name must be at least 2 characters long." });
+      }
+      if (
+        email &&
+        !email.match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        )
+      ) {
+        return res.status(400).json({ type: "EmailError", message: "Invalid email" });
+      }
+      if (phone_number) {
+        if (!phone_number.match(/^\+?\d{9,20}$/)) {
+          return res.status(400).json({ type: "PhoneNumberError", message: "Invalid phone number" });
+        }
+        if (phone_number.length < 9) {
+          return res
+            .status(400)
+            .json({ type: "PhoneNumberLengthError", message: "Phone number must be at least 9 digits long." });
+        }
+      }
+      if (id_number && !id_number.match(/^\d{9}$/)) {
+        return res.status(400).json({ type: "IDNumberError", message: "Invalid ID number" });
+      }
+      if (password) {
+        if (password.length < 6) {
+          res
+            .status(400)
+            .json({ type: "PasswordLengthError", message: "Password must be at least 6 characters long." });
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        // user.password = hashedPassword;
+        req.body.password = hashedPassword;
       }
 
       user.set(req.body);
       await user.save();
+
+      user.password = undefined;
 
       return res.json(user);
     } catch (error) {
@@ -105,85 +160,6 @@ const usersController = {
     }
   },
 
-  /**
-   * Edit user's details
-   * User can edit their email, password, name, phone number, and ID number
-   *
-   * @async
-   * @function editUserDetails
-   * @param {Request} req - Express request object
-   * @param {Response} res - Express response object
-   * @returns {User} - Updated user object
-   * @throws {MissingFieldsError} - At least one field must be filled
-   * @throws {EmailError} - Invalid email
-   * @throws {NameLengthError} - Name must be at least 2 characters long
-   * @throws {PhoneNumberError} - Invalid phone number
-   * @throws {PhoneNumberLengthError} - Phone number must be at least 9 digits long
-   * @throws {IDNumberError} - Invalid ID number
-   * @throws {PasswordLengthError} - Password must be at least 6 characters long
-   * @throws {Error} - Server error
-   */
-  editUserDetails: async (req, res) => {
-    try {
-      const newDetails = req.body;
-
-      const { email, password, name, phone_number, id_number } = newDetails;
-
-      if (!email && !password && !name && !phone_number && !id_number) {
-        return res.status(400).json({ type: "MissingFieldsError", message: "At least one field must be filled" });
-      }
-
-      // Validate email, name, phone_number, id_number, password
-      if (
-        email &&
-        !email.match(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        )
-      ) {
-        return res.status(400).json({ type: "EmailError", message: "Invalid email" });
-      }
-
-      if (name && name.length < 2) {
-        return res.status(400).json({ type: "NameLengthError", message: "Name must be at least 2 characters long." });
-      }
-
-      if (phone_number) {
-        if (!phone_number.match(/^\+?\d{9,20}$/)) {
-          return res.status(400).json({ type: "PhoneNumberError", message: "Invalid phone number" });
-        }
-        if (phone_number.length < 9) {
-          return res
-            .status(400)
-            .json({ type: "PhoneNumberLengthError", message: "Phone number must be at least 9 digits long." });
-        }
-      }
-
-      if (id_number && !id_number.match(/^\d{9}$/)) {
-        return res.status(400).json({ type: "IDNumberError", message: "Invalid ID number" });
-      }
-
-      if (password) {
-        if (password.length < 6) {
-          res
-            .status(400)
-            .json({ type: "PasswordLengthError", message: "Password must be at least 6 characters long." });
-        }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        password = hashedPassword;
-      }
-
-      delete newDetails.password;
-
-      const dbUser = await User.findById(req.params.id);
-      dbUser.set(newDetails);
-
-      await dbUser.save();
-
-      return res.json(dbUser);
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
 };
 
 export default usersController;

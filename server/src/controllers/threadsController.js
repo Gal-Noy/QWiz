@@ -22,7 +22,7 @@ const threadsController = {
   getThreads: async (req, res) => {
     try {
       const {
-        title, // Search by title regex
+        title, // title regex
         exam, // Exam ID
         creator, // User ID
         createdAt, // Date range
@@ -241,59 +241,6 @@ const threadsController = {
       }
 
       return res.json({ message: "Thread deleted" });
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
-
-  /**
-   * Star a thread.
-   *
-   * @async
-   * @function starThread
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Thread[]} - The starred threads.
-   * @throws {ThreadNotFoundError} - If the thread was not found.
-   * @throws {Error} - If an error occurred while starring the thread.
-   */ starThread: async (req, res) => {
-    try {
-      const user = await User.findById(req.user.user_id);
-      const thread = await Thread.findById(req.params.id);
-
-      if (!thread) {
-        return res.status(404).json({ type: "ThreadNotFoundError", message: "Thread not found" });
-      }
-
-      user.starred_threads.push(thread._id);
-      await user.save();
-
-      return res.json(user.starred_threads);
-    } catch (error) {
-      return res.status(500).json({ type: "ServerError", message: error.message });
-    }
-  },
-
-  /**
-   * Unstar a thread.
-   *
-   * @async
-   * @function unstarThread
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Thread[]} - The starred threads.
-   * @throws {ThreadNotFoundError} - If the thread was not found.
-   * @throws {Error} - If an error occurred while unstarring the thread.
-   */
-  unstarThread: async (req, res) => {
-    try {
-      const user = await User.findById(req.user.user_id);
-      const threadId = req.params.id;
-
-      user.starred_threads = user.starred_threads.filter((thread) => thread._id.toString() !== threadId);
-      await user.save();
-
-      return res.json(user.starred_threads);
     } catch (error) {
       return res.status(500).json({ type: "ServerError", message: error.message });
     }
