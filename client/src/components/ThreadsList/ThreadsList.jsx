@@ -36,6 +36,17 @@ function ThreadsList(props) {
   const [sortHeader, setSortHeader] = useState("createdAt");
   const [isAsc, setIsAsc] = useState(true);
 
+  /**
+   * Fetch the threads from the server.
+   *
+   * @async
+   * @function fetchThreads
+   * @param {string} query - The query to fetch threads from the server.
+   * @param {number} currentPage - The current page number.
+   * @param {string} sortHeader - The header to sort by.
+   * @param {boolean} isAsc - Indicates whether to sort in ascending order.
+   * @returns {Promise<void>} A Promise that resolves when the threads are fetched.
+   */
   const fetchThreads = async (query, currentPage, sortHeader, isAsc) => {
     setIsPending(true);
     await axiosInstance
@@ -56,6 +67,13 @@ function ThreadsList(props) {
     if (currentPage === 0) setCurrentPage(1);
   }, [query, currentPage, sortHeader, isAsc]);
 
+  /**
+   * Handles the sort click event.
+   *
+   * @function handleSortClick
+   * @param {string} header - The header to sort by.
+   * @returns {void}
+   */
   const handleSortClick = (header) => {
     if (header === sortHeader) {
       setIsAsc(!isAsc);

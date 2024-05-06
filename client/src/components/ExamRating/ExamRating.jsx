@@ -42,6 +42,7 @@ function ExamRating(props) {
       .finally(() => setIsPending(false));
   };
 
+  // Update the rating state when the existing rating changes
   useEffect(() => {
     setRating(existingRating ? existingRating.rating : null);
   }, [existingRating]);

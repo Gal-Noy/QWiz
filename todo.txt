@@ -1,4 +1,0 @@
-redoc
-clear aws
-todo
-post put delete

@@ -30,6 +30,7 @@ function ContentArea(props) {
     ["clean"],
   ];
 
+  // Initialize the Quill editor
   useEffect(() => {
     if (!editor) {
       const newEditor = new Quill(editorRef.current, {

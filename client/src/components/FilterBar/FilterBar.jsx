@@ -215,6 +215,7 @@ function FilterBar(props) {
     }
   }, [chosenCategories.faculty]);
 
+  // Fetch courses according to the chosen department
   useEffect(() => {
     setCategoriesLists({ ...categoriesLists, courses: [] });
     setChosenCategories({ ...chosenCategories, course: null });
@@ -234,6 +235,12 @@ function FilterBar(props) {
     }
   }, [chosenCategories.course]);
 
+  /**
+   * Handles the search button click.
+   * 
+   * @function handleSearchClick
+   * @returns {void}
+    */
   const handleSearchClick = () => {
     if (!chosenCategories.course) return toast.warning("יש לבחור קורס לפני החיפוש.");
 

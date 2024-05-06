@@ -36,6 +36,17 @@ function ExamsList(props) {
   const [sortHeader, setSortHeader] = useState("createdAt");
   const [isAsc, setIsAsc] = useState(true);
 
+  /**
+   * Fetch the exams from the server.
+   *
+   * @async
+   * @function fetchExams
+   * @param {string} query - The query to fetch exams from the server.
+   * @param {number} currentPage - The current page number.
+   * @param {string} sortHeader - The header to sort by.
+   * @param {boolean} isAsc - Indicates whether to sort in ascending order.
+   * @returns {Promise<void>} A Promise that resolves when the exams are fetched.
+   */
   const fetchExams = async (query, currentPage, sortHeader, isAsc) => {
     setIsPending(true);
     await axiosInstance
@@ -58,6 +69,13 @@ function ExamsList(props) {
     }
   }, [query, currentPage, sortHeader, isAsc]);
 
+  /**
+   * Handle a click on a header to sort the exams.
+   *
+   * @function handleSortClick
+   * @param {string} header - The header to sort by.
+   * @returns {void}
+   */
   const handleSortClick = (header) => {
     if (header === sortHeader) {
       setIsAsc(!isAsc);
@@ -105,7 +123,12 @@ function ExamsList(props) {
           </div>
         )}
       </div>
-      <Pagination numPages={numPages} currentPage={currentPage} setCurrentPage={setCurrentPage} dataExists={examsData.total > 0}/>
+      <Pagination
+        numPages={numPages}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        dataExists={examsData.total > 0}
+      />
     </div>
   );
 }

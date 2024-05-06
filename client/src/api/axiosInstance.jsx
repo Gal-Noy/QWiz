@@ -1,10 +1,12 @@
 import axios from "axios";
 import { toast } from "react-custom-alert";
 
+// Create an axios instance with the server URL
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
 });
 
+// Adds the token to the headers if it exists in the local storage
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -18,6 +20,7 @@ axiosInstance.interceptors.request.use(
   }
 );
 
+// Checks if there is a new token in the response headers and updates the local storage with the new token
 axiosInstance.interceptors.response.use(
   (response) => {
     const newToken = response.headers.authorization?.split(" ")[1];
@@ -31,6 +34,7 @@ axiosInstance.interceptors.response.use(
   }
 );
 
+// Handles the response from the server according to the status code
 export const handleResult = (res, status, callback) => {
   if (res.status === status) {
     if (callback) {
@@ -41,6 +45,7 @@ export const handleResult = (res, status, callback) => {
   }
 };
 
+// Handles the error response from the server according to the status code and the error type
 export const handleError = (error, defaultMessage, callback) => {
   if (!error.response) {
     console.error(error.message);
