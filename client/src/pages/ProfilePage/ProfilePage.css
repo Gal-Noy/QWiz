@@ -178,11 +178,6 @@
   }
 }
 
-#personal-details-loading:after {
-  border: 2px solid black;
-  border-color: black transparent black transparent;
-}
-
 .profile-page-details-change-password-button {
   border: 0;
   background-color: white;

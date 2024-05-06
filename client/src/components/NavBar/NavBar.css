@@ -128,8 +128,3 @@
     background-color: var(--cyan2);
   }
 }
-
-#logout-loading:after {
-  border: 2px solid black;
-  border-color: black transparent black transparent;
-}

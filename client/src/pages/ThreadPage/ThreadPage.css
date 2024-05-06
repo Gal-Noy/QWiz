@@ -182,12 +182,6 @@
 #isClosed-loading {
   margin-left: 1rem;
 }
-#isClosed-loading:after,
-#new-comment-loading:after,
-#change-title-loading:after {
-  border: 2px solid black;
-  border-color: black transparent black transparent;
-}
 
 .thread-page-star-toggle {
   position: absolute;

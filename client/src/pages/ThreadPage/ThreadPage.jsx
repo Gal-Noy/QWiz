@@ -223,7 +223,7 @@ function ThreadPage() {
               </div>
             </div>
             <button className="go-to-exam-button" onClick={() => (window.location.href = `/exam/${thread.exam._id}`)}>
-              לעמוד המבחן
+              לעמוד הבחינה
             </button>
             <div className="thread-page-tags">{mapTags(thread.tags)}</div>
             <div className="thread-header-bottom-buttons">

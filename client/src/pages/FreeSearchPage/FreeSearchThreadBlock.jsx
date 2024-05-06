@@ -1,5 +1,5 @@
 import React from "react";
-import { formatDate } from "../../utils/generalUtils";
+import { formatDate, mapTags } from "../../utils/generalUtils";
 
 /**
  * A component for displaying a thread block in the free search page.

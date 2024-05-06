@@ -154,6 +154,7 @@
 }
 
 .upload-exam-btn {
+  min-width: 10vw;
   height: 3rem;
   background-color: var(--cyan2);
   font-size: 1.5rem;

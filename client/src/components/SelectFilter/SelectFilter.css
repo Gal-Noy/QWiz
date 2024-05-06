@@ -45,7 +45,3 @@
   top: 50%;
   transform: translate(-50%, -50%);
 }
-#select-filter-loading:after {
-  border: 2px solid black;
-  border-color: black transparent black transparent;
-}

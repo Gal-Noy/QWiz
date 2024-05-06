@@ -1,10 +1,2 @@
-handle starred and favorites in controller
-more pagination controllers
-
-fix page size to 10
-
-change password
-
 redoc
-
-lds css
+clear aws

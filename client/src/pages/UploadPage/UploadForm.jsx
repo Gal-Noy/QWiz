@@ -105,7 +105,7 @@ function UploadForm() {
         handleResult(res, 201, () => {
           const { user: updatedUser, exam } = res.data;
           localStorage.setItem("user", JSON.stringify(updatedUser));
-          toast.success("המבחן נוצר בהצלחה!");
+          toast.success("הבחינה נוצרה בהצלחה!");
           setTimeout(() => (window.location.href = `/exam/${exam._id}`), 1000);
         })
       )
@@ -312,7 +312,7 @@ function UploadForm() {
   return (
     <div className="upload-form">
       <div className="upload-form-header">
-        <label>טופס העלאת מבחן</label>
+        <label>טופס העלאת בחינה</label>
         <a>שים/י לב - שדות המסומנים בכוכבית (*) הן שדות חובה.</a>
       </div>
       <div className="upload-form-container">
@@ -498,7 +498,7 @@ function UploadForm() {
           </div>
         </div>
         <div className="upload-form-content" id="upload-form-content-3">
-          <label className="upload-form-content-header">קובץ המבחן</label>
+          <label className="upload-form-content-header">קובץ הבחינה</label>
           <input id="upload-exam-file-input" type="file" name="file" onChange={handleFileChange} />
           <div
             className={"upload-exam-btn" + (file ? " attached" : "")}
@@ -543,7 +543,7 @@ function UploadForm() {
           )}
           {file && (
             <div className="upload-exam-btn" onClick={createExam}>
-              {isPending ? <div className="lds-dual-ring"></div> : "יצירת מבחן"}
+              {isPending ? <div className="lds-dual-ring"></div> : "יצירת בחינה"}
             </div>
           )}
         </div>

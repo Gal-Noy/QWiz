@@ -118,10 +118,6 @@
     color: var(--red3);
   }
 }
-#like-loading:after {
-  border: 2px solid black;
-  border-color: black transparent black transparent;
-}
 .comment-link {
   cursor: pointer;
   transition: all 0.3s ease;
@@ -160,11 +156,6 @@
   &:active {
     background-color: var(--red3);
   }
-}
-
-#edit-comment-loading:after {
-  border: 2px solid black;
-  border-color: black transparent black transparent;
 }
 
 .ql-align-left {

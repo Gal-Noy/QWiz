@@ -55,7 +55,6 @@
   margin-right: 1rem;
   width: 25px;
   height: 25px;
-  border-radius: 50%;
-  border: 3px solid var(--orange3);
-  border-color: var(--orange3) transparent var(--orange3) transparent;
+  border: 3px solid grey;
+  border-color: grey transparent grey transparent;
 }

@@ -148,3 +148,8 @@
     color: var(--blue2);
   }
 }
+
+#auth-loading:after {
+  border: 2px solid white;
+  border-color: white transparent white transparent;
+}

@@ -68,7 +68,7 @@ function Login() {
           required
         />
         <button type="submit" className="auth-submit-button">
-          {isPending ? <div className="lds-dual-ring"></div> : "התחבר/י"}
+          {isPending ? <div className="lds-dual-ring" id="auth-loading"></div> : "התחבר/י"}
         </button>
       </form>
       <span className="auth-form-footer">

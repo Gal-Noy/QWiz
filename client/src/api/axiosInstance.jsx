@@ -87,7 +87,7 @@ export const handleError = (error, defaultMessage, callback) => {
             break;
           }
           case "ExamExistsError": {
-            toast.error("מבחן כבר קיים");
+            toast.error("הבחינה כבר קיימת עם ציון גבוה יותר");
             break;
           }
           case "FileNotUploadedError": {
@@ -122,6 +122,14 @@ export const handleError = (error, defaultMessage, callback) => {
             toast.error("מזהה לא חוקי");
             break;
           }
+          case "InvalidGradeError": {
+            toast.error("ציון הבחינה חייב להיות בין 0 ל-100");
+            break;
+          }
+          case "InvalidYearError": {
+            toast.error("שנת הבחינה חייבת להיות בין 2000 ל-2024");
+            break;
+          }
           default: {
             toast.error("בקשה לא חוקית");
             break;
@@ -147,7 +155,7 @@ export const handleError = (error, defaultMessage, callback) => {
             break;
           }
           case "ExamNotFoundError": {
-            toast.error("מבחן לא נמצא");
+            toast.error("בחינה לא נמצאה");
             break;
           }
           case "FacultyNotFoundError": {

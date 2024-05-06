@@ -150,7 +150,6 @@
   margin-top: 2rem;
   width: 25px;
   height: 25px;
-  border-radius: 50%;
   border: 3px solid var(--orange3);
   border-color: var(--orange3) transparent var(--orange3) transparent;
 }

@@ -55,13 +55,8 @@ function PersonalDetails() {
         handleResult(res, 200, () => {
           const updatedUser = res.data;
           localStorage.setItem("user", JSON.stringify(updatedUser));
-          setEditedUser({
-            name: updatedUser.name,
-            email: updatedUser.email,
-            phone_number: updatedUser.phone_number || "",
-            id_number: updatedUser.id_number || "",
-          });
           toast.success("הפרטים עודכנו בהצלחה");
+          setTimeout(() => window.location.reload(), 1000);
         })
       )
       .catch((err) =>
@@ -73,12 +68,11 @@ function PersonalDetails() {
             phone_number: user.phone_number || "",
             id_number: user.id_number || "",
           });
+
+          setIsPending(false);
+          setEditMode(false);
         })
-      )
-      .finally(() => {
-        setIsPending(false);
-        setEditMode(false);
-      });
+      );
   };
 
   const changePassword = async () => {

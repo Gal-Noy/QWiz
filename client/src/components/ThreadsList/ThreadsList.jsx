@@ -110,7 +110,12 @@ function ThreadsList(props) {
           </div>
         )}
       </div>
-      <Pagination numPages={numPages} currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      <Pagination
+        numPages={numPages}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        dataExists={threadsData.total > 0}
+      />
     </div>
   );
 }

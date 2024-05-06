@@ -105,7 +105,7 @@ function ExamsList(props) {
           </div>
         )}
       </div>
-      <Pagination numPages={numPages} currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      <Pagination numPages={numPages} currentPage={currentPage} setCurrentPage={setCurrentPage} dataExists={examsData.total > 0}/>
     </div>
   );
 }

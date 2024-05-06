@@ -42,7 +42,6 @@
 #loading-starred:after {
   width: 25px;
   height: 25px;
-  border-radius: 50%;
   border: 3px solid var(--red1);
   border-color: var(--red1) transparent var(--red1) transparent;
 }

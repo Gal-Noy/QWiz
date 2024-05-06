@@ -2,7 +2,7 @@ import React from "react";
 import "./Pagination.css";
 
 function Pagination(props) {
-  const { numPages, currentPage, setCurrentPage } = props;
+  const { numPages, currentPage, setCurrentPage, dataExists } = props;
 
   return (
     <div className="pagination">
@@ -14,7 +14,7 @@ function Pagination(props) {
       >
         arrow_forward_ios
       </span>
-      {numPages} / {currentPage}
+      {numPages} / {dataExists ? currentPage : 0}
       <span
         className={"material-symbols-outlined navigation-arrow" + (currentPage < numPages ? " enabled" : "")}
         onClick={() => {

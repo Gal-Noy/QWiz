@@ -1,6 +1,6 @@
 import React from "react";
 import ExamRating from "../../components/ExamRating/ExamRating";
-import { examToStringVerbose } from "../../utils/generalUtils";
+import { examToStringVerbose, mapTags } from "../../utils/generalUtils";
 
 /**
  * A component for displaying an exam block in the free search page.

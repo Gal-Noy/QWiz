@@ -37,7 +37,7 @@ function FreeSearchPage() {
 
   return (
     <div className="free-search-page">
-      {isPending && <div className="free-search-page-loading">טוען תוצאות...</div>}
+      {isPending && <div className="lds-dual-ring" id="free-search-loading"></div>}
       {error && <div className="free-search-page-error">{error}</div>}
       {!isPending && !error && (
         <div className="free-search-results-container">

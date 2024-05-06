@@ -91,7 +91,7 @@ function Register() {
           required
         />
         <button type="submit" className="auth-submit-button">
-          {isPending ? <div className="lds-dual-ring"></div> : "הירשם/י"}
+          {isPending ? <div className="lds-dual-ring" id="auth-loading"></div> : "הירשם/י"}
         </button>
       </form>
       <span className="auth-form-footer">

@@ -190,7 +190,7 @@ const examsController = {
         });
       }
 
-      // Validate faculty, department, course, and exam existence
+      // Validate faculty, department, course, and exam existence with lower grade
 
       const existingFaculty = await Faculty.findById(faculty._id);
       if (!existingFaculty) {
@@ -205,9 +205,36 @@ const examsController = {
         return res.status(404).json({ type: "CourseNotFoundError", message: "Course not found" });
       }
       const existingExam = await Exam.findOne({ course, year, semester, term });
-      if (existingExam) {
-        return res.status(400).json({ type: "ExamExistsError", message: "Exam already exists" });
+      if (existingExam && existingExam.grade <= grade) {
+        return res.status(409).json({ type: "ExamExistsError", message: "Exam already exists with lower grade" });
       }
+
+      // Validate other fields
+      if (grade < 0 || grade > 100) {
+        return res.status(400).json({ type: "InvalidGradeError", message: "Grade must be between 0 and 100" });
+      }
+      if (difficultyRating < 0 || difficultyRating > 5) {
+        return res.status(400).json({ type: "InvalidRatingError", message: "Rating must be between 0 and 5" });
+      }
+      if (year < 2000 || year > new Date().getFullYear()) {
+        return res.status(400).json({ type: "InvalidYearError", message: "Year must be between 2000 and current year" });
+      }
+      if (semester < 1 || semester > 3) {
+        return res.status(400).json({ type: "InvalidSemesterError", message: "Semester must be between 1 and 3" });
+      }
+      if (term < 1 || term > 3) {
+        return res.status(400).json({ type: "InvalidTermError", message: "Term must be between 1 and 3" });
+      }
+      if (type !== "quiz" && type !== "test") {
+        return res.status(400).json({ type: "InvalidTypeError", message: "Type must be quiz or test" });
+      }
+      if (lecturers && !Array.isArray(lecturers)) {
+        return res.status(400).json({ type: "InvalidLecturersError", message: "Lecturers must be an array" });
+      }
+      if (tags && !Array.isArray(tags)) {
+        return res.status(400).json({ type: "InvalidTagsError", message: "Tags must be an array" });
+      }
+
 
       // Handle user
 

@@ -88,7 +88,7 @@ const usersController = {
       const user = req.user;
       const { name, email, password, phone_number, id_number, favorite_exams, starred_threads } = req.body;
 
-      if (name && name.length < 2) {
+      if (name && name.trim().length < 2) {
         return res.status(400).json({ type: "NameLengthError", message: "Name must be at least 2 characters long." });
       }
       if (
