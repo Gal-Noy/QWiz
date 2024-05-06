@@ -2,7 +2,7 @@ import { Exam } from "../models/examModel.js";
 import { User } from "../models/userModel.js";
 import { Faculty, Department, Course } from "../models/categoriesModels.js";
 import { uploadFile, getPresignedUrl } from "../utils/s3.js";
-import { paginateAndSort, paginateWithCustomSort } from "../utils/PSUtils.js";
+import { paginateAndSort, paginateWithCustomSort } from "../utils/paginationUtils.js";
 
 /**
  * Controller for handling exam operations.
@@ -217,7 +217,9 @@ const examsController = {
         return res.status(400).json({ type: "InvalidRatingError", message: "Rating must be between 0 and 5" });
       }
       if (year < 2000 || year > new Date().getFullYear()) {
-        return res.status(400).json({ type: "InvalidYearError", message: "Year must be between 2000 and current year" });
+        return res
+          .status(400)
+          .json({ type: "InvalidYearError", message: "Year must be between 2000 and current year" });
       }
       if (semester < 1 || semester > 3) {
         return res.status(400).json({ type: "InvalidSemesterError", message: "Semester must be between 1 and 3" });
@@ -228,13 +230,24 @@ const examsController = {
       if (type !== "quiz" && type !== "test") {
         return res.status(400).json({ type: "InvalidTypeError", message: "Type must be quiz or test" });
       }
-      if (lecturers && !Array.isArray(lecturers)) {
-        return res.status(400).json({ type: "InvalidLecturersError", message: "Lecturers must be an array" });
+      if (lecturers) {
+        if (!Array.isArray(lecturers)) {
+          return res.status(400).json({ type: "InvalidLecturersError", message: "Lecturers must be an array" });
+        }
+        if (lecturers.some((lecturer) => lecturer.trim().length < 2 || lecturer.trim().length > 20)) {
+          return res
+            .status(400)
+            .json({ type: "LecturerInvalidError", message: "Lecturer name must be between 2 and 20 characters" });
+        }
       }
-      if (tags && !Array.isArray(tags)) {
-        return res.status(400).json({ type: "InvalidTagsError", message: "Tags must be an array" });
+      if (tags) {
+        if (!Array.isArray(tags)) {
+          return res.status(400).json({ type: "InvalidTagsError", message: "Tags must be an array" });
+        }
+        if (tags.some((tag) => tag.trim().length < 2 || tag.trim().length > 20)) {
+          return res.status(400).json({ type: "TagInvalidError", message: "Tag must be between 2 and 20 characters" });
+        }
       }
-
 
       // Handle user
 

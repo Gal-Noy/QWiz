@@ -130,6 +130,22 @@ export const handleError = (error, defaultMessage, callback) => {
             toast.error("שנת הבחינה חייבת להיות בין 2000 ל-2024");
             break;
           }
+          case "LecturerInvalidError": {
+            toast.error("שם המרצה חייב להיות בין 2 ל-100 תווים");
+            break;
+          }
+          case "TagInvalidError": {
+            toast.error("תגית חייבת להיות בין 2 ל-20 תווים");
+            break;
+          }
+          case "TitleInvalidError": {
+            toast.error("על הכותרת להיות בין 2 ל-100 תווים");
+            break;
+          }
+          case "ContentInvalidError": {
+            toast.error("תוכן לא יכול להיות ריק");
+            break;
+          }
           default: {
             toast.error("בקשה לא חוקית");
             break;

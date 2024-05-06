@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
 import { Document, Page, pdfjs } from "react-pdf";
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 import ExamRating from "../../components/ExamRating/ExamRating";
 import "./ExamDetails.css";
 import { mapTags } from "../../utils/generalUtils";
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 /**
  * The exam details component.
@@ -50,6 +51,17 @@ function ExamDetails({ examId }) {
       .get(`/exams/${exam._id}/presigned`)
       .then((res) => handleResult(res, 200, () => setFilePath(res.data.presignedUrl)))
       .catch((err) => handleError(err));
+
+  /**
+   * Opens the PDF file in a new tab.
+   *
+   * @function openPdf
+   * @returns {void}
+   */
+  const openPdf = () => {
+    if (!pdfLoaded) return;
+    window.open(filePath, "_blank");
+  };
 
   // Initial fetch
   useEffect(() => {
@@ -135,14 +147,7 @@ function ExamDetails({ examId }) {
             </div>
           </div>
           <div className="exam-details-left-section">
-            <div
-              className={"exam-details-pdf" + (!pdfLoaded ? " pdf-not-loaded" : "")}
-              onClick={() => {
-                // Open the PDF in a new tab
-                if (!pdfLoaded) return;
-                window.open(filePath, "_blank");
-              }}
-            >
+            <div className={"exam-details-pdf" + (!pdfLoaded ? " pdf-not-loaded" : "")} onClick={openPdf}>
               <Document file={filePath} onLoadSuccess={() => setPdfLoaded(true)}>
                 <Page pageNumber={1} renderAnnotationLayer={false} renderTextLayer={false} />
               </Document>

@@ -7,7 +7,7 @@ import {
   commentsCreateMiddleware,
   commentsUpdateMiddleware,
 } from "../middleware/threadsMiddleware.js";
-import { PSMiddleware } from "../middleware/PSMiddleware.js";
+import { paginationMiddleware } from "../middleware/paginationMiddleware.js";
 
 const threadsRouter = express.Router();
 threadsRouter.use(authenticateToken);
@@ -15,7 +15,7 @@ threadsRouter.use(authenticateToken);
 ///////////////////////// THREADS /////////////////////////
 
 // GET: get threads
-threadsRouter.get("/", PSMiddleware, threadsController.getThreads);
+threadsRouter.get("/", paginationMiddleware, threadsController.getThreads);
 
 // GET: get thread by id
 threadsRouter.get("/:id", validateIdParam, threadsController.getThreadById);

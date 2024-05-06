@@ -2,7 +2,8 @@ import { Thread, Comment } from "../models/threadModels.js";
 import { Exam } from "../models/examModel.js";
 import { User } from "../models/userModel.js";
 import { Course } from "../models/categoriesModels.js";
-import { paginateAndSort, paginateWithCustomSort } from "../utils/PSUtils.js";
+import { paginateAndSort, paginateWithCustomSort } from "../utils/paginationUtils.js";
+import { getContentText } from "../utils/threadsUtils.js";
 
 /**
  * Controller for the handling of threads and comments.
@@ -138,6 +139,21 @@ const threadsController = {
         return res.status(404).json({ type: "ExamNotFoundError", message: "Exam not found" });
       }
 
+      // Validate fields
+      if (title.trim().length < 2 || title.trim().length > 100) {
+        return res
+          .status(400)
+          .json({ type: "TitleInvalidError", message: "Title must be between 2 and 100 characters" });
+      }
+      if (getContentText(content) === "") {
+        return res.status(400).json({ type: "ContentInvalidError", message: "Content must not be empty" });
+      }
+      if (tags && tags.length > 0) {
+        if (tags.some((tag) => tag.trim().length < 2 || tag.trim().length > 20)) {
+          return res.status(400).json({ type: "TagInvalidError", message: "Tags must be between 2 and 20 characters" });
+        }
+      }
+
       // Update course and exam tags if necessary
       if (tags && tags.length > 0) {
         const course = await Course.findById(examObj.course);
@@ -191,6 +207,18 @@ const threadsController = {
     try {
       const thread = req.thread;
       const { title, tags } = req.body;
+
+      // Validate fields
+      if (title && (title.trim().length < 2 || title.trim().length > 100)) {
+        return res
+          .status(400)
+          .json({ type: "TitleInvalidError", message: "Title must be between 2 and 100 characters" });
+      }
+      if (tags && tags.length > 0) {
+        if (tags.some((tag) => tag.trim().length < 2 || tag.trim().length > 20)) {
+          return res.status(400).json({ type: "TagInvalidError", message: "Tags must be between 2 and 20 characters" });
+        }
+      }
 
       if (title && title !== thread.title && thread.comments.length > 0) {
         // Update the main comment title as well
@@ -289,6 +317,19 @@ const threadsController = {
         return res.status(400).json({ type: "MissingFieldsError", message: "Please provide content" });
       }
 
+      // Validate fields
+
+      if (getContentText(content) === "") {
+        return res.status(400).json({ type: "ContentInvalidError", message: "Content must not be empty" });
+      }
+      if ((title && title.trim().length < 2) || title.trim().length > 100) {
+        return res
+          .status(400)
+          .json({ type: "TitleInvalidError", message: "Title must be between 2 and 100 characters" });
+      }
+
+      // Create the new comment
+
       let comment;
 
       if (req.thread) {
@@ -353,6 +394,16 @@ const threadsController = {
     try {
       const comment = req.comment;
       const { title, content, like } = req.body;
+
+      // Validate fields
+      if ((title && title.trim().length < 2) || title.trim().length > 100) {
+        return res
+          .status(400)
+          .json({ type: "TitleInvalidError", message: "Title must be between 2 and 100 characters" });
+      }
+      if (getContentText(content) === "") {
+        return res.status(400).json({ type: "ContentInvalidError", message: "Content must not be empty" });
+      }
 
       if (title && req.thread.comments[0]._id.toString() === comment._id.toString()) {
         req.thread.title = title;

@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const PSMiddleware = (req, res, next) => {
+const paginationMiddleware = (req, res, next) => {
   const { page, sortBy, sortOrder } = req.query;
 
   const pageNum = parseInt(page) || 1;
@@ -23,4 +23,4 @@ const PSMiddleware = (req, res, next) => {
   next();
 };
 
-export { PSMiddleware };
+export { paginationMiddleware };

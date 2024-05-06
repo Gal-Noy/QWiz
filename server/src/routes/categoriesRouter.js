@@ -1,7 +1,7 @@
 import express from "express";
 import categoriesController from "../controllers/categoriesController.js";
 import { authenticateToken, authenticateAdmin } from "../middleware/authMiddleware.js";
-import { PSMiddleware } from "../middleware/PSMiddleware.js";
+import { paginationMiddleware } from "../middleware/paginationMiddleware.js";
 
 const categoriesRouter = express.Router();
 categoriesRouter.use(authenticateToken);
@@ -9,7 +9,7 @@ categoriesRouter.use(authenticateToken);
 ////////////////////////////////////////// FACULTIES //////////////////////////////////////////
 
 // GET: get faculties
-categoriesRouter.get("/faculties", PSMiddleware, categoriesController.getFaculties);
+categoriesRouter.get("/faculties", paginationMiddleware, categoriesController.getFaculties);
 
 // GET: get faculty by id
 categoriesRouter.get("/faculty/:id", categoriesController.getFacultyById);
@@ -26,7 +26,7 @@ categoriesRouter.delete("/faculty/:id", authenticateAdmin, categoriesController.
 ////////////////////////////////////////// DEPARTMENTS //////////////////////////////////////////
 
 // GET: get departments
-categoriesRouter.get("/departments", PSMiddleware, categoriesController.getDepartments);
+categoriesRouter.get("/departments", paginationMiddleware, categoriesController.getDepartments);
 
 // GET: get department by id
 categoriesRouter.get("/department/:id", categoriesController.getDepartmentById);
@@ -43,7 +43,7 @@ categoriesRouter.delete("/department/:id", authenticateAdmin, categoriesControll
 ////////////////////////////////////////// COURSES //////////////////////////////////////////
 
 // GET: get courses
-categoriesRouter.get("/courses", PSMiddleware, categoriesController.getCourses);
+categoriesRouter.get("/courses", paginationMiddleware, categoriesController.getCourses);
 
 // GET: get course by id
 categoriesRouter.get("/course/:id", categoriesController.getCourseById);

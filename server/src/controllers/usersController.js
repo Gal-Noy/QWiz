@@ -1,6 +1,6 @@
 import { User } from "../models/userModel.js";
 import bcrypt from "bcrypt";
-import { paginateAndSort } from "../utils/PSUtils.js";
+import { paginateAndSort } from "../utils/paginationUtils.js";
 
 /**
  * Controller for handling user-related operations
@@ -159,7 +159,6 @@ const usersController = {
       return res.status(500).json({ type: "ServerError", message: error.message });
     }
   },
-
 };
 
 export default usersController;

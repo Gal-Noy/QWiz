@@ -157,7 +157,7 @@ function ThreadPage() {
           setTimeout(() => window.location.reload(), 1000);
         })
       )
-      .catch((err) => handleError(err, "אירעה שגיאה בעת עדכון הכותרת"))
+      .catch((err) => handleError(err))
       .finally(() => setPendings({ ...pendings, changeTitle: false }));
   };
 

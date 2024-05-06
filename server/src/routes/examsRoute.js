@@ -3,7 +3,7 @@ import examsController from "../controllers/examsController.js";
 import multer from "multer";
 import { authenticateToken, authenticateAdmin } from "../middleware/authMiddleware.js";
 import { validateIdParam } from "../middleware/examsMiddleware.js";
-import { PSMiddleware } from "../middleware/PSMiddleware.js";
+import {paginationMiddleware } from "../middleware/paginationMiddleware.js";
 
 // Multer configuration for file upload
 const upload = multer({
@@ -17,7 +17,7 @@ const examsRouter = express.Router();
 examsRouter.use(authenticateToken);
 
 // GET: get exams
-examsRouter.get("/", PSMiddleware, examsController.getExams);
+examsRouter.get("/",paginationMiddleware, examsController.getExams);
 
 // GET: get exam by id
 examsRouter.get("/:id", validateIdParam, examsController.getExamById);

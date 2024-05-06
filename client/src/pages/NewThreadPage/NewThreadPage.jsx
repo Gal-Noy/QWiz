@@ -48,8 +48,11 @@ function NewThread() {
       .catch((err) => handleError(err, "שגיאה בטעינת הבחינה, אנא נסה שנית."))
       .finally(() => setExamPending(false));
   };
-
-  useEffect(() => fetchExam(), [examId]); // Initial fetch
+  
+  // Initial fetch
+  useEffect(() => {
+    fetchExam();
+  }, [examId]);
 
   /**
    * Create a new thread.
@@ -78,7 +81,7 @@ function NewThread() {
           setTimeout(() => (window.location.href = `/thread/${res.data._id}`), 1000);
         })
       )
-      .catch((err) => handleError(err, "יצירת הדיון נכשלה"))
+      .catch((err) => handleError(err))
       .finally(() => setIsPending(false));
   };
 

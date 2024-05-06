@@ -1,6 +1,6 @@
 import { Faculty, Department, Course } from "../models/categoriesModels.js";
 import { Exam } from "../models/examModel.js";
-import { paginateAndSort, sortOnly } from "../utils/PSUtils.js";
+import { paginateAndSort, sortOnly } from "../utils/paginationUtils.js";
 
 /**
  * Controller for handling faculty, department and course operations.

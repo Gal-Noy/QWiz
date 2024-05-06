@@ -117,6 +117,7 @@ function CommentBox(props) {
    */
   const editComment = async () => {
     if (editedCommentContent === "") return toast.warning("אנא הכנס/י תוכן לתגובה");
+    if (editedCommentTitle === "") return toast.warning("אנא הכנס/י כותרת לתגובה");
 
     if (editedCommentTitle === title && editedCommentContent === content) return toggleEditMode();
 
@@ -129,7 +130,7 @@ function CommentBox(props) {
           setTimeout(() => window.location.reload(), 1000);
         })
       )
-      .catch((err) => handleError(err, "אירעה שגיאה בעת עדכון התגובה"))
+      .catch((err) => handleError(err))
       .finally(() => setEditPending(false));
   };
 
