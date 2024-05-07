@@ -89,7 +89,6 @@ const searchExams = async (subQuery) => {
       }
     }
   } catch (error) {
-    console.error(error);
     return [];
   }
 
