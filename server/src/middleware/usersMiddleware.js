@@ -3,6 +3,16 @@ import { User } from "../models/userModel.js";
 import { Thread } from "../models/threadModels.js";
 import usersController from "../controllers/usersController.js";
 
+/**
+ * Middleware to validate the ID parameter
+ *
+ * @function validateIdParam
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Callback function
+ * @returns {void}
+ * @throws {InvalidIDError} - Invalid ID
+ */
 const validateIdParam = (req, res, next) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -18,6 +28,15 @@ const validateIdParam = (req, res, next) => {
   next();
 };
 
+/**
+ * Middleware to delete a user
+ *
+ * @async
+ * @function deleteUser
+ * @param {Function} next - Callback function
+ * @returns {void}
+ * @throws {Error} - Database error
+ */
 const deleteUser = async function (next) {
   const userId = this._conditions._id;
 
@@ -35,6 +54,15 @@ const deleteUser = async function (next) {
   }
 };
 
+/**
+ * Middleware to delete multiple users
+ *
+ * @async
+ * @function deleteUsers
+ * @param {Function} next - Callback function
+ * @returns {void}
+ * @throws {Error} - Database error
+ */
 const deleteUsers = async function (next) {
   const userIds = this._conditions._id;
 
@@ -47,6 +75,16 @@ const deleteUsers = async function (next) {
   }
 };
 
+/**
+ * Middleware to update user details based on role
+ *
+ * @async
+ * @function usersUpdateMiddleware
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Callback function
+ * @returns {void}
+ */
 const usersUpdateMiddleware = async (req, res, next) => {
   if (req.user.user_id.toString() !== req.params.id) {
     return res.status(403).json({ type: "AccessDeniedError", message: "Access denied." });

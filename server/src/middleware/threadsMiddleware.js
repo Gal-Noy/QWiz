@@ -3,6 +3,16 @@ import { User } from "../models/userModel.js";
 import { Thread, Comment } from "../models/threadModels.js";
 import threadsController from "../controllers/threadsController.js";
 
+/**
+ * Middleware to validate the ID parameter
+ *
+ * @function validateIdParam
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Callback function
+ * @returns {void}
+ * @throws {InvalidIDError} - Invalid ID
+ */
 const validateIdParam = (req, res, next) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -21,6 +31,15 @@ const validateIdParam = (req, res, next) => {
   next();
 };
 
+/**
+ * Middleware to delete a thread
+ *
+ * @async
+ * @function deleteThread
+ * @param {Function} next - Callback function
+ * @returns {void}
+ * @throws {Error} - Database error
+ */
 const deleteThread = async function (next) {
   const threadToDelete = await this.model.findOne(this.getQuery());
   const { _id: threadId } = threadToDelete;
@@ -36,6 +55,15 @@ const deleteThread = async function (next) {
   }
 };
 
+/**
+ * Middleware to delete multiple threads
+ *
+ * @async
+ * @function deleteThreads
+ * @param {Function} next - Callback function
+ * @returns {void}
+ * @throws {Error} - Database error
+ */
 const deleteThreads = async function (next) {
   const threadsToDelete = await this.model.find(this.getQuery());
   const threadIds = threadsToDelete.map((thread) => thread._id);
@@ -51,6 +79,15 @@ const deleteThreads = async function (next) {
   }
 };
 
+/**
+ * Middleware to populate the thread
+ *
+ * @function populateThread
+ * @param {Function} next - Callback function
+ * @returns {void}
+ * @throws {Error} - Database error
+ * @returns {void}
+ */
 const populateThread = function (next) {
   this.populate("creator", "name");
   this.populate({
@@ -67,6 +104,14 @@ const populateThread = function (next) {
   next();
 };
 
+/**
+ * Middleware to delete a comment
+ *
+ * @async
+ * @function deleteComment
+ * @param {Function} next - Callback function
+ * @returns {void}
+ */
 const deleteComment = async function (next) {
   const commentToDelete = await this.model.findOne(this.getQuery());
 
@@ -81,6 +126,14 @@ const deleteComment = async function (next) {
   }
 };
 
+/**
+ * Middleware to delete multiple comments
+ *
+ * @async
+ * @function deleteComments
+ * @param {Function} next - Callback function
+ * @returns {void}
+ */
 const deleteComments = async function (next) {
   const commentsToDelete = await this.model.find(this.getQuery());
   const allReplies = commentsToDelete.flatMap((comment) => comment.replies);
@@ -96,6 +149,13 @@ const deleteComments = async function (next) {
   }
 };
 
+/**
+ * Middleware to populate the comment
+ *
+ * @function populateComment
+ * @param {Function} next - Callback function
+ * @returns {void}
+ */
 const populateComment = function (next) {
   this.populate("sender", "name");
   this.populate({
@@ -105,6 +165,19 @@ const populateComment = function (next) {
   next();
 };
 
+/**
+ * Middleware to update threads based on user role
+ *
+ * @async
+ * @function threadsUpdateMiddleware
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Callback function
+ * @returns {void}
+ * @throws {ThreadNotFoundError} - Thread not found
+ * @throws {AccessDeniedError} - Access denied
+ * @throws {ServerError} - Server error
+ */
 const threadsUpdateMiddleware = async (req, res, next) => {
   try {
     const thread = await Thread.findById(req.params.id);
@@ -138,6 +211,21 @@ const threadsUpdateMiddleware = async (req, res, next) => {
   }
 };
 
+/**
+ * Middleware to create comments based on user role
+ *
+ * @async
+ * @function commentsCreateMiddleware
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Callback function
+ * @returns {void}
+ * @throws {MissingFieldsError} - Missing field
+ * @throws {ThreadNotFoundError} - Thread not found
+ * @throws {AccessDeniedError} - Access denied
+ * @throws {CommentNotFoundError} - Comment not found
+ * @throws {ServerError} - Server error
+ */
 const commentsCreateMiddleware = async (req, res, next) => {
   try {
     const { thread, comment } = req.body;
@@ -186,6 +274,19 @@ const commentsCreateMiddleware = async (req, res, next) => {
   }
 };
 
+/**
+ * Middleware to update comments based on user role
+ *
+ * @async
+ * @function commentsUpdateMiddleware
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Callback function
+ * @returns {void}
+ * @throws {CommentNotFoundError} - Comment not found
+ * @throws {AccessDeniedError} - Access denied
+ * @throws {ServerError} - Server error
+ */
 const commentsUpdateMiddleware = async (req, res, next) => {
   try {
     const comment = await Comment.findById(req.params.id);

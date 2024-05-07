@@ -2,6 +2,15 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+/**
+ * Middleware to handle pagination
+ * 
+ * @function paginationMiddleware
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ * @param {Function} next - Callback function
+ * @returns {void}
+ */
 const paginationMiddleware = (req, res, next) => {
   const { page, sortBy, sortOrder } = req.query;
 
