@@ -11,7 +11,7 @@ dotenv.config({ path: "../.env" });
 const init = async () => {
   try {
     console.log("Building database");
-    await mongoose.connect(process.env.DB_URI, {
+    mongoose.connect(process.env.DB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
@@ -22,7 +22,7 @@ const init = async () => {
     await Department.deleteMany();
     await Course.deleteMany();
 
-    const coursesData = fs.readFileSync("./courses.json");
+    const coursesData = fs.readFileSync("./build/courses.json");
     console.log("Reading data from courses.json");
     const coursesJson = JSON.parse(coursesData);
 
@@ -65,6 +65,7 @@ const init = async () => {
   } finally {
     mongoose.disconnect();
     console.log("Disconnected from MongoDB");
+    console.log("Database build complete");
   }
 };
 
