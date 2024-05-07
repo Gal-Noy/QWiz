@@ -33,7 +33,10 @@ function FreeSearchPage() {
       .finally(() => setIsPending(false));
   };
 
-  useEffect(() => fetchFreeSearchResults(), [query]); // Initial fetch
+  // Initial fetch
+  useEffect(() => {
+    fetchFreeSearchResults();
+  }, [query]);
 
   return (
     <div className="free-search-page">

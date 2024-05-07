@@ -250,7 +250,7 @@ function UploadForm() {
     fetchFaculties();
   }, []);
 
-  // Fetch departments and courses according to the chosen faculty
+  // Fetch departments according to the chosen faculty
   useEffect(() => {
     setExamDetails({ ...examDetails, department: null, course: null });
     cancelFile();
@@ -258,6 +258,7 @@ function UploadForm() {
     if (examDetails.faculty) fetchDepartmentsByFaculty(examDetails.faculty._id);
   }, [examDetails.faculty]);
 
+  // Fetch courses according to the chosen department
   useEffect(() => {
     setExamDetails({ ...examDetails, course: null });
     cancelFile();

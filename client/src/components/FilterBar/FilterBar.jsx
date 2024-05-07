@@ -205,7 +205,7 @@ function FilterBar(props) {
     fetchFaculties();
   }, []);
 
-  // Fetch departments and courses according to the chosen faculty
+  // Fetch departments according to the chosen faculty
   useEffect(() => {
     setCategoriesLists({ ...categoriesLists, departments: [], courses: [] });
     setChosenCategories({ ...chosenCategories, department: null, course: null });

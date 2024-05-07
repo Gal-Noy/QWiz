@@ -14,6 +14,7 @@ function Register() {
   const [passwordsMatch, setPasswordsMatch] = useState(registerData.password === registerData.confirmPassword);
   const [isPending, setIsPending] = useState(false);
 
+  // Check if the passwords match.
   useEffect(() => {
     setPasswordsMatch(registerData.password === registerData.confirmPassword);
   }, [registerData.confirmPassword, registerData.password]);

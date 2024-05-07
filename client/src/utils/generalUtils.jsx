@@ -1,3 +1,5 @@
+// Date formatters
+
 const formatDate = (date) => {
   const options = { year: "numeric", month: "numeric", day: "numeric" };
   return new Date(date).toLocaleDateString("he-IL", options);
@@ -7,6 +9,8 @@ const formatDateAndTime = (date) => {
   const options = { year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric" };
   return new Date(date).toLocaleDateString("he-IL", options);
 };
+
+// Exam formatters
 
 const examToString = (exam) => {
   return exam
@@ -24,6 +28,7 @@ const examToStringVerbose = (exam) => {
     : "";
 };
 
+// Recursive function to sum comments and replies
 const sumComments = (comments) => {
   let sum = comments.length;
   comments.forEach((comment) => {
@@ -32,6 +37,7 @@ const sumComments = (comments) => {
   return sum;
 };
 
+// Handle click outside of element ref
 const handleClickOutside = (ref, callback) => {
   const handleClick = (e) => {
     if (ref.current && !ref.current.contains(e.target)) {
@@ -44,14 +50,17 @@ const handleClickOutside = (ref, callback) => {
   };
 };
 
+// Check if text is RTL
 const isTextRTL = (text) => {
   const rtlChars = /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/;
   return rtlChars.test(text);
 };
 
+// Calculate average rating from difficulty ratings
 const calcAvgRating = (difficultyRatings) =>
   difficultyRatings.reduce((acc, curr) => acc + curr.rating, 0) / difficultyRatings.length;
 
+// Map tags to JSX elements
 const mapTags = (tags) =>
   tags.map((tag, index) => (
     <span key={index}>

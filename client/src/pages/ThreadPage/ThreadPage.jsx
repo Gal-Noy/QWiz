@@ -38,6 +38,13 @@ function ThreadPage() {
     if (commentElement) commentElement.scrollIntoView({ behavior: "smooth" });
   }
 
+  /**
+   * Fetches the thread.
+   *
+   * @async
+   * @function fetchThread
+   * @returns {Promise<void>} The result of fetching the thread.
+   */
   const fetchThread = async () => {
     setPendings({ ...pendings, thread: true });
     await axiosInstance

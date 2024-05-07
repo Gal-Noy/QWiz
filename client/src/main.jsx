@@ -7,6 +7,6 @@ import "react-custom-alert/dist/index.css";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <>
     <App />
-    <ToastContainer floatingTime={5000} />
+    <ToastContainer floatingTime={5000} /> {/* Custom alerts */}
   </>
 );

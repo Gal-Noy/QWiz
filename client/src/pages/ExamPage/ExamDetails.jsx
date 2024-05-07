@@ -68,9 +68,10 @@ function ExamDetails({ examId }) {
     fetchExam();
   }, [examId]);
 
+  // Fetch the presigned URL after the exam is fetched
   useEffect(() => {
     if (exam) getPresignedUrl();
-  }, [exam]); // Fetch the presigned URL after the exam is fetched
+  }, [exam]);
 
   return (
     <div className="exam-details">

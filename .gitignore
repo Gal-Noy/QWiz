@@ -132,3 +132,6 @@ dist
 
 # demo folder
 demo
+
+# build folder
+server/build

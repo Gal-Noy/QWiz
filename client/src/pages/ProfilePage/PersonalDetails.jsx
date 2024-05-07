@@ -75,6 +75,13 @@ function PersonalDetails() {
       );
   };
 
+  /**
+   * Changes the user's password.
+   * 
+   * @async
+   * @function changePassword
+   * @returns {Promise<void>} The result of changing the password.
+    */
   const changePassword = async () => {
     if (!newPassword) return toast.warning("אנא הכנס/י סיסמה חדשה");
     if (newPassword.length < 6) return toast.warning("הסיסמה חייבת להיות באורך של לפחות 6 תווים");

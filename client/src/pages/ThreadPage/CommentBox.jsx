@@ -108,6 +108,7 @@ function CommentBox(props) {
     setEditedCommentContent(content);
     setEditedCommentTitle(title);
   };
+  
   /**
    * Updates the comment.
    *
