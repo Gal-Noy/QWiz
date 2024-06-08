@@ -190,7 +190,7 @@ const examsController = {
         });
       }
 
-      // Validate faculty, department, course, and exam existence with lower grade
+      // Validate faculty, department, course, and exam existence with same or higher grade
 
       const existingFaculty = await Faculty.findById(faculty._id);
       if (!existingFaculty) {
@@ -205,8 +205,8 @@ const examsController = {
         return res.status(404).json({ type: "CourseNotFoundError", message: "Course not found" });
       }
       const existingExam = await Exam.findOne({ course, year, semester, term });
-      if (existingExam && existingExam.grade <= grade) {
-        return res.status(409).json({ type: "ExamExistsError", message: "Exam already exists with lower grade" });
+      if (existingExam && existingExam.grade >= grade) {
+        return res.status(400).json({ type: "ExamExistsError", message: "Exam already exists with same or higher grade" });
       }
 
       // Validate other fields
