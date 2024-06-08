@@ -298,16 +298,18 @@ const commentsUpdateMiddleware = async (req, res, next) => {
     const thread = await Thread.findById(comment.thread);
 
     if (req.user.role !== "admin") {
-      if (comment.sender._id.toString() !== req.user.user_id) {
-        return res.status(403).json({ type: "AccessDeniedError", message: "Access denied, sender only" });
-      }
-
-      if (thread.isClosed) {
-        return res.status(403).json({ type: "AccessDeniedError", message: "Thread is closed" });
-      }
-
       // Only allow certain fields to be updated
       const allowedFields = ["title", "content", "like"];
+
+      if ("content" in req.body || "title" in req.body) {
+        if (comment.sender._id.toString() !== req.user.user_id) {
+          return res.status(403).json({ type: "AccessDeniedError", message: "Access denied, sender only" });
+        }
+        if (thread.isClosed) {
+          return res.status(403).json({ type: "AccessDeniedError", message: "Thread is closed" });
+        }
+      }
+
       for (const field in req.body) {
         if (!allowedFields.includes(field)) {
           return res.status(403).json({ type: "AccessDeniedError", message: "Access denied, restricted field" });

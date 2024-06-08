@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
 import defaultAvatar from "../../assets/default-avatar.jpg";
 import { toast } from "react-custom-alert";
@@ -22,9 +22,11 @@ function PersonalDetails() {
 
   // Change password
   const [showChangePassword, setShowChangePassword] = useState(false);
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [newPasswordPending, setNewPasswordPending] = useState(false);
+  const [newPassword, setNewPassword] = useState({
+    password: "",
+    confirmPassword: "",
+  });
 
   /**
    * Saves the changes made to the user's details.
@@ -77,27 +79,26 @@ function PersonalDetails() {
 
   /**
    * Changes the user's password.
-   * 
+   *
    * @async
    * @function changePassword
    * @returns {Promise<void>} The result of changing the password.
-    */
+   */
   const changePassword = async () => {
-    if (!newPassword) return toast.warning("אנא הכנס/י סיסמה חדשה");
-    if (newPassword.length < 6) return toast.warning("הסיסמה חייבת להיות באורך של לפחות 6 תווים");
-    if (newPassword !== confirmNewPassword) return toast.warning("הסיסמאות אינן תואמות");
+    if (!newPassword.password) return toast.warning("אנא הכנס/י סיסמה חדשה");
+    if (newPassword.password.length < 6) return toast.warning("הסיסמה חייבת להיות באורך של לפחות 6 תווים");
+    if (newPassword.password !== newPassword.confirmPassword) return toast.warning("הסיסמאות אינן תואמות");
 
     if (newPasswordPending) return;
 
     setNewPasswordPending(true);
 
     await axiosInstance
-      .put(`/users/${user._id}`, { password: newPassword })
+      .put(`/users/${user._id}`, { password: newPassword.password })
       .then((res) => handleResult(res, 200, () => toast.success("הסיסמה שונתה בהצלחה")))
       .catch((err) => handleError(err, null))
       .finally(() => {
-        setNewPassword("");
-        setConfirmNewPassword("");
+        setNewPassword({ password: "", confirmPassword: "" });
         setNewPasswordPending(false);
         setShowChangePassword(false);
       });
@@ -174,20 +175,20 @@ function PersonalDetails() {
               <span className="material-symbols-outlined details-icon">password</span>
               <input
                 className="page-details-detail-input"
-                type="text"
+                type="password"
                 placeholder="סיסמה חדשה"
-                value={"●".repeat(newPassword.length)}
-                onChange={(e) => setNewPassword(e.target.value)}
+                value={newPassword.password}
+                onChange={(e) => setNewPassword({ ...newPassword, password: e.target.value })}
               />
             </div>
             <div className="profile-page-details-item">
               <span className="material-symbols-outlined details-icon">password</span>
               <input
                 className="page-details-detail-input"
-                type="text"
+                type="password"
                 placeholder="אימות סיסמה חדשה"
-                value={"●".repeat(confirmNewPassword.length)}
-                onChange={(e) => setConfirmNewPassword(e.target.value)}
+                value={newPassword.confirmPassword}
+                onChange={(e) => setNewPassword({ ...newPassword, confirmPassword: e.target.value })}
               />
             </div>
           </>

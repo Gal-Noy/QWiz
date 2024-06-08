@@ -80,3 +80,8 @@
   border: 2px solid grey;
   border-color: grey transparent grey transparent;
 }
+
+#new-thread-btn-loading:after {
+  border: 2px solid white;
+  border-color: white transparent white transparent;
+}

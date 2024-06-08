@@ -119,7 +119,6 @@ const usersController = {
             .json({ type: "PasswordLengthError", message: "Password must be at least 6 characters long." });
         }
         const hashedPassword = await bcrypt.hash(password, 10);
-        // user.password = hashedPassword;
         req.body.password = hashedPassword;
       }
 

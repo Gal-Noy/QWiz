@@ -140,7 +140,7 @@ const threadsController = {
       }
 
       // Validate fields
-      if (title.trim().length < 2 || title.trim().length > 100) {
+      if (title && (title.trim().length < 2 || title.trim().length > 100)) {
         return res
           .status(400)
           .json({ type: "TitleInvalidError", message: "Title must be between 2 and 100 characters" });
@@ -319,10 +319,10 @@ const threadsController = {
 
       // Validate fields
 
-      if (getContentText(content) === "") {
+      if (content && getContentText(content) === "") {
         return res.status(400).json({ type: "ContentInvalidError", message: "Content must not be empty" });
       }
-      if ((title && title.trim().length < 2) || title.trim().length > 100) {
+      if (title && (title.trim().length < 2 || title.trim().length > 100)) {
         return res
           .status(400)
           .json({ type: "TitleInvalidError", message: "Title must be between 2 and 100 characters" });
@@ -396,12 +396,12 @@ const threadsController = {
       const { title, content, like } = req.body;
 
       // Validate fields
-      if ((title && title.trim().length < 2) || title.trim().length > 100) {
+      if (title && (title.trim().length < 2 || title.trim().length > 100)) {
         return res
           .status(400)
           .json({ type: "TitleInvalidError", message: "Title must be between 2 and 100 characters" });
       }
-      if (getContentText(content) === "") {
+      if (content && getContentText(content) === "") {
         return res.status(400).json({ type: "ContentInvalidError", message: "Content must not be empty" });
       }
 

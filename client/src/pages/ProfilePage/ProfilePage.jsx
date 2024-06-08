@@ -32,7 +32,7 @@ function ProfilePage() {
         )}
         {tab === "created-threads" && (
           <ThreadsList
-            query={`/threads?=creator=${JSON.parse(localStorage.getItem("user"))._id}`}
+            query={`/threads?creator=${JSON.parse(localStorage.getItem("user"))._id}`}
             isProfilePage={true}
           />
         )}

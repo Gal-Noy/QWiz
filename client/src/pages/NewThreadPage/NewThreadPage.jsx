@@ -131,7 +131,7 @@ function NewThread() {
         </div>
         <div className="new-thread-buttons">
           <button className="new-thread-button" onClick={createNewThread}>
-            {isPending ? <div className="lds-dual-ring" /> : "צור דיון"}
+            {isPending ? <div className="lds-dual-ring" id="new-thread-btn-loading"/> : "צור דיון"}
           </button>
           <button className="new-thread-button" onClick={() => (window.location.href = `/exam/${examId}/forum`)}>
             בטל
