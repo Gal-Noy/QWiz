@@ -10,6 +10,7 @@ import "./HomePage.css";
  * @returns {JSX.Element} The rendered HomePage component.
  */
 function HomePage() {
+
   return (
     <div className="homepage-div">
       <div className="homepage-main-div">

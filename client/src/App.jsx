@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
+import axiosInstance, { handleError, handleResult } from "./api/axiosInstance.jsx";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import AuthPage from "./pages/AuthPage/AuthPage.jsx";
 import NavBar from "./components/NavBar/NavBar.jsx";
@@ -15,6 +16,14 @@ import "./App.css";
 
 function App() {
   const isLoggedIn = !!localStorage.getItem("token") && !!localStorage.getItem("user");
+
+  // Authenticated health check on component mount
+  useEffect(() => {
+    axiosInstance
+      .get("/")
+      .then((res) => handleResult(res, 200, () => console.debug("Server authenticated health check passed")))
+      .catch((err) => handleError(err));
+  }, []);
 
   return (
     <Router>

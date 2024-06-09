@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 import axiosInstance, { handleError, handleResult } from "../../api/axiosInstance";
@@ -6,6 +6,7 @@ import SelectFilter from "../../components/SelectFilter/SelectFilter";
 import MultiSelectFilter from "../../components/MultiSelectFilter/MultiSelectFilter";
 import { toast } from "react-custom-alert";
 import "./UploadForm.css";
+import Pagination from "../../components/Pagination/Pagination";
 
 /**
  * The upload form component.
@@ -310,6 +311,15 @@ function UploadForm() {
     document.getElementById("upload-exam-file-input").value = null;
   };
 
+  // Memoized PDF Document component
+  const PDFDocument = useMemo(() => {
+    return (
+      <Document file={file ? URL.createObjectURL(file) : null} onLoadSuccess={(file) => setNumPages(file?.numPages)}>
+        <Page pageNumber={pageNumber} renderAnnotationLayer={false} renderTextLayer={false} />
+      </Document>
+    );
+  }, [file, pageNumber]);
+
   return (
     <div className="upload-form">
       <div className="upload-form-header">
@@ -516,30 +526,13 @@ function UploadForm() {
           </div>
           {file && (
             <div id="pdf-preview">
-              {numPages > 1 && (
-                <div className="pdf-preview-arrows">
-                  <span
-                    className={"material-symbols-outlined navigation-arrow" + (pageNumber < numPages ? " enabled" : "")}
-                    onClick={() => {
-                      if (pageNumber < numPages) setPageNumber(pageNumber + 1);
-                    }}
-                  >
-                    arrow_forward_ios
-                  </span>
-                  {numPages} / {pageNumber}
-                  <span
-                    className={"material-symbols-outlined navigation-arrow" + (pageNumber > 1 ? " enabled" : "")}
-                    onClick={() => {
-                      if (pageNumber > 1) setPageNumber(pageNumber - 1);
-                    }}
-                  >
-                    arrow_back_ios
-                  </span>
-                </div>
-              )}
-              <Document file={URL.createObjectURL(file)} onLoadSuccess={(file) => setNumPages(file?.numPages)}>
-                <Page pageNumber={pageNumber} renderAnnotationLayer={false} renderTextLayer={false} />
-              </Document>
+              <Pagination
+                numPages={numPages}
+                currentPage={pageNumber}
+                setCurrentPage={setPageNumber}
+                dataExists={!!file}
+              />
+              {PDFDocument}
             </div>
           )}
           {file && (

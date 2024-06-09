@@ -20,11 +20,6 @@ app.use(cors());
 // Routes
 app.use("/", router);
 
-// Health check
-app.get("/", (req, res) => {
-  res.send("Server is running!");
-});
-
 // Database connection
 mongoose
   .connect(process.env.DB_URI)
