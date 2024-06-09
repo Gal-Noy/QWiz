@@ -19,10 +19,12 @@ function App() {
 
   // Authenticated health check on component mount
   useEffect(() => {
-    axiosInstance
-      .get("/")
-      .then((res) => handleResult(res, 200, () => console.debug("Server authenticated health check passed")))
-      .catch((err) => handleError(err));
+    if (isLoggedIn) {
+      axiosInstance
+        .get("/")
+        .then((res) => handleResult(res, 200, () => console.debug("Server authenticated health check passed")))
+        .catch((err) => handleError(err));
+    }
   }, []);
 
   return (
