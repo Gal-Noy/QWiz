@@ -413,7 +413,7 @@ const threadsController = {
       if (like && !comment.likes.includes(req.user.user_id)) {
         comment.likes.push(req.user.user_id);
       }
-      if (!like && comment.likes.includes(req.user.user_id)) {
+      if (like === false && comment.likes.includes(req.user.user_id)) {
         comment.likes = comment.likes.filter((like) => like.toString() !== req.user.user_id);
       }
 
