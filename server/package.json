@@ -6,7 +6,7 @@
   "main": "src/index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "build": "npm i && node build/build.js && echo Server initialized successfully."
+    "build": "npm i && echo Server initialized successfully."
   },
   "keywords": [],
   "author": "",

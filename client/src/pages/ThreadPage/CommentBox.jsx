@@ -108,7 +108,7 @@ function CommentBox(props) {
     setEditedCommentContent(content);
     setEditedCommentTitle(title);
   };
-  
+
   /**
    * Updates the comment.
    *
@@ -251,7 +251,7 @@ function CommentBox(props) {
           setNewComment={setNewComment}
           addComment={addComment}
           nest={nest + 1}
-          expand={nest === 0 ? false : expand}
+          expand={expand}
           isClosed={isClosed}
           replyTo={_id}
         />
